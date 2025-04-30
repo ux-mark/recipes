@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
-// Removed the unused import: getAllTags
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,30 +15,24 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
-export const metadata: Metadata = {
+// Using a plain object instead of the metadata API which requires server components
+const siteMetadata = {
   title: "Fairy Bites",
   description: "A collection of recipes",
 };
 
-// Pre-fetch tags at build time and export for use in the static site
-export async function generateStaticParams() {
-  return [{}]; // Empty params, just to trigger the static generation
-}
-
-// Make this a regular component (not async) for static export compatibility
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // We can't use await here in a static export, so we'll use empty tags initially
-  // The actual tags will be loaded client-side in the SiteHeader component
   const tags = [];
 
   return (
     <html lang="en" className="h-full">
       <head>
-        {/* Script to handle redirect from 404.html for static site hosting */}
+        <title>{siteMetadata.title}</title>
+        <meta name="description" content={siteMetadata.description} />
         <script
           dangerouslySetInnerHTML={{
             __html: `

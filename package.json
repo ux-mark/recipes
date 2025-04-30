@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && cp -a public/. out/",
+    "build": "rm -rf .next && rm -rf out && next build",
+    "export": "next export",
     "start": "npx serve out",
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js"
