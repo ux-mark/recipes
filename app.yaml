@@ -16,10 +16,5 @@ services:
   - key: NODE_ENV
     value: production
   - key: PORT
-    value: 3000
+    value: "3000"
   source_dir: /
-  envs:
-  - key: DO_NOT_TRACK
-    value: "1"
-  - key: DISABLE_STATIC_SITE
-    value: "true"

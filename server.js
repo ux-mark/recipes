@@ -16,19 +16,8 @@ const port = parseInt(process.env.PORT || '3000', 10);
 // Log server startup info, useful for debugging in DigitalOcean logs
 console.log(`Starting server in ${dev ? 'development' : 'production'} mode`);
 console.log(`Server will listen on port: ${port}`);
-console.log(`Current directory: ${__dirname}`);
 
-// Check for the existence of the .next directory
-const nextDir = join(__dirname, '.next');
-if (!fs.existsSync(nextDir)) {
-  console.error(`ERROR: Build directory ${nextDir} not found!`);
-  console.log('Contents of current directory:');
-  console.log(fs.readdirSync(__dirname));
-} else {
-  console.log(`.next directory exists at ${nextDir}`);
-  console.log('Top-level .next contents:', fs.readdirSync(nextDir));
-}
-
+// Create Next.js app instance
 const app = next({ dev, hostname, port, dir: __dirname });
 const handle = app.getRequestHandler();
 
@@ -51,8 +40,11 @@ app.prepare().then(() => {
     maxAge: '1y', // Cache static assets for a year
   }));
 
-  // Serve files from public directory
-  server.use(express.static(join(__dirname, 'public')));
+  // Serve files from public directory but avoid serving index.html directly
+  // as it would conflict with Next.js root route
+  server.use(express.static(join(__dirname, 'public'), {
+    index: false // Don't serve index.html automatically
+  }));
   
   // Let Next.js handle all other requests
   server.all('*', (req, res) => {

@@ -1,0 +1,8 @@
+{
+  "type": "node",
+  "run_command": "npm start",
+  "envs": {
+    "NODE_ENV": "production",
+    "PORT": 3000
+  }
+}

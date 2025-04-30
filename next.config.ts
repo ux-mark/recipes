@@ -9,10 +9,8 @@ const nextConfig: NextConfig = {
     domains: ['assets.digitalocean.com'],
     formats: ['image/avif', 'image/webp'],
   },
-  // Let Digital Ocean know this is a server app, not a static site
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  // Use the correct property for external packages
+  serverExternalPackages: [],
   typescript: {
     // Allow production builds to complete despite TypeScript errors
     ignoreBuildErrors: true,
