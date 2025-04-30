@@ -46,7 +46,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
   let formattedDate = '';
   try {
     formattedDate = format(parseISO(recipe.createdDate), 'MMMM d, yyyy');
-  } catch (e) {
+  } catch {
     // Use the raw date if parsing fails
     formattedDate = recipe.createdDate;
   }

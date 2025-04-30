@@ -1,8 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Clock, UtensilsCrossed } from 'lucide-react';
+import { ArrowRight, UtensilsCrossed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import RecipeCard from '@/components/recipe-card';
 import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
 
