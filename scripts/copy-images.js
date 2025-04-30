@@ -1,5 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get current file's directory (ES modules don't have __dirname)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Source and destination directories
 // TODO: Update the source directory path to point to be cofigured in a .env file
