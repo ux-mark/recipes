@@ -1,43 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            padding: 2rem;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-        }
-        a {
-            color: #0070f3;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found - Fairy Bites</title>
+  <script>
+    // This script helps with client-side routing in a static site
+    // It will redirect to the appropriate page on the static site
+    (function() {
+      const path = window.location.pathname;
+      // Save the path for use after redirecting to the index
+      sessionStorage.setItem('redirectPath', path);
+      // Redirect to the index page
+      window.location.href = '/';
+    })();
+  </script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      background-color: #f7f7f7;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 1rem;
+    }
+    p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Page Not Found</h1>
-        <p>The page you are looking for does not exist.</p>
-        <p><a href="/">Return to home page</a></p>
-    </div>
+  <div class="container">
+    <h1>Page Not Found</h1>
+    <p>Redirecting you to the homepage...</p>
+  </div>
 </body>
 </html>
