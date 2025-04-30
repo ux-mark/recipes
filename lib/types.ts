@@ -10,7 +10,10 @@ export interface Recipe {
   servings: string;
   rating: number;
   createdDate: string;
-  source: string;
+  source: {
+    name: string;
+    url: string;
+  };
   images: string[];
   aside?: string;
   variations?: string;

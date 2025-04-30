@@ -15,7 +15,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "Mum",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -52,7 +55,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -71,7 +77,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "arepas/0A86DF6E-7828-4365-B9B9-B47CF0A57570.jpeg"
     ]
@@ -136,7 +145,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "March 17, 2022 12:38 AM",
-    "source": "https://cooking.nytimes.com/guides/81-how-to-make-bagels",
+    "source": {
+      "name": "New York Times",
+      "url": "https://cooking.nytimes.com/guides/81-how-to-make-bagels"
+    },
     "images": [
       "bagels/bagels-baked.png",
       "bagels/bagels-baked.png",
@@ -148,25 +160,27 @@
     "id": "banana-chocolate-cake",
     "name": "Banana & chocolate cake",
     "description": "",
-    "ingredients": [" 115 g dark chocolate (min 70% cocoa)", 
-      "165 g (3/4 cup) coconut oil", 
-      "50 g (1/4 cup) coconut sugar", 
-      "50 g (1/4 cup) maple/agave syrup", 
-      "3 eggs", 
-      "190 g (1 1/2 cups)  flour", 
-      "4.5 tsp baking powder / 1.5 tsp baking soda", 
-      "1.5 tbsp cocoa powder (dutch process only)", 
-      "3 very ripe (i.e. black) bananas"],
+    "ingredients": [
+      " 115 g dark chocolate (min 70% cocoa)",
+      "165 g (3/4 cup) coconut oil",
+      "50 g (1/4 cup) coconut sugar",
+      "50 g (1/4 cup) maple/agave syrup",
+      "3 eggs",
+      "190 g (1 1/2 cups)  flour",
+      "4.5 tsp baking powder / 1.5 tsp baking soda",
+      "1.5 tbsp cocoa powder (dutch process only)",
+      "3 very ripe (i.e. black) bananas"
+    ],
     "instructions": [
-      "Put the chocolate in a bain-marie on the stove to melt the chocolate", 
-      "Preheat the oven to 180°C / 350 F", 
-      "Mix the coconut oil, sugar and slowly beat in the eggs", 
-      "Add flour, baking flour, and cocoa slowly", 
-      "Pour into prepared cake tin or bread tin ", 
-      "Bake in the oven for ~ 30 - 45 minutes until a skewer comes out clean.", 
+      "Put the chocolate in a bain-marie on the stove to melt the chocolate",
+      "Preheat the oven to 180°C / 350 F",
+      "Mix the coconut oil, sugar and slowly beat in the eggs",
+      "Add flour, baking flour, and cocoa slowly",
+      "Pour into prepared cake tin or bread tin ",
+      "Bake in the oven for ~ 30 - 45 minutes until a skewer comes out clean.",
       "Great served with crème fresh",
       "Can be frozen"
-    ], 
+    ],
     "tags": [
       "Cakes"
     ],
@@ -175,7 +189,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "Rachel Allen",
+    "source": {
+      "name": "Rachel Allen",
+      "url": ""
+    },
     "images": [
       "banana-chocolate-cake/FA018B36-3A78-4B94-8098-1976A052D115.jpeg",
       "banana-chocolate-cake/A24B0849-4CA1-4C94-A704-B28D99216BCA.jpeg",
@@ -197,7 +214,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "bauernbrot/8118FE61-4B2B-4EBE-8043-D55517134586.jpeg",
       "bauernbrot/552095A2-FC1E-4F17-BEC7-39952AE799CE.jpeg"
@@ -229,7 +249,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -249,7 +272,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "April 14, 2023 12:29 AM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -281,7 +307,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -305,7 +334,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 17, 2022 2:42 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -332,7 +364,10 @@
     "servings": "",
     "rating": -1,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "buffalo-hot-sauce/448113EF-0BAE-400D-BFBD-16F51C531356.jpeg"
     ]
@@ -362,7 +397,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "https://www.rte.ie/lifestyle/food/2016/0108/758802-carrot-and-courgette-cake-with-rosemary-and-orange-creme-fraiche/",
+    "source": {
+      "name": "RTÉ",
+      "url": "https://www.rte.ie/lifestyle/food/2016/0108/758802-carrot-and-courgette-cake-with-rosemary-and-orange-creme-fraiche/"
+    },
     "images": []
   },
   {
@@ -399,14 +437,17 @@
     "servings": "",
     "rating": -1,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "https://cheznuts.com.au/wp_files/wp-content/uploads/2021/03/Plant-based-Chestnut-Burgers.pdf",
+    "source": {
+      "name": "Com",
+      "url": "https://cheznuts.com.au/wp_files/wp-content/uploads/2021/03/Plant-based-Chestnut-Burgers.pdf"
+    },
     "images": []
   },
   {
     "id": "chocolate-bubka",
     "name": "Chocolate bubka",
     "description": "",
-    "aside" : "💬 I have not made this, likely will want to reduce sugar.",
+    "aside": "💬 I have not made this, likely will want to reduce sugar.",
     "ingredients": [],
     "instructions": [
       "*Make the dough:* Combine the flour, sugar, yeast and zest in",
@@ -441,7 +482,10 @@
     "servings": "",
     "rating": -1,
     "createdDate": "October 27, 2022 10:35 PM",
-    "source": "https://smittenkitchen.com/2014/10/better-chocolate-babka/",
+    "source": {
+      "name": "Smitten Kitchen",
+      "url": "https://smittenkitchen.com/2014/10/better-chocolate-babka/"
+    },
     "images": []
   },
   {
@@ -474,7 +518,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "March 31, 2025 7:55 PM",
-    "source": "Catherine",
+    "source": {
+      "name": "Catherine",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -495,7 +542,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "chocolate-strawberries/B2F12370-F98A-4E12-A188-344E08F25A9E.jpeg"
     ]
@@ -520,7 +570,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:43 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -538,7 +591,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "February 22, 2023 10:33 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -556,7 +612,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "date-and-walnut-loaf/4C753F5F-0530-4C9F-9AD7-040C3B90EC32.jpeg",
       "date-and-walnut-loaf/4DFD88C3-E7FF-4A7F-AEFF-3E343A4461ED.jpeg",
@@ -597,14 +656,17 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:23 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
     "id": "eggnog",
     "name": "Eggnog",
     "description": "",
-    "aside": "💡Chef’s note: I reduced the sugar to 1/3. Alcohol could be 1 cup easily. ", 
+    "aside": "💡Chef’s note: I reduced the sugar to 1/3. Alcohol could be 1 cup easily. ",
     "ingredients": [
       "6 large eggs",
       "1/3 cup granulated sugar",
@@ -633,7 +695,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 25, 2023 11:15 AM",
-    "source": "https://www.thekitchn.com/how-to-make-homemade-eggnog-cooking-lessons-from-the-kitchn-214298",
+    "source": {
+      "name": "The Kitchn",
+      "url": "https://www.thekitchn.com/how-to-make-homemade-eggnog-cooking-lessons-from-the-kitchn-214298"
+    },
     "images": []
   },
   {
@@ -666,7 +731,10 @@
     "servings": "",
     "rating": -1,
     "createdDate": "November 29, 2023 7:10 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -684,7 +752,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "empanadas/556E7DB1-3840-4461-A427-74D11A76F153.jpeg",
       "empanadas/16536363-8CDC-46CF-8D77-E2B0A7AF0A93.jpeg"
@@ -712,7 +783,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "September 16, 2022 11:55 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -740,7 +814,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:13 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -769,7 +846,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "garden-salad/57BB3AA4-5373-4CA5-88B2-3BA4C9125230.jpeg",
       "garden-salad/CEB00C94-EA04-41D2-8A5C-FDFE8862D326.jpeg"
@@ -790,7 +870,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "garlic-roast-tomatoes/8E0E7E3D-0A41-45BA-877F-08AE9A49433E.jpeg"
     ]
@@ -814,7 +897,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 3, 2021 7:27 PM",
-    "source": "https://www.janespatisserie.com/2018/01/08/gin-tonic-drizzle-cake/",
+    "source": {
+      "name": "Jane's Patisserie",
+      "url": "https://www.janespatisserie.com/2018/01/08/gin-tonic-drizzle-cake/"
+    },
     "images": []
   },
   {
@@ -847,7 +933,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 16, 2022 2:18 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -877,7 +966,10 @@
     "servings": "",
     "rating": 4,
     "createdDate": "February 1, 2022 11:06 AM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -926,7 +1018,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "https://www.theguardian.com/lifeandstyle/wordofmouth/2011/apr/21/cook-perfect-hot-cross-buns",
+    "source": {
+      "name": "The Guardian",
+      "url": "https://www.theguardian.com/lifeandstyle/wordofmouth/2011/apr/21/cook-perfect-hot-cross-buns"
+    },
     "images": [
       "hot-cross-buns/IMG_3476.jpeg",
       "hot-cross-buns/IMG_3477.jpeg",
@@ -974,7 +1069,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "April 20, 2025 5:00 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "irish-spiced-beef/IMG_0686.jpeg"
     ]
@@ -1007,7 +1105,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "January 6, 2022 3:00 PM",
-    "source": "Stephanie Alexander - The Cook's Companion",
+    "source": {
+      "name": "Stephanie Alexander - The Cook's Companion",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1035,7 +1136,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "lasagna/035E0CCE-3B8E-4020-8007-8F5F8290E830.jpeg"
     ]
@@ -1080,7 +1184,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 13, 2021 10:46 AM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "liquid-soap/Untitled.png"
     ]
@@ -1117,7 +1224,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "March 10, 2024 1:05 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1144,7 +1254,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "September 22, 2022 11:35 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "lupini-beans/0EC1E86C-24BC-4E0D-B465-25B429E491E4.jpeg",
       "lupini-beans/CC85E498-665D-466E-A6AD-6A9B952EDB26.jpeg"
@@ -1186,7 +1299,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 27, 2022 8:51 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "mandal-bread/7B4BE1FD-0A89-4BD4-A3F5-1360560F8012.jpeg",
       "mandal-bread/C6C75EAA-F1C2-43DE-88CA-4CEE832DA693.jpeg",
@@ -1221,7 +1337,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 16, 2022 2:15 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1255,7 +1374,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "mince-pies/mince-pies.png",
       "mince-pies/mince-pies.png",
@@ -1289,7 +1411,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "April 1, 2023 8:31 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "mixed-peel/IMG_6162.jpeg"
     ]
@@ -1326,7 +1451,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1361,7 +1489,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "nut-bickies/D551F9D4-DC8D-4BD5-B957-630365FC588D.jpeg"
     ]
@@ -1390,7 +1521,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "March 12, 2022 6:25 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1409,7 +1543,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "January 22, 2025 8:57 AM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "olivias-muesli/a500608a-f1f3-4d2d-99dc-778dbd34c121.jpeg"
     ]
@@ -1447,7 +1584,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:35 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1455,14 +1595,14 @@
     "name": "Pasta",
     "description": "",
     "ingredients": [
-      "2 eggs", 
-      "Water (or for some fun add vegtable juice)", 
+      "2 eggs",
+      "Water (or for some fun add vegtable juice)",
       "250g / 1 cup flour"
-      ],
+    ],
     "instructions": [
-      "Lightly wisk the egg and mix the water in until you have 1/2 cup / 125ml in total.", 
-      "Slowly mix in the flour and knead, then roll out into strips.", 
-      "Use pasta maker and slowly pull through the strips, you will likely need to do this a couple of times.", 
+      "Lightly wisk the egg and mix the water in until you have 1/2 cup / 125ml in total.",
+      "Slowly mix in the flour and knead, then roll out into strips.",
+      "Use pasta maker and slowly pull through the strips, you will likely need to do this a couple of times.",
       "Leave as is for lasagne, make shapes or spagetti as you wish, or turn into ravioli or something else fun!"
     ],
     "tags": [
@@ -1474,7 +1614,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1495,7 +1638,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 13, 2022 12:25 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1513,7 +1659,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "pizza-for-a-friend/8767FFF9-97D8-4692-951D-AF1A814FF592.jpeg"
     ]
@@ -1549,7 +1698,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "January 3, 2022 1:50 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1574,7 +1726,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:41 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1606,7 +1761,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "pumpkin-pie/04FDF8F3-8830-4365-B1EE-8A9AD1518435.jpeg",
       "pumpkin-pie/44177279-C269-4BD0-AA36-BF4D02889A09.jpeg",
@@ -1628,7 +1786,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "pumpkinsquash-scones/0DC5B56C-7336-481B-A178-A7B1345545B3.jpeg"
     ]
@@ -1651,7 +1812,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "March 11, 2025 5:03 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "ragú-from-olivia/ragu-1.jpeg",
       "ragú-from-olivia/ragu-2.jpeg"
@@ -1682,7 +1846,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "August 17, 2023 7:09 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1727,7 +1894,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "https://www.theguardian.com/food/2020/jul/18/rare-as-rhubarb-its-fascinating-what-a-big-deal-was-once-made-of-this-pie-filler",
+    "source": {
+      "name": "The Guardian",
+      "url": "https://www.theguardian.com/food/2020/jul/18/rare-as-rhubarb-its-fascinating-what-a-big-deal-was-once-made-of-this-pie-filler"
+    },
     "images": [
       "rhubarb-upside-down-cake/583875EE-0AAB-4CE7-A90D-179522F7C0DC.jpeg"
     ]
@@ -1756,13 +1926,16 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:10 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
     "id": "shortcrust-pastry",
     "name": "Shortcrust pastry",
-    "description": "<aside>", 
+    "description": "<aside>",
     "aside": "💡 Will make two thin crust pies/tarts",
     "ingredients": [
       "250g flour",
@@ -1784,7 +1957,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "October 30, 2022 12:45 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1819,7 +1995,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "February 28, 2023 8:32 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1845,7 +2024,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "April 4, 2023 10:45 PM",
-    "source": "Claudia (Colin's friend)",
+    "source": {
+      "name": "Claudia (Colin's friend)",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1863,7 +2045,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "smoked-salmon-on-soda-bread/BA757CC1-7B17-463D-B3ED-70C284ABC22C.jpeg",
       "smoked-salmon-on-soda-bread/C075B227-43C6-4460-BEC9-2770713B109F.jpeg",
@@ -1874,8 +2059,8 @@
   {
     "id": "sour-cream-pastry",
     "name": "Sour cream pastry",
-    "description": "", 
-    "aside": "💡 Will make two thin crust pies/tarts. Great for [Mince pies](Mince%20pies%20e83b521533b0423683781d9781417e05.md)!", 
+    "description": "",
+    "aside": "💡 Will make two thin crust pies/tarts. Great for [Mince pies](Mince%20pies%20e83b521533b0423683781d9781417e05.md)!",
     "ingredients": [
       "250g (2 cups) flour",
       "200g (3 1/2 sticks) (14 tbsp) butter",
@@ -1896,7 +2081,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 17, 2022 1:26 PM",
-    "source": "MaggieBeer.com.au",
+    "source": {
+      "name": "MaggieBeer.com.au",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -1932,89 +2120,83 @@
     "servings": "",
     "rating": 0,
     "createdDate": "March 16, 2022 1:12 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
     "id": "sous-vide-temperatures",
     "name": "Sous Vide Temperatures",
-    "description": "", 
-    "aside": "💡 Add 5.5°C / 10 F for beef or 4.5°C / 8°F to temps to increase times from medium-rare to medium, or medium to medium-well.", 
-    "ingredients":
-      [
+    "description": "",
+    "aside": "💡 Add 5.5°C / 10 F for beef or 4.5°C / 8°F to temps to increase times from medium-rare to medium, or medium to medium-well.",
+    "ingredients": [
       "## Potatoes",
       "* **Temperature:** 90°C / 194°F",
       "* **Time:** 45 mins - 1.5 hrs",
       "* **Prep:** Cut into approximately 2.5 cm pieces",
       "* **Recommendation:** Find your personal preference",
-      
       "## Beef",
       "* **Steak (Medium-Rare)**",
       "  * Temperature: 55-57°C / 126-135°F",
       "  * Time: 1-2 hrs",
       "  * Try: 55°C for 1.5 hrs",
-      
       "* **Roast (Medium-Rare)**",
       "  * Temperature: 55-57°C / 126-135°F",
       "  * Time: 6-14 hrs",
       "  * Try: 60°C for 8 hrs",
-      
       "* **Tough Cuts (Chuck, Brisket, Short Ribs)**",
       "  * Temperature: 55-57°C / 126-135°F",
       "  * Time: 12-24 hrs",
       "  * Try: 65°C for 24 hrs",
-      
       "## Poultry",
       "* **Chicken (Tender and Juicy)**",
       "  * Temperature: 60-65°C / 140-149°F",
       "  * Time: 1-3 hrs",
       "  * Try: 60°C for 1.5 hrs",
-      
       "* **Duck and Other Dark Poultry (Firm and Juicy)**",
       "  * Temperature: 71-75°C / 160-167°F",
       "  * Time: 2-4 hrs",
       "  * Try: 74°C for 1.5 hrs",
-      
       "## Pork",
       "* **Chops (Medium-Rare)**",
       "  * Temperature: 56.5-60°C / 134-140°F",
       "  * Time: 1-3 hrs",
       "  * Try: 57.5°C for 1.5 hrs",
-      
       "* **Roast (Medium-Rare)**",
       "  * Temperature: 56.5-60°C / 134-140°F",
       "  * Time: 3-6 hrs",
       "  * Try: 57.5°C for 6 hrs",
-      
       "* **Tough Cuts (Pork Belly, Ribs, Shoulder)**",
       "  * Temperature: 56.5-60°C / 134-140°F",
       "  * Time: 8-12 hrs",
       "  * Try: 57.5°C for 24 hrs",
-      
       "## Seafood",
       "* **Fish (Salmon, Halibut, Tuna)**",
       "  * Temperature: 40-45.5°C / 104-114°F",
       "  * Time: 30 mins - 1 hr",
       "  * Try: 43.5°C for 45 mins",
-      
       "* **Shellfish (Lobster, Scallops, Shrimp)**",
       "  * Temperature: 40-45.5°C / 104-114°F",
       "  * Time: 20-45 mins",
       "  * Try: 43.5°C for 30 mins"
-      ],
-    "instructions": ["| Food | Temp | Time | Notes |", 
-      "| --- | --- | --- | --- |", 
-      "| Potatoes  | 90°C / 194°F | 45 mins - 1.5 hrs | Cut into approx 2.5 cm across |", 
-      "| Beef: Steak [medium-rare] | 55 - 57°C / 126 - 135°F | 1 - 2 hrs | Try 55°C at 1.5 hrs  and find personal preference |", 
-      "| Beef: Roast [medium-rare] | 55 - 57°C / 126 - 135°F | 6 - 14 hrs | Try 60°C at 8 hrs and find personal preference |", 
-      "| Beef: Tough Cuts (Chuck, Brisket, Short Ribs) [medium-rare] | 55 - 57°C / 126 - 135 F | 12 - 24 hrs | Try 65°C at 24 hrs and find personal preference |", 
-      "| Chicken [tender and juicy] | 60 – 65°C / 140 – 149°F | 1 - 3 hrs | Try 60 C at 1.5 hrs and find personal preference |", 
-      "| Duck (and other dark poultry) [firm and juicy] | 71 – 75°C / 160 – 167°F  | 2 - 4 hrs | Try 74°C at 1.5 hrs and find personal preference |", 
-      "| Pork: Chops [medium-rare] | 56.5 – 60°C / 134 – 140°F | 1 - 3 hrs | Try 57.5°C at 1.5 hrs and find personal preference |", 
-      "| Pork: Roast [medium-rare] | 56.5 – 60°C / 134 – 140°F | 3 - 6 hrs | Try 57.5°C at 6 hrs and find personal preference |", 
-      "| Pork: Tough Cuts (Pork Belly, Ribs, Shoulder) [medium-rare] | 56.5 – 60°C / 134 – 140°F | 8 - 12 hrs | Try 57.5°C at 24 hrs and find personal preference |", 
-      "| Fish: Salmon, Halibut and Tuna | 40 – 45.5°C / 104 – 114°F | 30 mins - 1 hr | Try 43.5°C at 45 mins and find personal preference |", 
-      "| Shell Fish: Lobster, Scallops and Shrimp | 40 – 45.5°C / 104 – 114°F | 20 - 45 mins | Try 43.5°C at 30 mins and find personal preference |"],
+    ],
+    "instructions": [
+      "| Food | Temp | Time | Notes |",
+      "| --- | --- | --- | --- |",
+      "| Potatoes  | 90°C / 194°F | 45 mins - 1.5 hrs | Cut into approx 2.5 cm across |",
+      "| Beef: Steak [medium-rare] | 55 - 57°C / 126 - 135°F | 1 - 2 hrs | Try 55°C at 1.5 hrs  and find personal preference |",
+      "| Beef: Roast [medium-rare] | 55 - 57°C / 126 - 135°F | 6 - 14 hrs | Try 60°C at 8 hrs and find personal preference |",
+      "| Beef: Tough Cuts (Chuck, Brisket, Short Ribs) [medium-rare] | 55 - 57°C / 126 - 135 F | 12 - 24 hrs | Try 65°C at 24 hrs and find personal preference |",
+      "| Chicken [tender and juicy] | 60 – 65°C / 140 – 149°F | 1 - 3 hrs | Try 60 C at 1.5 hrs and find personal preference |",
+      "| Duck (and other dark poultry) [firm and juicy] | 71 – 75°C / 160 – 167°F  | 2 - 4 hrs | Try 74°C at 1.5 hrs and find personal preference |",
+      "| Pork: Chops [medium-rare] | 56.5 – 60°C / 134 – 140°F | 1 - 3 hrs | Try 57.5°C at 1.5 hrs and find personal preference |",
+      "| Pork: Roast [medium-rare] | 56.5 – 60°C / 134 – 140°F | 3 - 6 hrs | Try 57.5°C at 6 hrs and find personal preference |",
+      "| Pork: Tough Cuts (Pork Belly, Ribs, Shoulder) [medium-rare] | 56.5 – 60°C / 134 – 140°F | 8 - 12 hrs | Try 57.5°C at 24 hrs and find personal preference |",
+      "| Fish: Salmon, Halibut and Tuna | 40 – 45.5°C / 104 – 114°F | 30 mins - 1 hr | Try 43.5°C at 45 mins and find personal preference |",
+      "| Shell Fish: Lobster, Scallops and Shrimp | 40 – 45.5°C / 104 – 114°F | 20 - 45 mins | Try 43.5°C at 30 mins and find personal preference |"
+    ],
     "tags": [
       "Needs content",
       "Needs pic",
@@ -2025,7 +2207,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "July 8, 2024 2:28 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2054,7 +2239,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:21 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2072,7 +2260,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "stewed-clementines/2DC38CBA-DCEF-43F5-8A32-DDD0E0F41371.jpeg"
     ]
@@ -2105,7 +2296,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "sundried-tomatoes/B1F757EF-DD6C-4EFB-AD11-792BC28C123A.jpeg"
     ]
@@ -2137,7 +2331,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "March 12, 2022 6:15 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "taco-seasoning/image.jpg"
     ]
@@ -2172,7 +2369,10 @@
     "servings": "",
     "rating": 3,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "the-39ties/PXL_20210602_022200395.NIGHT.jpg"
     ]
@@ -2210,7 +2410,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 16, 2022 9:15 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2229,7 +2432,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": [
       "tomato-sauce/CD220BE7-7136-4A56-966B-E80D77B9965D.jpeg",
       "tomato-sauce/D8F55107-B9BD-4274-A4CA-917BC90A13F5.jpeg",
@@ -2265,7 +2471,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:20 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2293,7 +2502,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:33 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2320,7 +2532,10 @@
     "servings": "",
     "rating": 0,
     "createdDate": "December 16, 2022 2:38 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   },
   {
@@ -2346,7 +2561,10 @@
     "servings": "",
     "rating": 5,
     "createdDate": "December 16, 2022 2:41 PM",
-    "source": "",
+    "source": {
+      "name": "",
+      "url": ""
+    },
     "images": []
   }
 ]

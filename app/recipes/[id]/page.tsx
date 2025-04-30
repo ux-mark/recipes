@@ -149,21 +149,21 @@ export default async function RecipePage({ params }: RecipePageProps) {
             <h2 className="text-xl font-semibold mb-4">Information</h2>
             <Separator className="mb-4" />
             <dl className="space-y-2">
-              {recipe.source && (
+              {recipe.source && (recipe.source.name || recipe.source.url) && (
                 <>
                   <dt className="font-medium">Source</dt>
                   <dd className="text-neutral-600 mb-2">
-                    {recipe.source.startsWith('http') ? (
+                    {recipe.source.url ? (
                       <a 
-                        href={recipe.source} 
+                        href={recipe.source.url} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-primary-600 hover:underline"
                       >
-                        {recipe.source}
+                        {recipe.source.name || recipe.source.url}
                       </a>
                     ) : (
-                      recipe.source
+                      recipe.source.name
                     )}
                   </dd>
                 </>
