@@ -10,6 +10,7 @@ interface RecipePageProps {
   params: {
     id: string;
   };
+  searchParams?: Record<string, string | string[] | undefined>;
 }
 
 export async function generateMetadata({ params }: RecipePageProps) {
