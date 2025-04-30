@@ -17,12 +17,12 @@ export async function generateMetadata({ params }: TagPageProps) {
   
   if (recipes.length === 0) {
     return {
-      title: 'Category Not Found | Bites by The Fairies',
+      title: 'Category Not Found | Fairy Bites',
     };
   }
   
   return {
-    title: `${tag} Recipes | Bites by The Fairies`,
+    title: `${tag} Recipes | Fairy Bites`,
     description: `Browse our collection of ${recipes.length} ${tag.toLowerCase()} recipes.`,
   };
 }

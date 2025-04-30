@@ -3,7 +3,7 @@ import RecipeCard from '@/components/recipe-card';
 import { Separator } from '@/components/ui/separator';
 
 export const metadata = {
-  title: 'All Recipes | Bites by The Fairies',
+  title: 'All Recipes | Fairy Bites',
   description: 'Browse all recipes in our collection.',
 };
 

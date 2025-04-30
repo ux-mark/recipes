@@ -13,7 +13,7 @@ export default async function SiteFooter() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <h3 className="font-serif text-xl font-bold mb-4">
-              Tasty<span className="text-primary-600">Bites</span>
+              Fairy<span className="text-primary-600">Bites</span>
             </h3>
             <p className="text-neutral-600 mb-4">
               Discover delicious recipes for every occasion. From quick weekday meals to special celebrations.
@@ -54,7 +54,7 @@ export default async function SiteFooter() {
         <Separator className="my-8" />
         
         <div className="text-center text-sm text-neutral-500">
-          <p>&copy; {currentYear} Bites by The Fairies Recipe Collection. All rights reserved.</p>
+          <p>&copy; {currentYear} Fairy Bites Recipe Collection. All rights reserved.</p>
         </div>
       </div>
     </footer>

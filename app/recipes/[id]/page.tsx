@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: RecipePageProps) {
   
   if (!recipe) {
     return {
-      title: 'Recipe Not Found | Bites by The Fairies',
+      title: 'Recipe Not Found | Fairy Bites',
     };
   }
   
   return {
-    title: `${recipe.name} | Bites by The Fairies`,
+    title: `${recipe.name} | Fairy Bites`,
     description: recipe.description || `A delicious recipe for ${recipe.name}`,
   };
 }

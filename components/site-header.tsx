@@ -36,7 +36,7 @@ export default function SiteHeader({ tags }: SiteHeaderProps) {
             </SheetContent>
           </Sheet>
           <Link href="/" className="font-serif text-2xl font-bold tracking-tight">
-            Tasty<span className="text-primary-600">Bites</span>
+            Fairy<span className="text-primary-600">Bites</span>
           </Link>
         </div>
         

@@ -115,7 +115,7 @@
       "After 4 - 24 hours take them out of the fridge. If the bagels are not after rising to the desired size leave in room temparture for another 1 - 2 hours.",
       "### Boiling and baking",
       "💡 Prepare your work surface before you start boiling anything. Have a wire rack next to the dutch oven and plates with toppings as required next to that.",
-      "Turn the oven on at 225 C / 450 F.",
+      "Turn the oven on at 225°C / 450°F.",
       "Half fill a dutch oven with water and bring it to the boil. Whisk in the barley malt and baking soda in the water and bring to the boil. Scoop off any scum that formed.",
       "Once boiling lower to keep simmering and add in 2 - 3 bagels.",
       "Cook for 1 min and then turn over at 30 seconds.",
@@ -159,7 +159,7 @@
       "3 very ripe (i.e. black) bananas"],
     "instructions": [
       "Put the chocolate in a bain-marie on the stove to melt the chocolate", 
-      "Preheat the oven to 180 C / 350 F", 
+      "Preheat the oven to 180°C / 350 F", 
       "Mix the coconut oil, sugar and slowly beat in the eggs", 
       "Add flour, baking flour, and cocoa slowly", 
       "Pour into prepared cake tin or bread tin ", 
@@ -450,8 +450,8 @@
     "description": "",
     "ingredients": [
       "250g butter",
-      "175g brown sugar (1 cup) - 50g 1/3 cup",
-      "165g caster sugar (3/4 cup) - 50 g 1/3 cup",
+      "175g brown sugar (1 cup) (Reduced sugar: 50g 1/3 cup)",
+      "165g caster sugar (3/4 cup) (Reduced sugar: 50g 1/3 cup)",
       "3 eggs",
       "335g plain flour (2 1/4 cups)",
       "1 tsp baking powder",
@@ -649,7 +649,7 @@
       "2 tblsp sesame seeds"
     ],
     "instructions": [
-      "Preheat oven to 180C / 360 F.",
+      "Preheat oven to 180°C / 360°F.",
       "Lightly score the surface of the eggplant with the point of a sharp knife and then brush the surface very lightly with sesame oil.",
       "In a bowl, combine all of the remaining ingredients, except the sesame seeds, stirring until smooth.",
       "Preheat a frypan to high and spray with a little oil. Cook the eggplant for about 2 minutes until starting to colour. Flip each piece and continue cooking until both sides are nicely coloured and cooked.",
@@ -913,8 +913,8 @@
       "Sprinkle the dried fruit on the dough and fold it in energetically by stretching the dough.",
       "Divide the dough into 32 buns; mould them them by stretching the dough as much as possible. Place them on parchment lined baking trays. Set aside in a warm humid area for the second proof. Wait until the buns double in size.",
       "To make the cross lines on the buns mix the flour with the orange blossom water and add enough water to all you to roll the mixture with your hands. Set aside with buns while proofing.",
-      "Preheat the oven to 200C/390F.",
-      "Roll the lines to fit across all buns. Lightly beat the remaining egg with a fork and paint the buns. Then assemble the lines. Apply a final paint of egg and put in the oven for 20 -25 mins until golden brown."
+      "Preheat the oven to 200°C / 390°F.",
+      "Roll the lines to fit across all buns. Lightly beat the remaining egg with a fork and paint the buns. Then assemble the lines. Apply a final paint of egg and put in the oven for 20-25 mins until golden brown."
     ],
     "tags": [
       "Easter",
@@ -1175,7 +1175,7 @@
       "Sprinkle chocolate on each dough pancake, roll carefully to form a log.",
       "Transfer to baking pan lined with baking paper. Flatten to desired shape.",
       "Repeat with other dough balls.",
-      "Keep light on in oven and in centre rack at 325 F / 160 C degrees for 25 - 30 mins."
+      "Keep light on in oven and in centre rack at 160°C  / 325°F degrees for 25 - 30 mins."
     ],
     "tags": [
       "Jewish",
@@ -1243,7 +1243,7 @@
       "Add 1 - 2 spoons of fruit mince mixture into each.",
       "Brush bottom of each small circle and place on each pie. Then using a fork press down on the entire edge of each pie.",
       "Leave to rest in the fridge for 30 mins.",
-      "Turn oven on at 220 C / 430 F.",
+      "Turn oven on at 220°C / 430°F.",
       "Take pies out of the fridge and brush each one with egg, put in oven and bake for 15 - 20 mins until golden brown."
     ],
     "tags": [
@@ -1348,7 +1348,7 @@
       "Add in flavourings including chocolate.",
       "Divide into three logs and shape as you desire, I like simple square logs.",
       "Refrigerate for minimum of 4 hours, or just freeze them until you want to use them.",
-      "Preheat the oven at 190 C / 375 F.",
+      "Preheat the oven at 190°C / 375°F.",
       "Using a sharp knife slice the log(s) and place on a baking tray on some parchment paper.",
       "Bake for 10 - 20 mins until golden brown. I like to flip them half way through."
     ],
@@ -1939,7 +1939,7 @@
     "id": "sous-vide-temperatures",
     "name": "Sous Vide Temperatures",
     "description": "", 
-    "aside": "💡 Add 5.5 C / 10 F for beef or 4.5 C / 8 F to temps to increase times from medium-rare to medium, or medium to medium-well.", 
+    "aside": "💡 Add 5.5°C / 10 F for beef or 4.5°C / 8°F to temps to increase times from medium-rare to medium, or medium to medium-well.", 
     "ingredients":
       [
       "## Potatoes",
@@ -2004,17 +2004,17 @@
       ],
     "instructions": ["| Food | Temp | Time | Notes |", 
       "| --- | --- | --- | --- |", 
-      "| Potatoes  | 90 C / 194 F | 45 mins - 1.5 hrs | Cut into approx 2.5 cm across |", 
-      "| Beef: Steak [medium-rare] | 55 - 57 C / 126 - 135 F | 1 - 2 hrs | Try 55 C at 1.5 hrs  and find personal preference |", 
-      "| Beef: Roast [medium-rare] | 55 - 57 C / 126 - 135 F | 6 - 14 hrs | Try 60 C at 8 hrs and find personal preference |", 
-      "| Beef: Tough Cuts (Chuck, Brisket, Short Ribs) [medium-rare] | 55 - 57 C / 126 - 135 F | 12 - 24 hrs | Try 65 C at 24 hrs and find personal preference |", 
-      "| Chicken [tender and juicy] | 60 – 65 C / 140 – 149 F | 1 - 3 hrs | Try 60 C at 1.5 hrs and find personal preference |", 
-      "| Duck (and other dark poultry) [firm and juicy] | 71 – 75 C / 160 – 167 F  | 2 - 4 hrs | Try 74 C at 1.5 hrs and find personal preference |", 
-      "| Pork: Chops [medium-rare] | 56.5 – 60 C / 134 – 140 F | 1 - 3 hrs | Try 57.5 CC at 1.5 hrs and find personal preference |", 
-      "| Pork: Roast [medium-rare] | 56.5 – 60 C / 134 – 140 F | 3 - 6 hrs | Try 57.5 CC at 6 hrs and find personal preference |", 
-      "| Pork: Tough Cuts (Pork Belly, Ribs, Shoulder) [medium-rare] | 56.5 – 60 C / 134 – 140 F | 8 - 12 hrs | Try 57.5 CC at 24 hrs and find personal preference |", 
-      "| Fish: Salmon, Halibut and Tuna | 40 – 45.5 C / 104 – 114 F | 30 mins - 1 hr | Try 43.5 C at 45 mins and find personal preference |", 
-      "| Shell Fish: Lobster, Scallops and Shrimp | 40 – 45.5 C / 104 – 114 F | 20 - 45 mins | Try 43.5 CC at 30 mins and find personal preference |"],
+      "| Potatoes  | 90°C / 194°F | 45 mins - 1.5 hrs | Cut into approx 2.5 cm across |", 
+      "| Beef: Steak [medium-rare] | 55 - 57°C / 126 - 135°F | 1 - 2 hrs | Try 55°C at 1.5 hrs  and find personal preference |", 
+      "| Beef: Roast [medium-rare] | 55 - 57°C / 126 - 135°F | 6 - 14 hrs | Try 60°C at 8 hrs and find personal preference |", 
+      "| Beef: Tough Cuts (Chuck, Brisket, Short Ribs) [medium-rare] | 55 - 57°C / 126 - 135 F | 12 - 24 hrs | Try 65°C at 24 hrs and find personal preference |", 
+      "| Chicken [tender and juicy] | 60 – 65°C / 140 – 149°F | 1 - 3 hrs | Try 60 C at 1.5 hrs and find personal preference |", 
+      "| Duck (and other dark poultry) [firm and juicy] | 71 – 75°C / 160 – 167°F  | 2 - 4 hrs | Try 74°C at 1.5 hrs and find personal preference |", 
+      "| Pork: Chops [medium-rare] | 56.5 – 60°C / 134 – 140°F | 1 - 3 hrs | Try 57.5°C at 1.5 hrs and find personal preference |", 
+      "| Pork: Roast [medium-rare] | 56.5 – 60°C / 134 – 140°F | 3 - 6 hrs | Try 57.5°C at 6 hrs and find personal preference |", 
+      "| Pork: Tough Cuts (Pork Belly, Ribs, Shoulder) [medium-rare] | 56.5 – 60°C / 134 – 140°F | 8 - 12 hrs | Try 57.5°C at 24 hrs and find personal preference |", 
+      "| Fish: Salmon, Halibut and Tuna | 40 – 45.5°C / 104 – 114°F | 30 mins - 1 hr | Try 43.5°C at 45 mins and find personal preference |", 
+      "| Shell Fish: Lobster, Scallops and Shrimp | 40 – 45.5°C / 104 – 114°F | 20 - 45 mins | Try 43.5°C at 30 mins and find personal preference |"],
     "tags": [
       "Needs content",
       "Needs pic",

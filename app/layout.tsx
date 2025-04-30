@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Bites by The Fairies Recipe Collection",
+  title: "Fairy Bites Collection",
   description: "Discover delicious recipes for every occasion.",
 };
 
