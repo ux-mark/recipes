@@ -2,10 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
-import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
+import { Recipe } from '@/lib/types';
 
+// Import all recipes directly
+import allRecipes from '@/lib/recipes.json';
+
+// Define types for the component props
 interface RecipePageProps {
   params: {
     id: string;
@@ -13,8 +17,14 @@ interface RecipePageProps {
   searchParams?: Record<string, string | string[] | undefined>;
 }
 
+export async function generateStaticParams() {
+  return allRecipes.map((recipe: Recipe) => ({
+    id: recipe.id,
+  }));
+}
+
 export async function generateMetadata({ params }: RecipePageProps) {
-  const recipe = await getRecipeById(params.id);
+  const recipe = allRecipes.find((r: Recipe) => r.id === params.id);
   
   if (!recipe) {
     return {
@@ -28,16 +38,9 @@ export async function generateMetadata({ params }: RecipePageProps) {
   };
 }
 
-export async function generateStaticParams() {
-  const recipes = await getAllRecipes();
-  
-  return recipes.map((recipe) => ({
-    id: recipe.id,
-  }));
-}
-
-export default async function RecipePage({ params }: RecipePageProps) {
-  const recipe = await getRecipeById(params.id);
+export default function RecipePage({ params }: RecipePageProps) {
+  // Find the recipe directly from the imported data
+  const recipe = allRecipes.find((r: Recipe) => r.id === params.id);
   
   if (!recipe) {
     notFound();

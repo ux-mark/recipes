@@ -8,28 +8,25 @@ import { Search as SearchIcon } from 'lucide-react';
 import RecipeCard from '@/components/recipe-card';
 import { Recipe } from '@/lib/types';
 
+// Import recipes directly for static site generation
+import allRecipes from '@/lib/recipes.json';
+
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
 
-  // Fetch all recipes when the component mounts
+  // Load recipes when the component mounts
   useEffect(() => {
-    async function fetchRecipes() {
-      try {
-        const response = await fetch('/api/recipes');
-        const data = await response.json();
-        setRecipes(data);
-        setFilteredRecipes(data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch recipes:', error);
-        setLoading(false);
-      }
+    try {
+      setRecipes(allRecipes);
+      setFilteredRecipes(allRecipes);
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to load recipes data:', error);
+      setLoading(false);
     }
-
-    fetchRecipes();
   }, []);
 
   // Filter recipes based on search query
@@ -91,9 +88,8 @@ export default function SearchPage() {
             </div>
             
             {filteredRecipes.length === 0 && (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No recipes found</h3>
-                <p className="text-neutral-600">Try a different search term or browse all recipes.</p>
+              <div className="text-center py-8">
+                <p className="text-neutral-500">No recipes found. Try a different search term.</p>
               </div>
             )}
           </>

@@ -1,45 +1,28 @@
-// We need to mark this file as server-only
-'use server';
-
-import fs from 'fs';
-import path from 'path';
+// Static version of recipe utilities (compatible with static export)
+import recipesData from './recipes.json';
 import { Recipe, RecipeTag } from './types';
-
-// Path to the recipes JSON file
-// TODO: Move this to a config file or environment variable
-const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
 
 // Function to get all recipes
 export async function getAllRecipes(): Promise<Recipe[]> {
-  try {
-    const fileContents = fs.readFileSync(recipesFilePath, 'utf8');
-    const recipes: Recipe[] = JSON.parse(fileContents);
-    return recipes;
-  } catch (error) {
-    console.error('Error loading recipe data:', error);
-    return [];
-  }
+  return recipesData;
 }
 
 // Function to get a single recipe by ID
 export async function getRecipeById(id: string): Promise<Recipe | undefined> {
-  const recipes = await getAllRecipes();
-  return recipes.find(recipe => recipe.id === id);
+  return recipesData.find(recipe => recipe.id === id);
 }
 
 // Function to get recipes by tag
 export async function getRecipesByTag(tag: string): Promise<Recipe[]> {
-  const recipes = await getAllRecipes();
-  return recipes.filter(recipe => recipe.tags.includes(tag));
+  return recipesData.filter(recipe => recipe.tags.includes(tag));
 }
 
 // Function to get all unique tags with counts
 export async function getAllTags(): Promise<RecipeTag[]> {
-  const recipes = await getAllRecipes();
   const tagCounts: Record<string, number> = {};
   
   // Count occurrences of each tag
-  recipes.forEach(recipe => {
+  recipesData.forEach(recipe => {
     recipe.tags.forEach(tag => {
       if (tagCounts[tag]) {
         tagCounts[tag]++;
@@ -58,8 +41,7 @@ export async function getAllTags(): Promise<RecipeTag[]> {
 
 // Function to get featured recipes (highest rated)
 export async function getFeaturedRecipes(count: number = 4): Promise<Recipe[]> {
-  const recipes = await getAllRecipes();
-  return [...recipes]
+  return [...recipesData]
     .filter(recipe => recipe.rating > 0) // Only include recipes with positive ratings
     .sort((a, b) => b.rating - a.rating)
     .slice(0, count);

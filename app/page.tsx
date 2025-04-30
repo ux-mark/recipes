@@ -1,20 +1,71 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, UtensilsCrossed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RecipeCard from '@/components/recipe-card';
-import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
+import { Recipe, RecipeTag } from '@/lib/types';
 
-export default async function Home() {
-  const featuredRecipes = await getFeaturedRecipes(6);
-  const allTags = await getAllTags();
-  const popularTags = allTags
-    .filter(tag => !tag.name.includes('Needs')) // Filter out tags containing "Needs"
-    .slice(0, 6); // Get top 6 popular tags
-  
-  // Get a few dinner recipes
-  const dinnerRecipes = (await getRecipesByTag('Dinner')).slice(0, 3);
+// Import recipes.json directly for static site generation
+import allRecipes from '@/lib/recipes.json';
 
+export default function Home() {
+  const [featuredRecipes, setFeaturedRecipes] = useState<Recipe[]>([]);
+  const [popularTags, setPopularTags] = useState<RecipeTag[]>([]);
+  const [dinnerRecipes, setDinnerRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Process the already imported data instead of fetching
+    try {
+      // Get featured recipes (first 6)
+      const featured = allRecipes.slice(0, 6);
+      setFeaturedRecipes(featured);
+      
+      // Extract unique tags
+      const tagMap = new Map();
+      allRecipes.forEach(recipe => {
+        recipe.tags.forEach(tag => {
+          if (tagMap.has(tag)) {
+            tagMap.get(tag).count += 1;
+          } else {
+            tagMap.set(tag, { name: tag, count: 1 });
+          }
+        });
+      });
+      
+      // Filter and sort tags
+      const tags = Array.from(tagMap.values());
+      const filtered = tags
+        .filter(tag => !tag.name.includes('Needs'))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 6);
+      setPopularTags(filtered);
+      
+      // Get dinner recipes
+      const dinner = allRecipes
+        .filter(recipe => recipe.tags.includes('Dinner'))
+        .slice(0, 3);
+      setDinnerRecipes(dinner);
+      
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to process recipe data:', error);
+      setLoading(false);
+    }
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  // Rest of the component remains the same
   return (
     <div className="flex flex-col">
       {/* Hero Section */}

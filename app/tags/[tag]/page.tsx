@@ -1,9 +1,15 @@
-import { getRecipesByTag, getAllTags } from '@/lib/recipes';
 import RecipeCard from '@/components/recipe-card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
+
+// Import recipes directly for static site generation
+import allRecipes from '@/lib/recipes.json';
+import { generateStaticParams } from './generateStaticParams';
+
+// Re-export the generateStaticParams function
+export { generateStaticParams };
 
 interface TagPageProps {
   params: {
@@ -11,34 +17,15 @@ interface TagPageProps {
   };
 }
 
-export async function generateMetadata({ params }: TagPageProps) {
+export default function TagPage({ params }: TagPageProps) {
   const tag = decodeURIComponent(params.tag);
-  const recipes = await getRecipesByTag(tag);
   
-  if (recipes.length === 0) {
-    return {
-      title: 'Category Not Found | Fairy Bites',
-    };
-  }
+  // Filter recipes directly at render time
+  const recipes = allRecipes.filter(recipe => 
+    recipe.tags.includes(tag)
+  );
   
-  return {
-    title: `${tag} Recipes | Fairy Bites`,
-    description: `Browse our collection of ${recipes.length} ${tag.toLowerCase()} recipes.`,
-  };
-}
-
-export async function generateStaticParams() {
-  const tags = await getAllTags();
-  
-  return tags.map((tag) => ({
-    tag: encodeURIComponent(tag.name),
-  }));
-}
-
-export default async function TagPage({ params }: TagPageProps) {
-  const tag = decodeURIComponent(params.tag);
-  const recipes = await getRecipesByTag(tag);
-  
+  // If no recipes found for this tag, show 404
   if (recipes.length === 0) {
     notFound();
   }

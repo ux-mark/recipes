@@ -145,6 +145,7 @@ The application uses environment variables for configuration:
 - The path should be relative to the scripts directory
 
 ### Managing Recipe Images
+- Images are now copied on-demand instead of automatically during the build process
 - To update recipe images from the external source directory:
   ```bash
   npm run copy-images
@@ -152,6 +153,7 @@ The application uses environment variables for configuration:
 - The copy-images script uses the path defined in the `.env` file (RECIPE_IMAGES_SOURCE_DIR)
 - If no environment variable is set, it defaults to "../../Recipes-and-photos"
 - The script copies images to "public/images/"
+- **Important**: Run this command manually before deployment if you need to update the images
 
 #### Programmatic Image Copying
 The image copying functionality is now also available as a callable function:
@@ -235,6 +237,52 @@ The project is configured for deployment on DigitalOcean's App Platform (free ti
 - Free tier has limited resources (0.5GB RAM)
 - App will sleep after inactivity
 - Limited to 1GB bandwidth per month
+
+### DigitalOcean App Platform Static Site Deployment
+The project is configured for deployment on DigitalOcean's App Platform as a static site with CDN support:
+
+#### Static Site Export Configuration
+The website has been optimized to work as a fully static site by:
+- Setting `output: 'export'` in next.config.ts to generate static HTML files
+- Using `unoptimized: true` for images in static export
+- Converting API-based data fetching to direct imports of data at build time
+- Ensuring all dynamic routes use proper static generation with generateStaticParams
+
+#### Configuration Files
+- `next.config.ts`: Contains settings for static HTML export
+- `app.yaml`: Defines the app configuration for DigitalOcean App Platform static site
+- `static.config.js`: Documents static site configuration including caching headers
+- `package.json`: Updated scripts for building and previewing the static export
+
+#### Deployment Steps
+1. Push code to GitHub repository
+2. In DigitalOcean dashboard, create a new App
+3. Select "Static Site" as the app type
+4. Connect to GitHub and select the repository
+5. Configure build settings:
+   - Build Command: `npm run build`
+   - Output Directory: `out`
+6. (Optional) Configure a custom domain
+7. Deploy the application
+
+#### CDN and Caching Benefits
+- All static assets (HTML, CSS, JS, images) are cached at the edge
+- Faster global load times for users around the world
+- Reduced server load with content served from CDN
+- Cost-effective scalability for high traffic periods
+- Configured caching headers for optimal performance
+
+#### Local Development and Testing
+```bash
+# Start development server with hot reloading
+npm run dev
+
+# Build the static site
+npm run build
+
+# Preview the static build locally
+npm run start
+```
 
 ### TypeScript Build Considerations
 When deploying to DigitalOcean App Platform, you might encounter TypeScript errors related to type compatibility between Next.js PageProps and custom component props. To address this issue, we've implemented the following workaround in the `next.config.ts` file:

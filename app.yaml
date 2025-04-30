@@ -1,0 +1,39 @@
+name: fairy-bites
+type: static
+
+static_sites:
+- name: fairy-bites
+  github:
+    # Configure these values with your own GitHub repo
+    repo: your-github-username/recipe-website
+    branch: main
+    deploy_on_push: true
+  
+  # Build configuration
+  build_command: npm run build
+  output_dir: out
+  
+  # Route configuration
+  routes:
+    - path: /
+      # Enable SPA routing by redirecting all paths to index.html
+    - path: /*
+      preserve_path_prefix: true
+      
+  # Enable CORS for API access if needed
+  cors:
+    allow_origins:
+      - regex: .*
+    allow_methods:
+      - GET
+    allow_headers:
+      - Content-Type
+      
+  # Cache settings to improve performance
+  envs:
+    - key: CACHE_CONTROL
+      value: "public, max-age=3600, s-maxage=86400"
+      scope: RUN_TIME
+      
+  # Uncomment to provide a custom 404 page
+  # catchall_document: 404.html
