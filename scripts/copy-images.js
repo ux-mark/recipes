@@ -1,14 +1,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { config } from 'dotenv';
+
+// Load environment variables from .env file
+config();
 
 // Get current file's directory (ES modules don't have __dirname)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Source and destination directories
-// If running in Digital Ocean or other deployment environment, we'll skip the external source directory
-const sourceDir = path.join(__dirname, '../../Recipes-and-photos');
+// Get source directory from environment variable or use default
+const sourceDir = process.env.RECIPE_IMAGES_SOURCE_DIR 
+  ? path.join(__dirname, process.env.RECIPE_IMAGES_SOURCE_DIR)
+  : path.join(__dirname, '../../Recipes-and-photos');
 const destDir = path.join(__dirname, '../public/images');
 
 // Create destination directory if it doesn't exist
@@ -67,6 +73,7 @@ function copyFilesRecursively(source, dest) {
 
 // Start copying files from source to destination
 try {
+  console.log(`Using source directory: ${sourceDir}`);
   // Try to copy files but don't fail if the source directory doesn't exist
   const success = copyFilesRecursively(sourceDir, destDir);
   
