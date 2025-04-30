@@ -4,12 +4,18 @@ import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
-type Params = {
+// Use a simple interface for tag page params
+interface TagParams {
   tag: string;
 }
 
-export async function generateMetadata({ params }: { params: Params }) {
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: TagParams 
+}): Promise<Metadata> {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   
@@ -33,7 +39,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function TagPage({ params }: { params: Params }) {
+// Simplify the props type to match Next.js expectations
+export default async function TagPage({ params }: { params: TagParams }) {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   

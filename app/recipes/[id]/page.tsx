@@ -5,12 +5,18 @@ import { format, parseISO } from 'date-fns';
 import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
+import type { Metadata } from 'next';
 
-type Params = {
+// Simply use a native object type with a params property
+interface RecipeParams {
   id: string;
 }
 
-export async function generateMetadata({ params }: { params: Params }) {
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: RecipeParams 
+}): Promise<Metadata> {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
@@ -33,7 +39,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function RecipePage({ params }: { params: Params }) {
+// Simplify the props type to match Next.js expectations
+export default async function RecipePage({ params }: { params: RecipeParams }) {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {

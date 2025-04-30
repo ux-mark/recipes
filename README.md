@@ -170,13 +170,6 @@ The application uses environment variables for configuration:
 - Optimize image loading for better performance
 
 ## Deployment
-
-### Vercel Deployment
-The site can be deployed on Vercel or any platform supporting Next.js applications:
-- Set up environment variables if needed
-- Build the project with `npm run build`
-- Deploy the output to your hosting provider
-
 ### DigitalOcean App Platform Deployment
 The project is configured for deployment on DigitalOcean's App Platform (free tier):
 
@@ -229,7 +222,6 @@ This workaround maintains type safety during local development while allowing su
 
 #### Future Improvements
 As part of ongoing maintenance:
-
 - Review and update type definitions for dynamic route components
 - Consider using Next.js's built-in types for page props
 - Remove the ignoreBuildErrors setting once all type issues are resolved
