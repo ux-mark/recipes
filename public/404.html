@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page Not Found - Fairy Bites</title>
   <script>
-    // This script helps with client-side routing in a static site
-    // It will redirect to the appropriate page on the static site
+    // Enhanced navigation script for Next.js App Router
     (function() {
+      // Get the current path and query
       const path = window.location.pathname;
+      const query = window.location.search;
+      const fullPath = path + query;
+      
       // Save the path for use after redirecting to the index
-      sessionStorage.setItem('redirectPath', path);
+      sessionStorage.setItem('redirectPath', fullPath);
+      
       // Redirect to the index page
       window.location.href = '/';
     })();

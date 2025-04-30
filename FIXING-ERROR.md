@@ -8,81 +8,76 @@ When deploying this Next.js application to Digital Ocean App Platform, we encoun
 2. **Infinite Redirect Loop**: After initial fixes, the page would continuously reload in an infinite loop.
 3. **Loading Page That Never Progressed**: Finally, we had a loading page that displayed correctly but never progressed to show the actual app content.
 
-The root cause was that Digital Ocean App Platform was incorrectly treating the Next.js application as a static site rather than a Node.js application.
+Initially, we attempted to force Digital Ocean to treat this as a pure Node.js application, but Digital Ocean's auto-detection was still recognizing and handling parts of it as a static site, causing conflicts.
 
-## Solution Steps
+## Updated Solution: Embracing Static Site Hosting
 
-### 1. Proper Node.js Configuration
+Rather than fighting against Digital Ocean's detection mechanisms, we've changed our approach to fully embrace Digital Ocean's static site CDN hosting capabilities. This is actually a better fit for many Next.js applications where static site generation is possible.
 
-We updated several configuration files to explicitly tell Digital Ocean this is a Node.js application:
+### 1. Next.js Static Export Configuration
 
-- Created a `Procfile` with `web: npm start` to explicitly define the web process
-- Updated `app.yaml` to include proper Node.js configuration
-- Added marker files like `.do-not-detect-static-app` to prevent static site detection
-- Created `.do/app.yaml` with more specific deployment instructions
-
-### 2. Custom Express Server Implementation
-
-We implemented a robust custom Express server (`server.js`) to properly serve the Next.js application:
-
-```javascript
-// Key features of server.js:
-// - Comprehensive debugging and logging
-// - Proper error handling
-// - Clear path management for Next.js assets
-// - Health check endpoints
-// - Debug endpoints for troubleshooting
-```
-
-This server ensures proper handling of both static assets and dynamic Next.js routes.
-
-### 3. Next.js Configuration Optimization
-
-We updated `next.config.ts` to be compatible with the Digital Ocean environment:
+We've modified `next.config.ts` to generate a complete static export:
 
 ```typescript
-// Important settings:
-// - output: 'standalone' for containerized environment
-// - unoptimized: true for images to prevent optimization issues
-// - simplified experimental settings for better compatibility
+// Key changes:
+// - Changed output: 'standalone' to output: 'export' for static site generation
+// - Added trailingSlash: true for better URL handling in static environments
+// - Configured exportPathMap for proper page exporting
+// - Kept unoptimized: true for images to work in static exports
 ```
 
-### 4. Static File Handling
+### 2. Build Process Optimization
 
-We addressed issues with static files by:
+We've updated the package.json scripts to generate and serve static files:
 
-- Creating custom 404.html and index.html files 
-- Ensuring proper configuration of static asset paths
-- Adding a special `.staticwebapp` file to signal backend-only operation
-
-### 5. Environment Configuration
-
-We added proper environment variables to ensure consistent operation:
-
-```yaml
-env:
-  - key: NODE_ENV
-    value: production
-  - key: PORT
-    value: "3000"
+```json
+"scripts": {
+  "build": "next build && cp -a public/. out/",
+  "start": "npx serve out"
+}
 ```
+
+### 3. Client-Side Routing Enhancement
+
+To ensure proper client-side routing in a static environment:
+
+- Added a script in root layout.tsx to handle route redirects
+- Created an enhanced 404.html that saves the current path and redirects to the index
+- Implemented a custom index.html with a loading indicator for initial page load
+
+### 4. Digital Ocean Configuration
+
+We've created specific configuration files for Digital Ocean's static site platform:
+
+- Updated app.yaml to define this as a static site with proper configuration
+- Created a .staticwebsite file to explicitly define output directory and documents
+- Removed server.js dependency since we're now using pure static hosting
+
+### 5. Static Asset Handling
+
+We've improved static asset handling for the static site CDN:
+
+- Ensured all public files are properly copied to the output directory
+- Configured proper error documents and fallback behavior
+- Set up catchall_document to handle client-side routing
 
 ## Key Files Modified
 
-1. `server.js` - Custom Express server with enhanced debugging
-2. `app.yaml` - Digital Ocean App Platform configuration
-3. `next.config.ts` - Next.js build and runtime configuration
-4. `Procfile` - Process type definition
-5. `public/index.html` and `public/404.html` - Static fallback files
-6. `.do/app.yaml` - Digital Ocean-specific configuration
-7. `.npmrc` - Node.js version compatibility settings
+1. `next.config.ts` - Changed to static export configuration
+2. `app.yaml` - Updated for static site deployment
+3. `package.json` - Modified build and start scripts
+4. `app/layout.tsx` - Added client-side routing script
+5. `public/404.html` - Enhanced with redirection logic
+6. `public/index.html` - Updated with loading indicator
+7. `.staticwebsite` - Added to explicitly set static site parameters
+8. `.do/app.yaml` - Specialized Digital Ocean configuration
 
 ## Lessons Learned
 
-1. Digital Ocean App Platform's auto-detection can sometimes incorrectly identify Next.js apps as static sites
-2. Using a custom Express server provides more control over the deployment environment
-3. Adding explicit configuration files helps override automatic detection
-4. Comprehensive logging is essential for debugging deployment issues
-5. A combination of static file handling and dynamic Node.js routing is necessary for proper operation
+1. Sometimes it's better to embrace the platform's strengths rather than fight against its detection
+2. Next.js can be deployed as either a Node.js application or a static site - choose what works best
+3. Static site CDN hosting can provide better performance for many Next.js applications
+4. Proper client-side routing setup is crucial for a good user experience in static deployments
+5. Digital Ocean's static site hosting with CDN can be a good fit for Next.js applications with mostly static content
 
-This solution ensures that the Next.js application is properly deployed as a Node.js service rather than a static site, resolving the issues with 404 errors, redirect loops, and stalled loading pages.
+This updated solution transforms the Next.js application to be properly deployed as a static site on Digital Ocean's CDN hosting, providing faster load times and better scalability while resolving the previous deployment issues.

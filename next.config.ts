@@ -22,16 +22,7 @@ const nextConfig: NextConfig = {
   },
   // Configure trailingSlash for better compatibility with static hosting
   trailingSlash: true,
-  // Ensure all our routes are properly included in the static export
-  exportPathMap: async function() {
-    // This is where you'd list all your static paths
-    // But for Digital Ocean's static hosting with catchall fallback,
-    // we only need to specify the core routes
-    return {
-      '/': { page: '/' },
-      '/404': { page: '/404' },
-    };
-  },
+  // Note: exportPathMap is removed because it's not compatible with the app directory
 };
 
 export default nextConfig;
