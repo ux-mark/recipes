@@ -1,51 +1,60 @@
-import { getRecipesByTag, getAllTags } from '@/lib/recipes';
+'use client';
+
+import { useState, useEffect } from 'react';
 import RecipeCard from '@/components/recipe-card';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import { useRouter } from 'next/navigation';
+import { Recipe } from '@/lib/types';
 
-// Use a simple interface for tag page params
-interface TagParams {
-  tag: string;
-}
-
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: TagParams 
-}): Promise<Metadata> {
+export default function TagPage({ params }: { params: { tag: string } }) {
+  const router = useRouter();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
   const tag = decodeURIComponent(params.tag);
-  const recipes = await getRecipesByTag(tag);
-  
-  if (recipes.length === 0) {
-    return {
-      title: 'Category Not Found | Fairy Bites',
-    };
-  }
-  
-  return {
-    title: `${tag} Recipes | Fairy Bites`,
-    description: `Browse our collection of ${recipes.length} ${tag.toLowerCase()} recipes.`,
-  };
-}
 
-export async function generateStaticParams() {
-  const tags = await getAllTags();
-  
-  return tags.map((tag) => ({
-    tag: encodeURIComponent(tag.name),
-  }));
-}
+  useEffect(() => {
+    async function fetchRecipes() {
+      try {
+        const response = await fetch('/api/recipes');
+        const allRecipes = await response.json();
+        const matchingRecipes = allRecipes.filter((recipe: Recipe) => 
+          recipe.tags.includes(tag)
+        );
+        
+        if (matchingRecipes.length === 0) {
+          // No recipes found for this tag, redirect back to recipes page
+          router.push('/recipes');
+        } else {
+          setRecipes(matchingRecipes);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch recipes by tag:', error);
+        setLoading(false);
+      }
+    }
 
-// Simplify the props type to match Next.js expectations
-export default async function TagPage({ params }: { params: TagParams }) {
-  const tag = decodeURIComponent(params.tag);
-  const recipes = await getRecipesByTag(tag);
-  
-  if (recipes.length === 0) {
-    notFound();
+    fetchRecipes();
+  }, [tag, router]);
+
+  if (loading) {
+    return (
+      <div className="container py-8">
+        <div className="mb-6">
+          <Link 
+            href="/recipes" 
+            className="text-primary-600 hover:underline inline-flex items-center"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" /> Back to recipes
+          </Link>
+        </div>
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        </div>
+      </div>
+    );
   }
   
   return (

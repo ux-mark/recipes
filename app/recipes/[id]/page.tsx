@@ -1,50 +1,67 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
-import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
-import type { Metadata } from 'next';
+import { Recipe } from '@/lib/types';
 
-// Simply use a native object type with a params property
-interface RecipeParams {
-  id: string;
-}
+export default function RecipePage({ params }: { params: { id: string } }) {
+  const router = useRouter();
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [loading, setLoading] = useState(true);
 
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: RecipeParams 
-}): Promise<Metadata> {
-  const recipe = await getRecipeById(params.id);
-  
-  if (!recipe) {
-    return {
-      title: 'Recipe Not Found | Fairy Bites',
-    };
+  useEffect(() => {
+    async function fetchRecipe() {
+      try {
+        const response = await fetch('/api/recipes');
+        const recipes = await response.json();
+        const found = recipes.find((r: Recipe) => r.id === params.id);
+        
+        if (found) {
+          setRecipe(found);
+        } else {
+          // Recipe not found, redirect to 404
+          router.push('/recipes');
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Failed to fetch recipe:', error);
+        setLoading(false);
+      }
+    }
+
+    fetchRecipe();
+  }, [params.id, router]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="container py-8 flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
   }
-  
-  return {
-    title: `${recipe.name} | Fairy Bites`,
-    description: recipe.description || `A delicious recipe for ${recipe.name}`,
-  };
-}
 
-export async function generateStaticParams() {
-  const recipes = await getAllRecipes();
-  
-  return recipes.map((recipe) => ({
-    id: recipe.id,
-  }));
-}
-
-// Simplify the props type to match Next.js expectations
-export default async function RecipePage({ params }: { params: RecipeParams }) {
-  const recipe = await getRecipeById(params.id);
-  
+  // Handle case when recipe is not found
   if (!recipe) {
-    notFound();
+    return (
+      <div className="container py-8">
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-serif font-bold mb-2">Recipe Not Found</h2>
+          <p className="mb-6">We couldn't find the recipe you're looking for.</p>
+          <Link 
+            href="/recipes" 
+            className="text-primary-600 hover:underline inline-flex items-center"
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" /> Back to all recipes
+          </Link>
+        </div>
+      </div>
+    );
   }
   
   // Format the created date
