@@ -16,6 +16,19 @@ The Fairy Bites recipe website has been optimized for deployment as a static sit
    - Added `app.yaml` configuration for DigitalOcean App Platform static sites
    - Updated package.json scripts to support the static build workflow
 
+3. **Node.js Version Requirements**
+   - Specified Node.js 18.x in package.json's "engines" field
+   - Ensures compatibility with Next.js 15.3.1 
+   - Provides long-term support for production deployments
+   - Optimizes static site generation capabilities
+   - Aligns with DigitalOcean App Platform buildpack requirements
+
+4. **Package Dependency Management**
+   - Added 'serve' package as a dev dependency for local static site previewing
+   - Updated npm scripts to use serve for the static output directory
+   - Note: package-lock.json must be kept in sync with package.json before deployment
+   - Run `npm install` before deployment to ensure dependency synchronization
+
 ## Data Handling Changes
 
 1. **Removed Server-Side Code**

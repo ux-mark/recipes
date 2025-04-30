@@ -13,20 +13,13 @@ import allRecipes from '@/lib/recipes.json';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>([]);
+  // Initialize with data right away
+  const [recipes] = useState<Recipe[]>(allRecipes);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(allRecipes);
 
-  // Load recipes when the component mounts
+  // Simple useEffect for client-side logic if needed in future
   useEffect(() => {
-    try {
-      setRecipes(allRecipes);
-      setFilteredRecipes(allRecipes);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to load recipes data:', error);
-      setLoading(false);
-    }
+    // Client-side code can run here if needed
   }, []);
 
   // Filter recipes based on search query
@@ -72,27 +65,21 @@ export default function SearchPage() {
       </header>
 
       <div>
-        {loading ? (
-          <p>Loading recipes...</p>
-        ) : (
-          <>
-            <h2 className="text-lg font-medium mb-4">
-              {filteredRecipes.length} {filteredRecipes.length === 1 ? 'recipe' : 'recipes'} found
-              {query && ` for "${query}"`}
-            </h2>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredRecipes.map(recipe => (
-                <RecipeCard key={recipe.id} recipe={recipe} />
-              ))}
-            </div>
-            
-            {filteredRecipes.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-neutral-500">No recipes found. Try a different search term.</p>
-              </div>
-            )}
-          </>
+        <h2 className="text-lg font-medium mb-4">
+          {filteredRecipes.length} {filteredRecipes.length === 1 ? 'recipe' : 'recipes'} found
+          {query && ` for "${query}"`}
+        </h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredRecipes.map(recipe => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </div>
+        
+        {filteredRecipes.length === 0 && (
+          <div className="text-center py-8">
+            <p className="text-neutral-500">No recipes found. Try a different search term.</p>
+          </div>
         )}
       </div>
     </div>

@@ -256,14 +256,35 @@ The website has been optimized to work as a fully static site by:
 
 #### Deployment Steps
 1. Push code to GitHub repository
-2. In DigitalOcean dashboard, create a new App
-3. Select "Static Site" as the app type
-4. Connect to GitHub and select the repository
-5. Configure build settings:
+2. Ensure your package-lock.json is in sync with package.json by running:
+   ```bash
+   npm install
+   ```
+   This step is crucial as deployment will fail if the files are out of sync.
+3. Commit the updated package-lock.json to your repository:
+   ```bash
+   git add package-lock.json
+   git commit -m "Update package-lock.json for deployment"
+   git push
+   ```
+4. In DigitalOcean dashboard, create a new App
+5. Select "Static Site" as the app type
+6. Connect to GitHub and select the repository
+7. Configure build settings:
    - Build Command: `npm run build`
    - Output Directory: `out`
-6. (Optional) Configure a custom domain
-7. Deploy the application
+8. (Optional) Configure a custom domain
+9. Deploy the application
+
+#### Node.js Version Compatibility
+The project is configured to use Node.js 18.x (specified in package.json's "engines" field) for the following reasons:
+
+- Compatibility with the deployed Next.js version (15.3.1)
+- Stable LTS support for production deployments
+- Optimized static site generation capabilities
+- Compatibility with DigitalOcean App Platform buildpacks
+
+This version requirement is enforced during deployment to ensure consistent behavior between development and production environments.
 
 #### CDN and Caching Benefits
 - All static assets (HTML, CSS, JS, images) are cached at the edge

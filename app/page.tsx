@@ -11,61 +11,45 @@ import { Recipe, RecipeTag } from '@/lib/types';
 // Import recipes.json directly for static site generation
 import allRecipes from '@/lib/recipes.json';
 
-export default function Home() {
-  const [featuredRecipes, setFeaturedRecipes] = useState<Recipe[]>([]);
-  const [popularTags, setPopularTags] = useState<RecipeTag[]>([]);
-  const [dinnerRecipes, setDinnerRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
+// Pre-process data outside component to avoid loading state issues
+const featured = allRecipes.slice(0, 6);
 
+// Extract unique tags
+const processedTags = (() => {
+  const tagMap = new Map();
+  allRecipes.forEach(recipe => {
+    recipe.tags.forEach(tag => {
+      if (tagMap.has(tag)) {
+        tagMap.get(tag).count += 1;
+      } else {
+        tagMap.set(tag, { name: tag, count: 1 });
+      }
+    });
+  });
+  
+  // Filter and sort tags
+  return Array.from(tagMap.values())
+    .filter(tag => !tag.name.includes('Needs'))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 6);
+})();
+
+// Pre-filter dinner recipes
+const dinner = allRecipes
+  .filter(recipe => recipe.tags.includes('Dinner'))
+  .slice(0, 3);
+
+export default function Home() {
+  // Initialize state with pre-processed data
+  const [featuredRecipes] = useState<Recipe[]>(featured);
+  const [popularTags] = useState<RecipeTag[]>(processedTags);
+  const [dinnerRecipes] = useState<Recipe[]>(dinner);
+
+  // Use useEffect to mark client-side hydration if needed for future use
   useEffect(() => {
-    // Process the already imported data instead of fetching
-    try {
-      // Get featured recipes (first 6)
-      const featured = allRecipes.slice(0, 6);
-      setFeaturedRecipes(featured);
-      
-      // Extract unique tags
-      const tagMap = new Map();
-      allRecipes.forEach(recipe => {
-        recipe.tags.forEach(tag => {
-          if (tagMap.has(tag)) {
-            tagMap.get(tag).count += 1;
-          } else {
-            tagMap.set(tag, { name: tag, count: 1 });
-          }
-        });
-      });
-      
-      // Filter and sort tags
-      const tags = Array.from(tagMap.values());
-      const filtered = tags
-        .filter(tag => !tag.name.includes('Needs'))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 6);
-      setPopularTags(filtered);
-      
-      // Get dinner recipes
-      const dinner = allRecipes
-        .filter(recipe => recipe.tags.includes('Dinner'))
-        .slice(0, 3);
-      setDinnerRecipes(dinner);
-      
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to process recipe data:', error);
-      setLoading(false);
-    }
+    // Client-side code can run here if needed
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
-
-  // Rest of the component remains the same
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
