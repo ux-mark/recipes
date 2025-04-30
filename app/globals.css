@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  /* Zinc color palette */
+  --color-zinc-50: #fafafa;
+  --color-zinc-100: #f4f4f5;
+  --color-zinc-200: #e4e4e7;
+  --color-zinc-300: #d4d4d8;
+  --color-zinc-400: #a1a1aa;
+  --color-zinc-500: #71717a;
+  --color-zinc-600: #52525b;
+  --color-zinc-700: #3f3f46;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+  
+  /* Secondary color palette (copied from your tailwind.config.js) */
+  --color-secondary-50: #f0f9ff;
+  --color-secondary-100: #e0f2fe;
+  --color-secondary-200: #b9e6fe;
+  --color-secondary-300: #7cd2fd;
+  --color-secondary-400: #36befa;
+  --color-secondary-500: #0ca6eb;
+  --color-secondary-600: #0284c9;
+  --color-secondary-700: #0369a3;
+  --color-secondary-800: #075886;
+  --color-secondary-900: #0c4a6e;
+  --color-secondary-950: #082f49;
+  
+  /* Primary color palette (added based on your config) */
+  --color-primary-50: #fef2f2;
+  --color-primary-100: #fee2e2;
+  --color-primary-200: #fecaca;
+  --color-primary-300: #fca5a5;
+  --color-primary-400: #f87171;
+  --color-primary-500: #ef4444;
+  --color-primary-600: #dc2626;
+  --color-primary-700: #b91c1c;
+  --color-primary-800: #991b1b;
+  --color-primary-900: #7f1d1d;
+  --color-primary-950: #450a0a;
+  
+  /* UI theme colors - Light Mode */
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.145 0 0);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.145 0 0);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.145 0 0);
+  --color-primary: oklch(0.205 0 0);
+  --color-primary-foreground: oklch(0.985 0 0);
+  --color-secondary: oklch(0.97 0 0);
+  --color-secondary-foreground: oklch(0.205 0 0);
+  --color-muted: oklch(0.97 0 0);
+  --color-muted-foreground: oklch(0.556 0 0);
+  --color-accent: oklch(0.97 0 0);
+  --color-accent-foreground: oklch(0.205 0 0);
+  --color-destructive: oklch(0.577 0.245 27.325);
+  --color-border: oklch(0.922 0 0);
+  --color-input: oklch(0.922 0 0);
+  --color-ring: oklch(0.708 0 0);
+  
+  /* UI theme colors - Dark Mode */
+  --dark-color-background: oklch(0.145 0 0);
+  --dark-color-foreground: oklch(0.985 0 0);
+  --dark-color-card: oklch(0.205 0 0);
+  --dark-color-card-foreground: oklch(0.985 0 0);
+  --dark-color-popover: oklch(0.205 0 0);
+  --dark-color-popover-foreground: oklch(0.985 0 0);
+  --dark-color-primary: oklch(0.922 0 0);
+  --dark-color-primary-foreground: oklch(0.205 0 0);
+  --dark-color-secondary: oklch(0.269 0 0);
+  --dark-color-secondary-foreground: oklch(0.985 0 0);
+  --dark-color-muted: oklch(0.269 0 0);
+  --dark-color-muted-foreground: oklch(0.708 0 0);
+  --dark-color-accent: oklch(0.269 0 0);
+  --dark-color-accent-foreground: oklch(0.985 0 0);
+  --dark-color-destructive: oklch(0.704 0.191 22.216);
+  --dark-color-border: oklch(1 0 0 / 10%);
+  --dark-color-input: oklch(1 0 0 / 15%);
+  --dark-color-ring: oklch(0.556 0 0);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.625rem;
+  }
+
+  .dark {
+    --background: var(--dark-color-background);
+    --foreground: var(--dark-color-foreground);
+    --card: var(--dark-color-card);
+    --card-foreground: var(--dark-color-card-foreground);
+    --popover: var(--dark-color-popover);
+    --popover-foreground: var(--dark-color-popover-foreground);
+    --primary: var(--dark-color-primary);
+    --primary-foreground: var(--dark-color-primary-foreground);
+    --secondary: var(--dark-color-secondary);
+    --secondary-foreground: var(--dark-color-secondary-foreground);
+    --muted: var(--dark-color-muted);
+    --muted-foreground: var(--dark-color-muted-foreground);
+    --accent: var(--dark-color-accent);
+    --accent-foreground: var(--dark-color-accent-foreground);
+    --destructive: var(--dark-color-destructive);
+    --border: var(--dark-color-border);
+    --input: var(--dark-color-input);
+    --ring: var(--dark-color-ring);
+  }
+
+  * {
+    @apply border-0 outline-none;
+  }
+
+  /* Ensure paragraphs and divs don't have borders */
+  p, div {
+    @apply border-0;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
