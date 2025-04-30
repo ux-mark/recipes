@@ -3,7 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
-import { getAllTags } from "@/lib/recipes";
+// Removed the unused import: getAllTags
 
 const inter = Inter({
   subsets: ["latin"],

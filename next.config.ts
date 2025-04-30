@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     scrollRestoration: true,
-    serverActions: false, // Explicitly disable server actions
+    // serverActions option removed as it's causing an error
   },
   generateBuildId: async () => {
     // Use a timestamp-based build ID for better debugging
@@ -23,7 +23,6 @@ const nextConfig: NextConfig = {
   },
   // Configure trailingSlash for better compatibility with static hosting
   trailingSlash: true,
-  // Note: exportPathMap is removed because it's not compatible with the app directory
 };
 
 export default nextConfig;
