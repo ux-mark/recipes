@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "deploy-build": "node scripts/deploy-build.js",
     "start": "npx serve out",
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js",

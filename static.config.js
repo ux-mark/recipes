@@ -10,15 +10,16 @@ module.exports = {
   // Root directory to serve (relative to the repo root)
   rootDirectory: 'out',
   
-  // Build command for Digital Ocean App Platform
-  buildCommand: 'npm run build',
+  // Build command for Digital Ocean App Platform - using our custom script
+  buildCommand: 'npm run deploy-build',
   
-  // Routes configuration
+  // Routes configuration - simpler and more direct
   routes: [
-    // Handle client-side routing for Next.js app
+    // Direct file lookups
     { handle: 'filesystem' },
-    // Fallback to index.html for client-side routing
-    { src: '/(.*)', dest: '/index.html' }
+    
+    // SPA fallback - critical for client-side routing
+    { src: '.*', dest: '/index.html' }
   ],
   
   // HTTP response headers
@@ -34,14 +35,6 @@ module.exports = {
         {
           key: 'X-Content-Type-Options',
           value: 'nosniff'
-        },
-        {
-          key: 'X-Frame-Options',
-          value: 'DENY'
-        },
-        {
-          key: 'X-XSS-Protection',
-          value: '1; mode=block'
         }
       ]
     },
