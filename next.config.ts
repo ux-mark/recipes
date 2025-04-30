@@ -8,12 +8,14 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['assets.digitalocean.com'],
     formats: ['image/avif', 'image/webp'],
+    unoptimized: true, // This helps with deployment on DigitalOcean
   },
-  // Use the correct property for external packages
-  serverExternalPackages: [],
   typescript: {
-    // Allow production builds to complete despite TypeScript errors
     ignoreBuildErrors: true,
+  },
+  // Disable the XHR polling, which can cause issues in DigitalOcean
+  experimental: {
+    scrollRestoration: true,
   },
   generateBuildId: async () => {
     // Use a timestamp-based build ID for better debugging

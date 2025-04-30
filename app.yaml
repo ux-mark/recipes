@@ -6,7 +6,7 @@ services:
     branch: main
     deploy_on_push: true
   build_command: npm run build
-  run_command: npm start
+  run_command: node server.js
   http_port: 3000
   instance_size_slug: basic-xxs
   instance_count: 1
@@ -18,3 +18,4 @@ services:
   - key: PORT
     value: "3000"
   source_dir: /
+  dockerfile_path:
