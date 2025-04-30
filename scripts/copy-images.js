@@ -1,20 +1,62 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
-// Get current file's directory (ES modules don't have __dirname)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Load environment variables from .env file
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-// Source and destination directories
-// If running in Digital Ocean or other deployment environment, we'll skip the external source directory
-const sourceDir = path.join(__dirname, '../../Recipes-and-photos');
-const destDir = path.join(__dirname, '../public/images');
+/**
+ * Copy recipe images from source to destination directory
+ * @param {Object} options - Options for copying images
+ * @param {string} options.sourceDir - Source directory (overrides env variable if provided)
+ * @param {string} options.destDir - Destination directory (defaults to public/images)
+ * @returns {Object} - Result of the operation
+ */
+export async function copyImages(options = {}) {
+  try {
+    // Get current file's directory (ES modules don't have __dirname)
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
 
-// Create destination directory if it doesn't exist
-if (!fs.existsSync(destDir)) {
-  fs.mkdirSync(destDir, { recursive: true });
-  console.log(`Created directory: ${destDir}`);
+    // Source and destination directories
+    // Read source directory from .env file with fallback
+    const defaultSourceDir = process.env.RECIPE_IMAGES_SOURCE_DIR || '../../Recipes-and-photos';
+    const sourceDir = options.sourceDir || path.resolve(__dirname, defaultSourceDir);
+    const destDir = options.destDir || path.join(__dirname, '../public/images');
+
+    // Create destination directory if it doesn't exist
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+      console.log(`Created directory: ${destDir}`);
+    }
+
+    // Start copying files from source to destination
+    const success = copyFilesRecursively(sourceDir, destDir);
+    
+    if (success) {
+      console.log('Image copy completed successfully.');
+      return { success: true, message: 'Images copied successfully' };
+    } else {
+      console.log('Skipping image copy. Source directory not found.');
+      
+      // Ensure the images directory exists even if we don't copy anything
+      ensureDirectoryExists(destDir);
+      return { 
+        success: false, 
+        message: 'Source directory not found',
+        sourceDir,
+        destDir
+      };
+    }
+  } catch (error) {
+    console.error('Error in copy-images script:', error);
+    return { 
+      success: false, 
+      message: 'Error copying images', 
+      error: error.message 
+    };
+  }
 }
 
 // Helper function to copy a file
@@ -65,21 +107,17 @@ function copyFilesRecursively(source, dest) {
   return true;
 }
 
-// Start copying files from source to destination
-try {
-  // Try to copy files but don't fail if the source directory doesn't exist
-  const success = copyFilesRecursively(sourceDir, destDir);
-  
-  if (success) {
-    console.log('Image copy completed successfully.');
-  } else {
-    console.log('Skipping image copy in deployment environment.');
-    
-    // Ensure the images directory exists even if we don't copy anything
-    ensureDirectoryExists(destDir);
-  }
-} catch (error) {
-  console.error('Error in copy-images script:', error);
-  // Continue with the build process even if the image copy fails
-  process.exit(0); // Exit with success code to continue the build
+// Run the script if it's called directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  copyImages()
+    .then(result => {
+      if (!result.success) {
+        // Exit with success code to continue the build even if image copy fails
+        process.exit(0);
+      }
+    })
+    .catch(error => {
+      console.error('Unhandled error:', error);
+      process.exit(0); // Continue the build process even if the image copy fails
+    });
 }
