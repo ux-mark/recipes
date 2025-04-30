@@ -17,5 +17,6 @@ services:
     value: production
   - key: PORT
     value: "3000"
+  - key: IS_DO_APP
+    value: "true"
   source_dir: /
-  dockerfile_path:
