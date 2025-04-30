@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: 'standalone', // Optimizes the output for containerized environments
+  poweredByHeader: false, // Removes X-Powered-By header for security
+  reactStrictMode: true,
+  swcMinify: true,
+  images: {
+    domains: ['assets.digitalocean.com'], // Add any external image domains
+    formats: ['image/avif', 'image/webp'],
+  },
 };
 
 export default nextConfig;
