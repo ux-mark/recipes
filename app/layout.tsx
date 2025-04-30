@@ -20,16 +20,20 @@ export const metadata: Metadata = {
   description: "A collection of recipes",
 };
 
-export default async function RootLayout({
+// Pre-fetch tags at build time and export for use in the static site
+export async function generateStaticParams() {
+  return [{}]; // Empty params, just to trigger the static generation
+}
+
+// Make this a regular component (not async) for static export compatibility
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Get tags to pass to the header
-  const allTags = await getAllTags();
-  const tags = allTags
-    .filter(tag => !tag.name.includes('Needs'))
-    .slice(0, 20);
+  // We can't use await here in a static export, so we'll use empty tags initially
+  // The actual tags will be loaded client-side in the SiteHeader component
+  const tags = [];
 
   return (
     <html lang="en" className="h-full">

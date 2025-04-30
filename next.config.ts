@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     scrollRestoration: true,
+    serverActions: false, // Explicitly disable server actions
   },
   generateBuildId: async () => {
     // Use a timestamp-based build ID for better debugging
