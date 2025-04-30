@@ -9,6 +9,7 @@ interface TagPageProps {
   params: {
     tag: string;
   };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 export async function generateMetadata({ params }: TagPageProps) {
