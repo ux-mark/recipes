@@ -8,8 +8,11 @@ services:
   build_command: npm run build
   run_command: npm start
   http_port: 3000
+  instance_size_slug: basic-xxs
+  instance_count: 1
   routes:
   - path: /
   env:
   - key: NODE_ENV
     value: production
+  source_dir: /
