@@ -5,14 +5,11 @@ import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-interface TagPageProps {
-  params: {
-    tag: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
+type Params = {
+  tag: string;
 }
 
-export async function generateMetadata({ params }: TagPageProps) {
+export async function generateMetadata({ params }: { params: Params }) {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   
@@ -36,7 +33,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function TagPage({ params }: TagPageProps) {
+export default async function TagPage({ params }: { params: Params }) {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   

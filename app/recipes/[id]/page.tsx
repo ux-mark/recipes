@@ -6,14 +6,11 @@ import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
 
-interface RecipePageProps {
-  params: {
-    id: string;
-  };
-  searchParams?: { [key: string]: string | string[] | undefined };
+type Params = {
+  id: string;
 }
 
-export async function generateMetadata({ params }: RecipePageProps) {
+export async function generateMetadata({ params }: { params: Params }) {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
@@ -36,7 +33,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function RecipePage({ params }: RecipePageProps) {
+export default async function RecipePage({ params }: { params: Params }) {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
