@@ -1,20 +1,25 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone', // Optimizes the output for containerized environments
-  poweredByHeader: false, // Removes X-Powered-By header for security
+  output: 'standalone', // Optimizes for containerized environments
+  poweredByHeader: false,
   reactStrictMode: true,
+  distDir: '.next', // Explicitly set the build output directory
   images: {
-    domains: ['assets.digitalocean.com'], // Add any external image domains
+    domains: ['assets.digitalocean.com'],
     formats: ['image/avif', 'image/webp'],
   },
-  // Re-enable the TypeScript workaround while we continue investigating type solutions
-  // Despite updating type definitions in dynamic route components, we still encounter
-  // compatibility issues with Next.js 15.3.1's internal PageProps expectations
+  // Let Digital Ocean know this is a server app, not a static site
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
   typescript: {
-    // This allows production builds to complete successfully
-    // even with TypeScript errors
+    // Allow production builds to complete despite TypeScript errors
     ignoreBuildErrors: true,
+  },
+  generateBuildId: async () => {
+    // Use a timestamp-based build ID for better debugging
+    return `build-${Date.now()}`;
   },
 };
 
