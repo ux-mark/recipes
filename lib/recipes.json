@@ -2,7 +2,7 @@
   {
     "id": "apple-tart",
     "name": "Apple tart",
-    "description": "",
+    "description": "The best homemade tart that brings back childhood memories every time!",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -24,7 +24,7 @@
   {
     "id": "arepa-burgers",
     "name": "Arepa burgers",
-    "description": "",
+    "description": "Delicious and simple, great alternative burger!",
     "ingredients": [
       "[Arepa burgers](arepa-burgers)",
       "Burger patties",
@@ -64,7 +64,7 @@
   {
     "id": "arepas",
     "name": "Arepas",
-    "description": "",
+    "description": "So versatile and delicious! Great for breakfast, lunch or dinner.",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -88,7 +88,7 @@
   {
     "id": "bagels",
     "name": "Bagels",
-    "description": "",
+    "description": "A delicious and chewy bagel that is perfect for breakfast or a snack. Enjoy with your favourite toppings!",
     "aside": "💡 A strong mixer like a KitchenAid Pro (not available outside of the US) as a weaker one may break with the kneading. If you are uncertain do this by hand.",
     "ingredients": [
       "### Main",
@@ -159,7 +159,7 @@
   {
     "id": "banana-chocolate-cake",
     "name": "Banana & chocolate cake",
-    "description": "",
+    "description": "A staple, because it is the best banana and chocolate cake ever! It is so moist and delicious.",
     "ingredients": [
       " 115 g dark chocolate (min 70% cocoa)",
       "165 g (3/4 cup) coconut oil",
@@ -169,12 +169,13 @@
       "190 g (1 1/2 cups)  flour",
       "4.5 tsp baking powder / 1.5 tsp baking soda",
       "1.5 tbsp cocoa powder (dutch process only)",
-      "3 very ripe (i.e. black) bananas"
+      "3 very ripe (i.e. black) bananas",
+      "1 tsp vanilla extract"  
     ],
     "instructions": [
       "Put the chocolate in a bain-marie on the stove to melt the chocolate",
-      "Preheat the oven to 180°C / 350 F",
-      "Mix the coconut oil, sugar and slowly beat in the eggs",
+      "Preheat the oven to 180°C / 350°F",
+      "Mix the coconut oil, flavourings, sugar and slowly beat in the eggs",
       "Add flour, baking flour, and cocoa slowly",
       "Pour into prepared cake tin or bread tin ",
       "Bake in the oven for ~ 30 - 45 minutes until a skewer comes out clean.",
@@ -202,7 +203,7 @@
   {
     "id": "bauernbrot",
     "name": "Bauernbrot",
-    "description": "",
+    "description": "True to the german form, this is a hearty bread that is great for sandwiches or just with butter and sausage.",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -226,7 +227,7 @@
   {
     "id": "bechamel-sauce",
     "name": "Bechamel sauce",
-    "description": "",
+    "description": "A simple staple, every cook should master.",
     "ingredients": [
       "50g / 4 tblsp butter",
       "125g / 1/2 cup flour",
@@ -316,7 +317,7 @@
   {
     "id": "brine",
     "name": "Brine",
-    "description": "",
+    "description": "The key to making succulent meat.",
     "ingredients": [
       "1/4 cup salt",
       "4 litres water",
@@ -343,7 +344,7 @@
   {
     "id": "buffalo-hot-sauce",
     "name": "Buffalo Hot Sauce",
-    "description": "",
+    "description": "The best way to enjoy chicken wings! This is a simple recipe that is easy to make and delicious.",
     "ingredients": [
       "Vinegar",
       "Aged cayenne red peppers",
@@ -375,7 +376,7 @@
   {
     "id": "carrot-and-courgette-cake",
     "name": "Carrot and Courgette cake",
-    "description": "",
+    "description": "One of the best, healthy and easiest cakes to make. It is so moist and delicious.",
     "ingredients": [
       "275 g Wholemeal flour",
       "1 tsp baking soda",
@@ -406,7 +407,7 @@
   {
     "id": "chestnut-burger-patty",
     "name": "Chestnut Burger Patty",
-    "description": "",
+    "description": "A great alternative to meat, for that vego moment.",
     "ingredients": [
       "500g chestnuts, cooked and peeled",
       "250g brown mushrooms, chopped",
