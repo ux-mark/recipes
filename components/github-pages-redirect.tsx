@@ -13,7 +13,7 @@ export default function GitHubPagesRedirect() {
     
     if (redirectPath) {
       // Clear the redirect path to prevent infinite redirects
-      // @ts-expect-error
+      // @ts-expect-error - Setting property on window object that TypeScript doesn't know about
       window.__NEXT_REDIRECT_PATH = null;
       
       // Navigate to the correct path
