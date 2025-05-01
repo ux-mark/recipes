@@ -5,6 +5,15 @@ on:
     branches:
       - working # Changed to match the branch in the failing workflow
   workflow_dispatch:
+    inputs:
+      domain_type:
+        description: 'Deployment Type'
+        required: true
+        default: 'github-pages'
+        type: choice
+        options:
+          - github-pages
+          - custom-domain
 
 permissions:
   contents: read
@@ -28,11 +37,20 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-      - name: Build and fix paths for GitHub Pages
+      - name: Build for GitHub Pages (default)
+        if: ${{ github.event_name == 'push' || github.event.inputs.domain_type == 'github-pages' }}
         run: npm run deploy-gh-pages
         env:
           NODE_ENV: "production"
           NODE_OPTIONS: "--experimental-json-modules"
+          USE_CUSTOM_DOMAIN: "false"
+      - name: Build for Custom Domain
+        if: ${{ github.event.inputs.domain_type == 'custom-domain' }}
+        run: npm run deploy-custom-domain
+        env:
+          NODE_ENV: "production"
+          NODE_OPTIONS: "--experimental-json-modules"
+          USE_CUSTOM_DOMAIN: "true"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

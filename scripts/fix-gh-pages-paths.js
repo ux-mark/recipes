@@ -10,12 +10,13 @@ const outputDir = path.resolve(__dirname, '../out');
 // Parse command line arguments
 const args = process.argv.slice(2);
 const isDebugMode = args.includes('--debug');
+const isCustomDomain = args.includes('--custom-domain');
 
 // GitHub repo name - change this to match your repository name
 const repoName = 'recipes';
-const basePath = `/${repoName}`;
+const basePath = isCustomDomain ? '' : `/${repoName}`;
 
-console.log(`Running GitHub Pages path fixer${isDebugMode ? ' (DEBUG MODE)' : ''}`);
+console.log(`Running GitHub Pages path fixer${isDebugMode ? ' (DEBUG MODE)' : ''}${isCustomDomain ? ' (CUSTOM DOMAIN MODE)' : ''}`);
 console.log(`Base path: "${basePath}"`);
 
 // Stats tracking
@@ -272,7 +273,37 @@ function createNojekyllFile() {
 // Create 404.html that redirects to index.html with path info
 function create404Page() {
   const filePath = path.join(outputDir, '404.html');
-  const content = `
+  
+  // Custom 404 page content depending on domain type
+  let content;
+  
+  if (isCustomDomain) {
+    // Simpler version for custom domains - redirect to the root
+    content = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Capture the path and redirect to the homepage with it as a parameter
+    var pathSegments = window.location.pathname.split('/');
+    
+    // Store the path for the homepage to handle
+    sessionStorage.setItem('redirectPath', window.location.pathname);
+    
+    // Redirect to homepage
+    window.location.replace('/');
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
+    `.trim();
+  } else {
+    // GitHub Pages version - needs repo name handling
+    content = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -299,7 +330,8 @@ function create404Page() {
   <p>Redirecting...</p>
 </body>
 </html>
-  `.trim();
+    `.trim();
+  }
   
   fs.writeFileSync(filePath, content);
   console.log('Created 404.html redirect page');
