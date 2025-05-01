@@ -26,7 +26,7 @@ export default function NotFound() {
     <div className="container flex flex-col items-center justify-center py-20 text-center">
       <h1 className="font-serif text-4xl md:text-5xl font-bold mb-6">Page Not Found</h1>
       <p className="text-lg text-neutral-600 mb-8 max-w-lg">
-        Sorry, we couldn't find the page you were looking for. It might have been moved or deleted.
+        Sorry, we couldn&apos;t find the page you were looking for. It might have been moved or deleted.
       </p>
       <div className="flex flex-col sm:flex-row gap-4">
         <Button asChild size="lg">

@@ -8,12 +8,12 @@ export default function GitHubPagesRedirect() {
   const router = useRouter();
   
   useEffect(() => {
-    // @ts-ignore - This is set by our script in layout.tsx
+    // @ts-expect-error - This is set by our script in layout.tsx
     const redirectPath = window.__NEXT_REDIRECT_PATH;
     
     if (redirectPath) {
       // Clear the redirect path to prevent infinite redirects
-      // @ts-ignore
+      // @ts-expect-error
       window.__NEXT_REDIRECT_PATH = null;
       
       // Navigate to the correct path
