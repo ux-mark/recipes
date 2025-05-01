@@ -1,6 +1,7 @@
-import type { NextConfig } from "next";
+// next.config.mjs - ES module version
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: 'export',
   // Set basePath if your GitHub Pages site will be served from a subdirectory
   // basePath: '/recipe-website', // Uncomment and replace with your repo name if needed
