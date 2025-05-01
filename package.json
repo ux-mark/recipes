@@ -13,7 +13,9 @@
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js",
     "export": "next export",
+    "postbuild": "node scripts/fix-gh-pages-paths.js",
     "deploy": "npm run build && touch out/.nojekyll",
+    "deploy-gh-pages": "npm run build && npm run postbuild && touch out/.nojekyll",
     "serve-static": "npx serve out"
   },
   "dependencies": {
