@@ -144,11 +144,24 @@ function ensureCorrectPath(path) {
     return path.replace(new RegExp(`^/${repoName}/`, 'g'), '/');
   } else {
     // Add the repository name for GitHub Pages
-    if (!path.startsWith(`/${repoName}/`) && path.startsWith('/') && !path.startsWith('//')) {
+    if (path.startsWith('/')) {
+      // Don't double up on slashes or add prefix to protocol-relative URLs
+      if (path.startsWith('//')) {
+        return path;
+      }
+      
+      // Don't add the prefix if it already exists
+      if (path.startsWith(`/${repoName}/`)) {
+        return path;
+      }
+      
+      // Add the prefix
       return `/${repoName}${path}`;
     }
+    
+    // If path doesn't start with slash, still add proper prefix
+    return `/${repoName}/${path}`;
   }
-  return path;
 }
 
 // Function to fix paths in HTML files
@@ -184,6 +197,11 @@ async function fixHTMLPaths(filePath) {
       content = content.replace(new RegExp(`/${repoName}/`, 'g'), '/');
     }
     
+    // Fix Next.js asset paths specifically - critical for proper loading of CSS and JS
+    content = content.replace(/(href|src)=["'](\/_next\/[^"']+)["']/g, (match, attr, path) => {
+      return `${attr}="${ensureCorrectPath(path)}"`;
+    });
+    
     // Fix unprocessed Markdown image syntax that appears directly in HTML
     content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, altText, imgPath) => {
       // Get the current path context
@@ -203,23 +221,20 @@ async function fixHTMLPaths(filePath) {
       return `<img src="${correctImagePath}" alt="${altText}">`;
     });
     
-    // Fix paths in various elements
-    content = content.replace(/(href|src)="\/_next\//g, (match, attr) => {
-      return `${attr}="${ensureCorrectPath('/_next/')}`;
-    });
-    
-    // Fix paths that start with / but exclude those that already have the correct base path
-    content = content.replace(/(['"]\s*)(\/[^'"]*?)(['"])/g, (match, prefix, path, suffix) => {
-      if (!path.startsWith(`/${repoName}/`) && !path.startsWith('//')) {
+    // Fix paths in link and script tags with absolute paths
+    content = content.replace(/(<link[^>]*href=["']|<script[^>]*src=["']|<img[^>]*src=["']|<a[^>]*href=["'])(\/[^"'>]+)(["'][^>]*>)/g, 
+      (match, prefix, path, suffix) => {
+        // Don't modify paths that already have the repo name or are protocol-relative
+        if (path.startsWith(`/${repoName}/`) || path.startsWith('//')) {
+          return match;
+        }
         return `${prefix}${ensureCorrectPath(path)}${suffix}`;
-      }
-      return match;
     });
     
-    // Fix paths in JSON JavaScript code for Next.js
-    content = content.replace(/"(\/[^"]+)"/g, (match, path) => {
+    // Fix paths in JSON props serialized in script tags
+    content = content.replace(/"props":{([^}]*)"(\/[^"]+)"([^}]*)}/g, (match, before, path, after) => {
       if (!path.startsWith(`/${repoName}/`) && !path.startsWith('//')) {
-        return `"${ensureCorrectPath(path)}"`;
+        return `"props":{${before}"${ensureCorrectPath(path)}"${after}}`;
       }
       return match;
     });
@@ -275,15 +290,30 @@ async function fixJSPaths(filePath) {
       content = content.replace(new RegExp(`/${repoName}/`, 'g'), '/');
     }
     
+    // Fix Next.js runtime paths in JavaScript
+    content = content.replace(/path:"(\/_next\/[^"]+)"/g, (match, nextPath) => {
+      return `path:"${ensureCorrectPath(nextPath)}"`;
+    });
+    
+    // Fix Next.js asset paths in JavaScript
+    content = content.replace(/"(\/_next\/static\/[^"]+)"/g, (match, path) => {
+      return `"${ensureCorrectPath(path)}"`;
+    });
+    
     // Fix simple path patterns in JS
     content = content.replace(/"\/images\/(.*?)"/g, (match, path) => {
       return `"${ensureCorrectPath('/images/' + path)}"`;
     });
     
-    content = content.replace(/"\/(_next\/.*?)"/g, (match, path) => {
-      return `"${ensureCorrectPath('/' + path)}"`;
+    // Fix paths in string literals with template strings or string concatenation
+    content = content.replace(/(['"`])(\/[^'"`\s]+)(['"`])/g, (match, openQuote, path, closeQuote) => {
+      if (!path.startsWith(`/${repoName}/`) && !path.startsWith('//')) {
+        return `${openQuote}${ensureCorrectPath(path)}${closeQuote}`;
+      }
+      return match;
     });
     
+    // Fix paths in url() functions in JS
     content = content.replace(/url\(\s*['"]?\s*\/(.*?)['"]?\s*\)/g, (match, path) => {
       if (!path.startsWith(`${repoName}/`) && !path.startsWith('//')) {
         return `url(${ensureCorrectPath('/' + path)})`;
@@ -334,11 +364,23 @@ async function fixCSSPaths(filePath) {
       content = content.replace(new RegExp(`/${repoName}/`, 'g'), '/');
     }
     
-    // Fix all url() references in CSS
-    content = content.replace(/url\(\s*(['"]?)\s*\/(.*?)(['"]?)\s*\)/g, (match, q1, path, q2) => {
-      if (!path.startsWith(`${repoName}/`) && !path.startsWith('//')) {
-        return `url(${q1}${ensureCorrectPath('/' + path)}${q2})`;
+    // Fix all url() references in CSS, handling various formats
+    content = content.replace(/url\(\s*(['"]?)\s*([^)'"]+)(['"]?)\s*\)/g, (match, q1, path, q2) => {
+      // Skip data URLs and absolute URLs
+      if (path.startsWith('data:') || path.startsWith('http') || path.startsWith('//')) {
+        return match;
       }
+      
+      // Handle paths that start with / (absolute paths)
+      if (path.startsWith('/')) {
+        if (!path.startsWith(`/${repoName}/`)) {
+          return `url(${q1}${ensureCorrectPath(path)}${q2})`;
+        }
+        return match;
+      }
+      
+      // Handle relative paths - we need to maintain their relativity
+      // but ensure they're not incorrectly prefixed
       return match;
     });
     

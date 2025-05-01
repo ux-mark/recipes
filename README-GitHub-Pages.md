@@ -78,9 +78,9 @@ jobs:
         uses: actions/deploy-pages@v4
 ```
 
-## 3. Enhanced Post-Build Path Fixing Script
+## 3. Enhanced Post-Build Path Fixing Script with Dual Mode Support
 
-The project includes a critical post-build script (`scripts/fix-gh-pages-paths.js`) that automatically fixes all asset paths in the generated HTML files and prevents path doubling issues:
+The project includes a critical post-build script (`scripts/fix-gh-pages-paths.js`) that automatically fixes all asset paths in the generated files. The script now supports both local development and GitHub Pages deployment:
 
 ```javascript
 // scripts/fix-gh-pages-paths.js
@@ -92,155 +92,60 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.resolve(__dirname, '../out');
 
+// Parse command line arguments
+const args = process.argv.slice(2);
+const isLocalMode = args.includes('--local');
+
 // GitHub repo name - change this to match your repository name
 const repoName = 'recipe-website';
+// The base path to use in URLs - empty for local mode, repo name for GitHub Pages
+const basePath = isLocalMode ? '' : `/${repoName}`;
 
-// Function to recursively process HTML files
-function processHtmlFiles(directory) {
-  const items = fs.readdirSync(directory);
-  
-  for (const item of items) {
-    const itemPath = path.join(directory, item);
-    const stats = fs.statSync(itemPath);
-    
-    if (stats.isDirectory()) {
-      processHtmlFiles(itemPath); // Recursively process subdirectories
-    } else if (itemPath.endsWith('.html')) {
-      fixPaths(itemPath);
-    } else if (itemPath.endsWith('.js')) {
-      // Also fix JS files that might contain references to assets
-      fixJSPaths(itemPath);
-    } else if (itemPath.endsWith('.css')) {
-      // Fix paths in CSS files
-      fixCSSPaths(itemPath);
+console.log(`Running in ${isLocalMode ? 'LOCAL' : 'GITHUB PAGES'} mode`);
+console.log(`Base path: "${basePath}"`);
+
+// Configuration
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // Skip files larger than 10MB
+const BINARY_FILE_EXTENSIONS = ['.woff', '.woff2', '.ttf', '.eot', '.jpg', '.jpeg', '.png', '.gif', '.ico', '.webp'];
+const TIMEOUT = 30000; // 30 seconds timeout for file operations
+
+// Stats
+const stats = {
+  processed: 0,
+  errors: 0,
+  skipped: 0,
+  html: 0,
+  js: 0,
+  css: 0
+};
+
+// Function to recursively process files
+function processFiles(directory) {
+  // ...implementation details
+}
+
+// Helper to ensure a path has the correct base path
+function ensureCorrectPath(path) {
+  // If we're in local mode, don't add the base path
+  if (isLocalMode) {
+    // Remove any repository prefixes that might exist
+    return path.replace(new RegExp(`^/${repoName}/`, 'g'), '/');
+  } else {
+    // Add the repository name for GitHub Pages
+    if (!path.startsWith(`/${repoName}/`) && path.startsWith('/') && !path.startsWith('//')) {
+      return `/${repoName}${path}`;
     }
   }
+  return path;
 }
 
-// Function to fix paths in HTML files
-function fixPaths(filePath) {
-  console.log(`Processing HTML file: ${filePath}`);
-  let content = fs.readFileSync(filePath, 'utf8');
-  
-  // First, fix any doubled repository paths that might have been introduced
-  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
-  
-  // Then apply the normal fixes for paths
-  content = content.replace(/(href|src)="\/_next\//g, `$1="/${repoName}/_next/`);
-  
-  // Be careful not to re-apply the repoName to paths that already have it
-  content = content.replace(new RegExp(`(href|src)="(?!/${repoName}/)/`, 'g'), `$1="/${repoName}/`);
-  
-  // Fix paths in JSON JavaScript code (for Next.js data)
-  content = content.replace(/"(\/\_next\/[^"]+)"/g, (match, path) => {
-    if (path.indexOf(`/${repoName}/`) === -1) {
-      return `"/${repoName}${path}"`;
-    }
-    return match;
-  });
-  
-  content = content.replace(/"(\/images\/[^"]+)"/g, (match, path) => {
-    if (path.indexOf(`/${repoName}/`) === -1) {
-      return `"/${repoName}${path}"`;
-    }
-    return match;
-  });
-  
-  // Fix paths in style tags
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `url(/${repoName}/${folder}${rest})`;
-    }
-    return match;
-  });
-  
-  // Ensure internal links to root are fixed
-  content = content.replace(/href="\/${repoName}\/"/g, `href="/${repoName}/"`);
-  
-  // Fix paths in JSON props that might contain URLs (React 19 / Next.js 15 specific)
-  content = content.replace(/"props":({[^}]*"src":"\/[^"]*"[^}]*})/g, (match, propsGroup) => {
-    if (propsGroup.indexOf(`/${repoName}/`) === -1) {
-      return match.replace(/"src":"\/([^"]+)"/g, `"src":"/${repoName}/$1"`);
-    }
-    return match;
-  });
-  
-  // Fix image JSON data structures and component props
-  content = content.replace(/"images":\s*\[\s*"([^"]+)"\s*\]/g, (match, imagePath) => {
-    if (imagePath.startsWith('/') && !imagePath.startsWith(`/${repoName}/`)) {
-      return match.replace(`"${imagePath}"`, `"/${repoName}${imagePath}"`);
-    }
-    return match;
-  });
-  
-  // Write the fixed content back
-  fs.writeFileSync(filePath, content);
-}
+// Additional functions for processing different file types
+// ...implementation details
 
-// Function to fix paths in JS files
-function fixJSPaths(filePath) {
-  console.log(`Processing JS file: ${filePath}`);
-  let content = fs.readFileSync(filePath, 'utf8');
-  
-  // First, fix any doubled repository paths that might have been introduced
-  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
-  
-  // Fix image and asset paths in JS files, being careful not to double the repoName
-  content = content.replace(/"\/images\/([^"]+)"/g, (match, path) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `"/${repoName}/images/${path}"`;
-    }
-    return match;
-  });
-  
-  content = content.replace(/"\/(_next\/[^"]+)"/g, (match, path) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `"/${repoName}/$1"`;
-    }
-    return match;
-  });
-  
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `url(/${repoName}/${folder}${rest})`;
-    }
-    return match;
-  });
-  
-  // Write the fixed content back
-  fs.writeFileSync(filePath, content);
-}
-
-// Function to fix paths in CSS files
-function fixCSSPaths(filePath) {
-  console.log(`Processing CSS file: ${filePath}`);
-  let content = fs.readFileSync(filePath, 'utf8');
-  
-  // First, fix any doubled repository paths that might have been introduced
-  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
-  
-  // Fix image urls in CSS
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `url(/${repoName}/${folder}${rest})`;
-    }
-    return match;
-  });
-  
-  content = content.replace(/url\(\s*['"]?\s*\/([^")]+)['"]?\s*\)/g, (match, path) => {
-    if (match.indexOf(`/${repoName}/`) === -1) {
-      return `url(/${repoName}/${path})`;
-    }
-    return match;
-  });
-  
-  // Write the fixed content back
-  fs.writeFileSync(filePath, content);
-}
-
-console.log(`Fixing paths in files for GitHub Pages deployment...`);
-processHtmlFiles(outputDir);
-console.log(`Done! All files have been processed for GitHub Pages compatibility.`);
+console.log(`Starting path fixing for deployment...`);
+processFiles(outputDir);
+processRecipePages();
+console.log(`Done! All files have been processed.`);
 ```
 
 This script is integrated into the build process via npm scripts in `package.json`:
@@ -248,7 +153,10 @@ This script is integrated into the build process via npm scripts in `package.jso
 ```json
 "scripts": {
   "postbuild": "node scripts/fix-gh-pages-paths.js",
-  "deploy-gh-pages": "npm run build && npm run postbuild && touch out/.nojekyll"
+  "postbuild-local": "node scripts/fix-gh-pages-paths.js --local",
+  "deploy-gh-pages": "npm run build && npm run postbuild && touch out/.nojekyll",
+  "deploy-local": "npm run build && npm run postbuild-local && touch out/.nojekyll",
+  "serve-static": "npm run deploy-local && npx serve out"
 }
 ```
 
@@ -381,10 +289,12 @@ export function GitHubPagesRedirect() {
    - Added comprehensive path fixing for HTML, JS, and CSS files
    - Implemented intelligent path detection to prevent path doubling issues
    - Processes all asset references in various formats (href, src, url(), JSON data, etc.)
+   - **New**: Added dual-mode support for both local development and GitHub Pages deployment
 
 2. **Environment-Aware Configuration**
    - Created centralized environment settings with base path handling
    - Made utilities to consistently apply base paths across the application
+   - **New**: Added command line flags to control path handling behavior
 
 3. **CSS and Styling Fixes**
    - Fixed doubled repository paths that were causing CSS to fail to load
@@ -401,10 +311,13 @@ export function GitHubPagesRedirect() {
    - Created client-side image utilities to handle paths consistently
    - Used unoptimized images setting required for static export
    - Implemented path fixes for all image references
+   - **New**: Added special handling for unprocessed Markdown image syntax
 
 7. **Build Process Improvements**
    - Enhanced npm scripts to better handle the GitHub Pages deployment workflow
    - Added proper console logging for better debugging
+   - **New**: Added timeout protection and binary file detection to prevent script hangs
+   - **New**: Added separate scripts for local vs GitHub Pages deployment
 
 8. **Removed Server Features**
    - Removed `'use server'` directive from `lib/recipes.ts` since Server Actions aren't supported in static exports
@@ -425,6 +338,7 @@ If you encounter deployment issues:
    - Check for doubled paths like `/recipe-website/recipe-website/` in the HTML source
    - Verify that all assets use the correct base path with the repository name
    - Inspect network requests in browser dev tools to identify 404 errors
+   - **New**: If testing locally, make sure you're using `npm run deploy-local` or `npm run serve-static`
 
 2. **Style and CSS Issues**
    - Inspect CSS link tags to ensure they have the correct path
@@ -446,19 +360,39 @@ If you encounter deployment issues:
    - Ensure the custom domain configuration is correct (if applicable)
    - Check that the `fix-gh-pages-paths.js` script correctly references your repository name
    - Make sure the .nojekyll file is present in the output to prevent GitHub Pages from processing with Jekyll
+   - **New**: If the script gets stuck, check for any extremely large files or binary files in unexpected locations
 
 ## 12. Local Testing
 
 To test the static export locally before deploying:
 
 ```bash
-npm run deploy-gh-pages
+# Use the dedicated script for local development
+npm run serve-static
+```
+
+Or separately:
+
+```bash
+# Build with local path configuration
+npm run deploy-local
+# Serve the output directory
 npx serve out
 ```
 
-This builds the static site with the proper path fixes and serves it locally for testing before pushing to GitHub.
+This builds the static site with proper path handling for local development and serves it locally for testing.
 
-## 13. Further Resources
+## 13. GitHub Pages Deployment
+
+To build for GitHub Pages deployment:
+
+```bash
+npm run deploy-gh-pages
+```
+
+Then push the `out` directory to your GitHub Pages branch or let the GitHub Actions workflow handle the deployment.
+
+## 14. Further Resources
 
 - [Next.js Static Export Documentation](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
 - [GitHub Pages Documentation](https://docs.github.com/en/pages)
