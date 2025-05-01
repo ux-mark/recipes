@@ -145,7 +145,8 @@ The application uses environment variables for configuration:
 - The path should be relative to the scripts directory
 
 ### Managing Recipe Images
-- Images are now copied on-demand instead of automatically during the build process
+TODO: This needs a front end capability.
+- Images can be copied on-demand
 - To update recipe images from the external source directory:
   ```bash
   npm run copy-images
