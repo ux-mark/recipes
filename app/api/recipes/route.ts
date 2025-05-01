@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { getAllRecipes } from '@/lib/recipes';
 
+// This forces the route to be statically generated at build time
+export const dynamic = "force-static";
+
 export async function GET() {
   try {
     const recipes = await getAllRecipes();

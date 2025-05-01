@@ -105,6 +105,10 @@ jobs:
 5. **Node Version**
    - Using Node.js 18 for compatibility with project dependencies
 
+6. **API Routes Configuration**
+   - Added `export const dynamic = "force-static"` to API routes to make them compatible with static export
+   - This is required for any API route when using `output: 'export'` in Next.js config
+
 ## 4. GitHub Pages Configuration
 
 1. Enable GitHub Pages in your repository settings
