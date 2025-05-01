@@ -19,7 +19,7 @@
     "deploy": "npm run build && touch out/.nojekyll",
     "deploy-gh-pages": "npm run build && npm run postbuild && touch out/.nojekyll",
     "deploy-local": "npm run build && npm run postbuild-local && touch out/.nojekyll",
-    "deploy-custom-domain": "npm run build && npm run postbuild-custom-domain && touch out/.nojekyll",
+    "deploy-custom-domain": "cross-env USE_CUSTOM_DOMAIN=true npm run build && npm run postbuild-custom-domain && touch out/.nojekyll",
     "serve-static": "npm run deploy-local && npx serve out"
   },
   "dependencies": {
@@ -47,6 +47,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "postcss": "^8.5.3",

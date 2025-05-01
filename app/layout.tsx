@@ -7,6 +7,7 @@ import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { env } from "@/lib/env";
+import dynamic from "next/dynamic";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,6 +17,11 @@ const inter = Inter({
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+});
+
+// Dynamically import the debug component to avoid SSR issues
+const PathDebug = dynamic(() => import("@/components/path-debug"), {
+  ssr: false,
 });
 
 export const metadata: Metadata = {
@@ -74,6 +80,9 @@ export default async function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        
+        {/* Path debugging component - only visible in development */}
+        <PathDebug />
       </body>
     </html>
   );

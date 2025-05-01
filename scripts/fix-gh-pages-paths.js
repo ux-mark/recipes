@@ -10,7 +10,7 @@ const outputDir = path.resolve(__dirname, '../out');
 // Parse command line arguments
 const args = process.argv.slice(2);
 const isDebugMode = args.includes('--debug');
-const isCustomDomain = args.includes('--custom-domain');
+const isCustomDomain = args.includes('--custom-domain') || process.env.USE_CUSTOM_DOMAIN === 'true';
 
 // GitHub repo name - change this to match your repository name
 const repoName = 'recipes';
@@ -278,7 +278,7 @@ function create404Page() {
   let content;
   
   if (isCustomDomain) {
-    // Simpler version for custom domains - redirect to the root
+    // Enhanced version for custom domains - redirect to the root
     content = `
 <!DOCTYPE html>
 <html>
@@ -287,13 +287,20 @@ function create404Page() {
   <title>Redirecting...</title>
   <script>
     // Capture the path and redirect to the homepage with it as a parameter
-    var pathSegments = window.location.pathname.split('/');
-    
-    // Store the path for the homepage to handle
-    sessionStorage.setItem('redirectPath', window.location.pathname);
-    
-    // Redirect to homepage
-    window.location.replace('/');
+    (function() {
+      // Store the full path including query string and hash
+      const path = window.location.pathname + 
+                  (window.location.search || '') + 
+                  (window.location.hash || '');
+      
+      // Store the path for the homepage to handle
+      if (path && path !== '/') {
+        sessionStorage.setItem('redirectPath', path);
+      }
+      
+      // Redirect to homepage
+      window.location.replace('/');
+    })();
   </script>
 </head>
 <body>
@@ -311,19 +318,23 @@ function create404Page() {
   <title>Redirecting...</title>
   <script>
     // Capture the path and redirect to the homepage with it as a parameter
-    var pathSegments = window.location.pathname.split('/');
-    var repoName = '${repoName}';
-    
-    // Remove the repository name from the path if present
-    if (pathSegments[1] === repoName) {
-      pathSegments.splice(1, 1);
-    }
-    
-    // Store the path for the homepage to handle
-    sessionStorage.setItem('redirectPath', pathSegments.join('/'));
-    
-    // Redirect to homepage
-    window.location.replace('/${repoName}/');
+    (function() {
+      // Store the full path including query string and hash
+      const path = window.location.pathname + 
+                  (window.location.search || '') + 
+                  (window.location.hash || '');
+      
+      const pathSegments = window.location.pathname.split('/');
+      const repoName = '${repoName}';
+      
+      // Store the path for the homepage to handle
+      if (path) {
+        sessionStorage.setItem('redirectPath', path);
+      }
+      
+      // Redirect to homepage
+      window.location.replace('/${repoName}/');
+    })();
   </script>
 </head>
 <body>
@@ -335,6 +346,36 @@ function create404Page() {
   
   fs.writeFileSync(filePath, content);
   console.log('Created 404.html redirect page');
+}
+
+// Ensure the CNAME file is copied correctly
+function ensureCnameFile() {
+  if (isCustomDomain) {
+    const srcCnamePath = path.resolve(__dirname, '../CNAME');
+    const destCnamePath = path.join(outputDir, 'CNAME');
+    
+    if (fs.existsSync(srcCnamePath)) {
+      // Copy CNAME from root directory
+      fs.copyFileSync(srcCnamePath, destCnamePath);
+      const domain = fs.readFileSync(destCnamePath, 'utf8').trim();
+      console.log(`Custom domain: ${domain} (CNAME file copied)`);
+    } else {
+      // Check if CNAME already exists in public directory
+      const publicCnamePath = path.resolve(__dirname, '../public/CNAME');
+      
+      if (fs.existsSync(publicCnamePath)) {
+        fs.copyFileSync(publicCnamePath, destCnamePath);
+        const domain = fs.readFileSync(destCnamePath, 'utf8').trim();
+        console.log(`Custom domain: ${domain} (CNAME file copied from public directory)`);
+      } else if (!fs.existsSync(destCnamePath)) {
+        // Create a warning message if no CNAME is found
+        console.warn('\x1b[33m%s\x1b[0m', 'WARNING: CNAME file not found. Custom domain might not work correctly.');
+      }
+    }
+  } else if (fs.existsSync(path.join(outputDir, 'CNAME'))) {
+    // If not in custom domain mode but CNAME exists, log a warning
+    console.warn('\x1b[33m%s\x1b[0m', 'WARNING: CNAME file exists but custom domain mode is not enabled.');
+  }
 }
 
 // Ensure public directory is copied correctly
@@ -365,6 +406,128 @@ function copyPublicFiles() {
   }
 }
 
+// Check and fix JSON data in Next.js data islands
+function fixNextDataIslands() {
+  const htmlFiles = [];
+  
+  // Find all HTML files
+  function findHtmlFiles(directory) {
+    const items = fs.readdirSync(directory, { withFileTypes: true });
+    
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        findHtmlFiles(fullPath);
+      } else if (item.name.endsWith('.html')) {
+        htmlFiles.push(fullPath);
+      }
+    }
+  }
+  
+  findHtmlFiles(outputDir);
+  
+  // Process each HTML file for Next.js data islands
+  for (const filePath of htmlFiles) {
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      let modified = false;
+      
+      // Check for Next.js data islands
+      if (content.includes('__NEXT_DATA__')) {
+        let newContent = content.replace(
+          /(<script id="__NEXT_DATA__"[^>]*>)([\s\S]*?)(<\/script>)/g,
+          (match, openTag, jsonContent, closeTag) => {
+            try {
+              const json = JSON.parse(jsonContent);
+              
+              // Function to fix paths in the object
+              function fixPaths(obj) {
+                if (!obj || typeof obj !== 'object') return obj;
+                
+                // Handle arrays
+                if (Array.isArray(obj)) {
+                  return obj.map(item => fixPaths(item));
+                }
+                
+                // Handle objects
+                const result = { ...obj };
+                
+                for (const key in result) {
+                  const value = result[key];
+                  
+                  if (typeof value === 'string') {
+                    // Fix paths in string values
+                    if (value.startsWith('/') && 
+                        !value.startsWith('//') && 
+                        !value.startsWith('/api/') && 
+                        !value.startsWith('/recipes') &&
+                        !value.startsWith('/_next/')) {
+                      
+                      if (isCustomDomain) {
+                        // For custom domain - keep paths as is
+                        result[key] = value;
+                      } else {
+                        // For GitHub Pages - add repository prefix
+                        result[key] = basePath + value;
+                        if (isDebugMode) {
+                          console.log(`Fixed path in JSON: ${value} -> ${result[key]}`);
+                        }
+                        pathsFixed++;
+                      }
+                    } else if (!isCustomDomain && value.startsWith('/recipes') && basePath !== '/recipes') {
+                      // Handle edge case where basePath might be different
+                      result[key] = basePath + value.substring('/recipes'.length);
+                      if (isDebugMode) {
+                        console.log(`Fixed path in JSON: ${value} -> ${result[key]}`);
+                      }
+                      pathsFixed++;
+                    } else if (isCustomDomain && value.startsWith('/recipes/')) {
+                      // Remove '/recipes' prefix for custom domains
+                      result[key] = value.replace('/recipes/', '/');
+                      if (isDebugMode) {
+                        console.log(`Fixed path in JSON: ${value} -> ${result[key]}`);
+                      }
+                      pathsFixed++;
+                    }
+                  } else if (value && typeof value === 'object') {
+                    // Recursively process nested objects
+                    result[key] = fixPaths(value);
+                  }
+                }
+                
+                return result;
+              }
+              
+              // Fix paths in the JSON data
+              const fixedJson = fixPaths(json);
+              
+              // Only update if changes were made (comparing stringified versions would always be different due to whitespace)
+              const newJsonContent = JSON.stringify(fixedJson);
+              if (newJsonContent !== jsonContent) {
+                modified = true;
+                return `${openTag}${newJsonContent}${closeTag}`;
+              }
+            } catch (error) {
+              console.error(`Error processing JSON in ${filePath}: ${error.message}`);
+            }
+            
+            return match;
+          }
+        );
+        
+        if (newContent !== content) {
+          fs.writeFileSync(filePath, newContent);
+          filesProcessed++;
+          console.log(`Updated Next.js data island in: ${filePath}`);
+        }
+      }
+    } catch (error) {
+      console.error(`Error processing file ${filePath}: ${error.message}`);
+    }
+  }
+}
+
 // Main execution
 try {
   console.log('Starting path fixing for GitHub Pages deployment...');
@@ -372,6 +535,7 @@ try {
   // Create essential files
   createNojekyllFile();
   create404Page();
+  ensureCnameFile();
   
   // Copy public files
   copyPublicFiles();
@@ -380,11 +544,13 @@ try {
   processHtmlFiles(outputDir);
   processJsFiles(outputDir);
   processCssFiles(outputDir);
+  fixNextDataIslands();
   
   console.log(`
 ===== Path Fixing Complete =====
 Files processed: ${filesProcessed}
 Paths fixed: ${pathsFixed}
+Custom Domain Mode: ${isCustomDomain ? 'ENABLED' : 'DISABLED'}
 ===============================
   `);
 } catch (error) {
