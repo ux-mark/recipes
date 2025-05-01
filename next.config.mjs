@@ -4,7 +4,8 @@
 const nextConfig = {
   output: 'export',
   // Use empty basePath and assetPrefix when USE_CUSTOM_DOMAIN=true
-  basePath: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true") ? '/recipes' : '',
+  // The basePath might be overridden by GitHub Actions, so we add a safeguard
+  basePath: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true" && !process.env.GITHUB_ACTIONS) ? '/recipes' : '',
   assetPrefix: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true") ? '/recipes/' : '',
   images: {
     unoptimized: true, // Required for static export

@@ -860,3 +860,173 @@ When switching between GitHub Pages and custom domain deployments:
 1. Always do a clean build (`rm -rf .next out && npm run deploy-gh-pages` or `npm run deploy-custom-domain`)
 2. Check the environment variables are set correctly for the desired deployment type
 3. Verify the ESLint configuration isn't removing necessary imports for path handling
+
+## 20. Recent Fixes for Custom Domain 404 Errors (May 2025)
+
+A comprehensive set of changes was implemented to fix 404 errors that occurred when accessing images, styles, and supporting files on the custom domain deployment.
+
+### Key Issues Fixed
+
+1. **Asset Path Handling Improvement**
+   The `getAssetPath` function in `utils.ts` has been enhanced to properly handle various URL formats and custom domain scenarios:
+
+   ```typescript
+   export function getAssetPath(path: string): string {
+     // Don't modify URLs that are already absolute or data URLs
+     if (path.startsWith('http') || path.startsWith('data:')) {
+       return path;
+     }
+     
+     // If path already includes the base path, return as is
+     if (env.basePath && path.startsWith(env.basePath)) {
+       return path;
+     }
+
+     // Handle paths with or without leading slash
+     if (path.startsWith('/')) {
+       return `${env.basePath}${path}`;
+     } else {
+       return `${env.basePath}/${path}`;
+     }
+   }
+   ```
+
+2. **Enhanced Environment Variable Handling**
+   The `cross-env` package was installed to ensure consistent environment variable setting across platforms:
+
+   ```json
+   "deploy-custom-domain": "cross-env USE_CUSTOM_DOMAIN=true npm run build && npm run postbuild-custom-domain && touch out/.nojekyll"
+   ```
+
+   This ensures the `USE_CUSTOM_DOMAIN` environment variable is properly set during the build process, which is critical for correct path handling.
+
+3. **Improved Next.js Data Islands Processing**
+   The post-build script now includes special handling for Next.js data islands (serialized JSON in HTML):
+
+   ```javascript
+   function fixNextDataIslands() {
+     // Find all HTML files
+     // For each file with __NEXT_DATA__ script tag:
+     //   - Parse the JSON data
+     //   - Recursively fix paths in the object
+     //   - Update paths differently based on custom domain mode
+     //   - Write the fixed JSON back to the HTML file
+   }
+   ```
+
+   This fixes issues where client-side navigation could fail due to incorrect paths in the serialized JSON data.
+
+4. **CNAME File Management**
+   Enhanced CNAME file handling to ensure it's properly copied to the output directory:
+
+   ```javascript
+   function ensureCnameFile() {
+     if (isCustomDomain) {
+       // Copy CNAME from root or public directory
+       // Provide a warning if not found
+     } else if (CNAME exists in output) {
+       // Warn about mismatch between build mode and CNAME presence
+     }
+   }
+   ```
+
+5. **Improved 404 Page Redirection**
+   The 404.html page was enhanced with more robust environment detection and path handling:
+
+   ```javascript
+   // Custom 404 page content for custom domains
+   content = `
+     <!DOCTYPE html>
+     <html>
+     <head>
+       <meta charset="utf-8">
+       <title>Redirecting...</title>
+       <script>
+         // Store the full path including query string and hash
+         const path = window.location.pathname + 
+                   (window.location.search || '') + 
+                   (window.location.hash || '');
+         
+         // Store the path for the homepage to handle
+         if (path && path !== '/') {
+           sessionStorage.setItem('redirectPath', path);
+         }
+         
+         // Redirect to homepage
+         window.location.replace('/');
+       </script>
+     </head>
+     <body>
+       <p>Redirecting...</p>
+     </body>
+     </html>
+   `;
+   ```
+
+6. **Path Debugging Component**
+   Added a debug component that helps diagnose path issues during development:
+
+   ```typescript
+   // components/path-debug.tsx
+   export default function PathDebug() {
+     const [info, setInfo] = useState({
+       hostname: '',
+       pathname: '',
+       isCustomDomain: env.isCustomDomain,
+       basePath: env.basePath,
+       currentBuild: ''
+     });
+     
+     // ...implementation details...
+     
+     // Only rendered in development mode
+     return (
+       <div className="fixed bottom-4 right-4 bg-black bg-opacity-75 text-white p-3 rounded shadow-lg text-xs z-50">
+         <h4 className="font-bold mb-1">Path Debug</h4>
+         <ul className="m-0 p-0 pl-4">
+           <li>Hostname: {info.hostname}</li>
+           <li>Path: {info.pathname}</li>
+           <li>Custom Domain: {String(info.isCustomDomain)}</li>
+           <li>Base Path: "{info.basePath}"</li>
+           <li>Build: {info.currentBuild}</li>
+         </ul>
+       </div>
+     );
+   }
+   ```
+
+### Implementation Steps
+
+1. Update utility functions to correctly handle paths in different environments
+2. Install cross-env for consistent environment variable handling
+3. Enhance the post-build script with improved JSON data processing
+4. Add better CNAME file management
+5. Create more robust 404 page redirection
+6. Implement a debugging component for development use
+
+### How to Deploy with the Fixes
+
+To deploy using the new fixes:
+
+1. **For GitHub Actions (recommended)**:
+   - Go to Actions tab in your repository
+   - Select "Deploy to GitHub Pages" workflow
+   - Choose "custom-domain" from the dropdown
+   - Run the workflow
+
+2. **For local deployment**:
+   ```bash
+   npm run deploy-custom-domain
+   # Then push the "out" directory contents to GitHub
+   ```
+
+### Verifying the Fix
+
+After deployment, check the following:
+
+1. Ensure all image paths don't include `/recipes/` prefix in HTML source
+2. Verify CSS and JavaScript files load correctly (no 404s in Network tab)
+3. Check that Next.js data islands in the HTML don't contain incorrect path prefixes
+4. Confirm the CNAME file exists in the deployed site
+
+These changes provide a comprehensive solution to the 404 errors on custom domains by ensuring correct path handling throughout the build and deployment process.

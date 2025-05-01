@@ -39,14 +39,28 @@ jobs:
         run: npm ci
       - name: Build for GitHub Pages (default)
         if: ${{ github.event_name == 'push' || github.event.inputs.domain_type == 'github-pages' }}
-        run: npm run deploy-gh-pages
+        run: |
+          echo "Building for GitHub Pages deployment..."
+          echo "Environment variables:"
+          echo "NODE_ENV=production"
+          echo "USE_CUSTOM_DOMAIN=false"
+          npm run deploy-gh-pages
         env:
           NODE_ENV: "production"
           NODE_OPTIONS: "--experimental-json-modules"
           USE_CUSTOM_DOMAIN: "false"
+          # Allowing GitHub Actions to override basePath
+          GITHUB_ACTIONS: "true" 
       - name: Build for Custom Domain
         if: ${{ github.event.inputs.domain_type == 'custom-domain' }}
-        run: npm run deploy-custom-domain
+        run: |
+          echo "Building for custom domain deployment..."
+          echo "Environment variables:"
+          echo "NODE_ENV=production"
+          echo "USE_CUSTOM_DOMAIN=true"
+          # Passing GITHUB_ACTIONS=false to prevent GitHub Pages from overriding the basePath
+          export GITHUB_ACTIONS=false
+          npm run deploy-custom-domain
         env:
           NODE_ENV: "production"
           NODE_OPTIONS: "--experimental-json-modules"
