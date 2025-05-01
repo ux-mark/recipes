@@ -4,6 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Recipe, RecipeTag } from './types';
+import { getAssetPath } from './utils';
 
 // Path to the recipes JSON file
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
@@ -72,9 +73,9 @@ export async function getFeaturedRecipes(count: number = 4): Promise<Recipe[]> {
 // Function to get the image URL for a recipe
 export async function getRecipeImageUrl(recipe: Recipe, index: number = 0): Promise<string> {
   if (!recipe.images || recipe.images.length === 0) {
-    return '/placeholder-recipe.svg'; // Use SVG placeholder for recipes without images
+    return getAssetPath('placeholder-recipe.svg'); // Use SVG placeholder for recipes without images
   }
   
   const imagePath = recipe.images[index % recipe.images.length];
-  return `/images/${imagePath}`;
+  return getAssetPath(`images/${imagePath}`);
 }

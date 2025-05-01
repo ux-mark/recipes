@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
+import { getAssetPath } from '@/lib/utils';
 
 // Define simple parameter type without extending PageProps
 type RecipeParams = {
@@ -116,7 +117,7 @@ export default async function RecipePage({ params }: { params: RecipeParams }) {
                 className="relative aspect-[4/3] rounded-lg overflow-hidden"
               >
                 <Image
-                  src={`/images/${image}`}
+                  src={getAssetPath(`images/${image}`)}
                   alt={`${recipe.name} - image ${index + 1}`}
                   fill
                   className="object-cover"

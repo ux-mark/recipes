@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import RecipeCard from '@/components/recipe-card';
 import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
 import GitHubPagesRedirect from '@/components/github-pages-redirect';
+import { getAssetPath } from '@/lib/utils';
 
 export default async function Home() {
   const featuredRecipes = await getFeaturedRecipes(6);
@@ -44,7 +45,7 @@ export default async function Home() {
             {featuredRecipes[0]?.images && featuredRecipes[0].images.length > 0 ? (
               <div className="relative aspect-square max-w-lg mx-auto lg:ml-auto">
                 <Image
-                  src={`/images/${featuredRecipes[0].images[0]}`}
+                  src={getAssetPath(`images/${featuredRecipes[0].images[0]}`)}
                   alt="Featured Recipe"
                   fill
                   className="object-cover rounded-2xl shadow-xl"
