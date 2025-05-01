@@ -37,32 +37,55 @@ function fixPaths(filePath) {
   console.log(`Processing HTML file: ${filePath}`);
   let content = fs.readFileSync(filePath, 'utf8');
   
-  // Fix paths in various asset references
+  // First, fix any doubled repository paths that might have been introduced
+  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
+  
+  // Then apply the normal fixes for paths
   content = content.replace(/(href|src)="\/_next\//g, `$1="/${repoName}/_next/`);
-  content = content.replace(/(href|src)="\//g, `$1="/${repoName}/`);
+  
+  // Be careful not to re-apply the repoName to paths that already have it
+  content = content.replace(new RegExp(`(href|src)="(?!/${repoName}/)/`, 'g'), `$1="/${repoName}/`);
   
   // Fix paths in JSON JavaScript code (for Next.js data)
-  content = content.replace(/"(\/\_next\/[^"]+)"/g, `"/${repoName}$1"`);
-  content = content.replace(/"(\/images\/[^"]+)"/g, `"/${repoName}$1"`);
+  content = content.replace(/"(\/\_next\/[^"]+)"/g, (match, path) => {
+    if (path.indexOf(`/${repoName}/`) === -1) {
+      return `"/${repoName}${path}"`;
+    }
+    return match;
+  });
+  
+  content = content.replace(/"(\/images\/[^"]+)"/g, (match, path) => {
+    if (path.indexOf(`/${repoName}/`) === -1) {
+      return `"/${repoName}${path}"`;
+    }
+    return match;
+  });
   
   // Fix paths in style tags
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, `url(/${repoName}/$1$2)`);
+  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `url(/${repoName}/${folder}${rest})`;
+    }
+    return match;
+  });
   
   // Ensure internal links to root are fixed
   content = content.replace(/href="\/${repoName}\/"/g, `href="/${repoName}/"`);
   
   // Fix paths in JSON props that might contain URLs (React 19 / Next.js 15 specific)
   content = content.replace(/"props":({[^}]*"src":"\/[^"]*"[^}]*})/g, (match, propsGroup) => {
-    return match.replace(/"src":"\/([^"]+)"/g, `"src":"/${repoName}/$1"`);
+    if (propsGroup.indexOf(`/${repoName}/`) === -1) {
+      return match.replace(/"src":"\/([^"]+)"/g, `"src":"/${repoName}/$1"`);
+    }
+    return match;
   });
   
   // Fix image JSON data structures and component props
   content = content.replace(/"images":\s*\[\s*"([^"]+)"\s*\]/g, (match, imagePath) => {
-    if (imagePath.startsWith('/')) {
+    if (imagePath.startsWith('/') && !imagePath.startsWith(`/${repoName}/`)) {
       return match.replace(`"${imagePath}"`, `"/${repoName}${imagePath}"`);
-    } else {
-      return match;
     }
+    return match;
   });
   
   // Write the fixed content back
@@ -74,10 +97,30 @@ function fixJSPaths(filePath) {
   console.log(`Processing JS file: ${filePath}`);
   let content = fs.readFileSync(filePath, 'utf8');
   
-  // Fix image and asset paths in JS files
-  content = content.replace(/"\/images\/([^"]+)"/g, `"/${repoName}/images/$1"`);
-  content = content.replace(/"\/(_next\/[^"]+)"/g, `"/${repoName}/$1"`);
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, `url(/${repoName}/$1$2)`);
+  // First, fix any doubled repository paths that might have been introduced
+  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
+  
+  // Fix image and asset paths in JS files, being careful not to double the repoName
+  content = content.replace(/"\/images\/([^"]+)"/g, (match, path) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `"/${repoName}/images/${path}"`;
+    }
+    return match;
+  });
+  
+  content = content.replace(/"\/(_next\/[^"]+)"/g, (match, path) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `"/${repoName}/$1"`;
+    }
+    return match;
+  });
+  
+  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `url(/${repoName}/${folder}${rest})`;
+    }
+    return match;
+  });
   
   // Write the fixed content back
   fs.writeFileSync(filePath, content);
@@ -88,9 +131,23 @@ function fixCSSPaths(filePath) {
   console.log(`Processing CSS file: ${filePath}`);
   let content = fs.readFileSync(filePath, 'utf8');
   
+  // First, fix any doubled repository paths that might have been introduced
+  content = content.replace(new RegExp(`/${repoName}/${repoName}/`, 'g'), `/${repoName}/`);
+  
   // Fix image urls in CSS
-  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, `url(/${repoName}/$1$2)`);
-  content = content.replace(/url\(\s*['"]?\s*\/([^")]+)['"]?\s*\)/g, `url(/${repoName}/$1)`);
+  content = content.replace(/url\(\s*['"]?\s*\/(images|_next)([^")]+)['"]?\s*\)/g, (match, folder, rest) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `url(/${repoName}/${folder}${rest})`;
+    }
+    return match;
+  });
+  
+  content = content.replace(/url\(\s*['"]?\s*\/([^")]+)['"]?\s*\)/g, (match, path) => {
+    if (match.indexOf(`/${repoName}/`) === -1) {
+      return `url(/${repoName}/${path})`;
+    }
+    return match;
+  });
   
   // Write the fixed content back
   fs.writeFileSync(filePath, content);
