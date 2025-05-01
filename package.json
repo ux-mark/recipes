@@ -12,7 +12,10 @@
     "start": "next start",
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js",
-    "prebuild": "npm run copy-images"
+    "prebuild": "npm run copy-images",
+    "export": "next export",
+    "deploy": "npm run build && touch out/.nojekyll",
+    "serve-static": "npx serve out"
   },
   "dependencies": {
     "@radix-ui/react-aspect-ratio": "^1.1.4",
