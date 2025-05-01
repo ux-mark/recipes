@@ -4,6 +4,7 @@ import { Recipe } from '@/lib/types';
 import { getRecipeImageUrl } from '@/lib/client-utils/image';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { env } from '@/lib/env';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -14,7 +15,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   const imageUrl = getRecipeImageUrl(recipe);
   
   return (
-    <Link href={`/recipes/${recipe.id}`} className="block h-full">
+    <Link href={`${env.basePath}/recipes/${recipe.id}`} className="block h-full">
       <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
         <CardHeader className="p-0">
           <div className="relative">

@@ -5,6 +5,7 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
+import { env } from "@/lib/env";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,14 +45,21 @@ export default async function RootLayout({
               if (redirectPath) {
                 sessionStorage.removeItem('redirectPath');
                 
-                // Extract the path relative to the base path
-                const basePath = '/recipe-website';
-                const relativePath = redirectPath.replace(basePath, '');
+                // Determine if we're on GitHub Pages or a custom domain
+                const hostname = window.location.hostname;
+                const isGitHubPages = hostname.includes('github.io');
                 
-                // Use Next.js router to navigate to the correct page
-                if (relativePath && relativePath !== '/') {
-                  // We'll handle this on the client side after hydration
+                // Handle paths differently based on environment
+                if (isGitHubPages) {
+                  // GitHub Pages: need to handle the repository name in the path
+                  const repoName = '/recipes';
+                  const relativePath = redirectPath.replace(repoName, '') || '/';
+                  
+                  // Store for client-side navigation after hydration
                   window.__NEXT_REDIRECT_PATH = relativePath;
+                } else {
+                  // Custom domain: use the path as-is
+                  window.__NEXT_REDIRECT_PATH = redirectPath;
                 }
               }
             })();

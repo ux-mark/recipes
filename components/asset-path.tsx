@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { env } from '../lib/env';
 
 interface AssetPathProps {
   src: string;
@@ -26,13 +27,18 @@ export function AssetImage({ src, alt = '', className = '', width, height }: Ass
       return src;
     }
     
+    // For custom domain, don't add recipes prefix
+    if (env.isCustomDomain) {
+      return src.startsWith('/') ? src : `/${src}`;
+    }
+    
     // Add the repository name prefix for absolute paths
     if (src.startsWith('/')) {
-      return `/recipes${src}`;
+      return `${env.basePath}${src}`;
     }
     
     // Add the repository name prefix for relative paths
-    return `/recipes/${src}`;
+    return `${env.basePath}/${src}`;
   }, [src]);
 
   return (
@@ -60,13 +66,18 @@ export function getAssetPath(src: string): string {
     return src;
   }
   
+  // For custom domain, don't add recipes prefix
+  if (env.isCustomDomain) {
+    return src.startsWith('/') ? src : `/${src}`;
+  }
+  
   // Add the repository name prefix for absolute paths
   if (src.startsWith('/')) {
-    return `/recipes${src}`;
+    return `${env.basePath}${src}`;
   }
   
   // Add the repository name prefix for relative paths
-  return `/recipes/${src}`;
+  return `${env.basePath}/${src}`;
 }
 
 export default AssetImage;

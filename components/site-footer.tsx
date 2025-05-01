@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { getAllTags } from "@/lib/recipes";
+import { env } from "@/lib/env";
 
 export default async function SiteFooter() {
   const allTags = await getAllTags();
@@ -41,10 +42,10 @@ export default async function SiteFooter() {
               <Link href="/" className="text-neutral-600 hover:text-primary-600 transition-colors">
                 Home
               </Link>
-              <Link href="/recipes" className="text-neutral-600 hover:text-primary-600 transition-colors">
+              <Link href={`${env.basePath}/recipes`} className="text-neutral-600 hover:text-primary-600 transition-colors">
                 All Recipes
               </Link>
-              <Link href="/search" className="text-neutral-600 hover:text-primary-600 transition-colors">
+              <Link href={`${env.basePath}/search`} className="text-neutral-600 hover:text-primary-600 transition-colors">
                 Search
               </Link>
             </div>

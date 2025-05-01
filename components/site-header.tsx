@@ -6,6 +6,7 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { Menu, Search } from "lucide-react";
 import TagsMenu from "./tags-menu";
 import { RecipeTag } from "@/lib/types";
+import { env } from "@/lib/env";
 
 interface SiteHeaderProps {
   tags: RecipeTag[];
@@ -28,7 +29,7 @@ export default function SiteHeader({ tags }: SiteHeaderProps) {
                 <Link href="/" className="text-lg font-semibold hover:text-primary-500 transition-colors">
                   Home
                 </Link>
-                <Link href="/recipes" className="text-lg font-semibold hover:text-primary-500 transition-colors">
+                <Link href={`${env.basePath}/recipes`} className="text-lg font-semibold hover:text-primary-500 transition-colors">
                   All Recipes
                 </Link>
                 <TagsMenu orientation="vertical" tags={tags} />
@@ -44,14 +45,14 @@ export default function SiteHeader({ tags }: SiteHeaderProps) {
           <Link href="/" className="text-sm font-medium hover:text-primary-500 transition-colors">
             Home
           </Link>
-          <Link href="/recipes" className="text-sm font-medium hover:text-primary-500 transition-colors">
+          <Link href={`${env.basePath}/recipes`} className="text-sm font-medium hover:text-primary-500 transition-colors">
             All Recipes
           </Link>
           <TagsMenu tags={tags} />
         </nav>
         
         <div className="flex items-center gap-2">
-          <Link href="/search">
+          <Link href={`${env.basePath}/search`}>
             <Button variant="ghost" size="icon">
               <Search className="h-5 w-5" />
               <span className="sr-only">Search</span>
