@@ -74,6 +74,7 @@ jobs:
           NODE_ENV: "production"
           NODE_OPTIONS: "--experimental-json-modules"
           USE_CUSTOM_DOMAIN: "false"
+          GITHUB_ACTIONS: "true"
       - name: Build for Custom Domain
         if: ${{ github.event.inputs.domain_type == 'custom-domain' }}
         run: npm run deploy-custom-domain
@@ -81,6 +82,7 @@ jobs:
           NODE_ENV: "production"
           NODE_OPTIONS: "--experimental-json-modules"
           USE_CUSTOM_DOMAIN: "true"
+          GITHUB_ACTIONS: "false"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -193,7 +195,7 @@ This script is integrated into the build process via npm scripts in `package.jso
   "deploy": "npm run build && touch out/.nojekyll",
   "deploy-gh-pages": "npm run build && npm run postbuild && touch out/.nojekyll",
   "deploy-local": "npm run build && npm run postbuild-local && touch out/.nojekyll",
-  "deploy-custom-domain": "npm run build && npm run postbuild-custom-domain && touch out/.nojekyll",
+  "deploy-custom-domain": "cross-env USE_CUSTOM_DOMAIN=true npm run build && npm run postbuild-custom-domain && touch out/.nojekyll",
   "serve-static": "npm run deploy-local && npx serve out"
 }
 ```
@@ -1030,3 +1032,178 @@ After deployment, check the following:
 4. Confirm the CNAME file exists in the deployed site
 
 These changes provide a comprehensive solution to the 404 errors on custom domains by ensuring correct path handling throughout the build and deployment process.
+
+## 21. Fixing Dynamic Import and GitHub Actions Override Issues (May 2025)
+
+Following the custom domain path fixes, two additional issues were identified and resolved to ensure smooth GitHub Pages deployment:
+
+### Dynamic Import in Server Component Error
+
+When using Next.js 15.3.1, you might encounter this error during the build process:
+
+```
+Error: `ssr: false` is not allowed with `next/dynamic` in Server Components. Please move it into a client component.
+```
+
+#### The Issue
+
+This occurs because:
+1. Next.js App Router makes all components Server Components by default
+2. Server Components don't support features like `useState`, `useEffect`, or dynamic imports with `ssr: false`
+3. The path debugging component was using dynamic imports with SSR disabled directly in the layout (Server Component)
+
+#### The Solution
+
+Created a specific client component wrapper that safely handles the dynamic import with SSR disabled:
+
+1. First, created a wrapper client component:
+
+```tsx
+// components/path-debug-wrapper.tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the PathDebug component with SSR disabled
+const PathDebug = dynamic(() => import('./path-debug'), { 
+  ssr: false 
+});
+
+/**
+ * Client component wrapper for PathDebug
+ * This handles the dynamic import with ssr: false properly
+ */
+export default function PathDebugWrapper() {
+  const [isClient, setIsClient] = useState(false);
+  
+  // Only render the debug component on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+  
+  // Don't render anything in production
+  if (process.env.NODE_ENV === 'production') {
+    return null;
+  }
+  
+  // Only show on client-side
+  if (!isClient) {
+    return null;
+  }
+  
+  return <PathDebug />;
+}
+```
+
+2. Then, updated the layout.tsx to use this wrapper instead of a direct dynamic import:
+
+```tsx
+// app/layout.tsx (partial)
+import PathDebugWrapper from "@/components/path-debug-wrapper";
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  // ...existing code...
+  
+  return (
+    <html lang="en" className="h-full">
+      {/* ...existing code... */}
+      <body className={/* ...existing code... */}>
+        <SiteHeader tags={tags} />
+        <main className="flex-1 px-6 md:px-8 lg:px-12">
+          {children}
+        </main>
+        <SiteFooter />
+        
+        {/* Path debugging component - using the wrapper */}
+        <PathDebugWrapper />
+      </body>
+    </html>
+  );
+}
+```
+
+### GitHub Actions basePath Override Issue
+
+GitHub Actions workflow was overriding the basePath configuration during deployment, causing path inconsistencies.
+
+#### The Issue
+
+When the GitHub Pages action runs, it injects its own configuration values into `next.config.mjs`:
+1. It forces `output: "export"` (which is fine since we already use that)
+2. It overrides `basePath: ""` - erasing our conditional logic for GitHub Pages vs. custom domain
+
+#### The Solution
+
+1. Updated `next.config.mjs` to be GitHub Actions-aware:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  // Use empty basePath and assetPrefix when USE_CUSTOM_DOMAIN=true
+  // The basePath might be overridden by GitHub Actions, so we add a safeguard
+  basePath: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true" && !process.env.GITHUB_ACTIONS) ? '/recipes' : '',
+  assetPrefix: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true") ? '/recipes/' : '',
+  // ...rest of configuration remains the same...
+};
+```
+
+2. Enhanced the GitHub workflow to control when GitHub Actions should override paths:
+
+```yaml
+# .github/workflows/deploy.yml (partial)
+- name: Build for GitHub Pages (default)
+  if: ${{ github.event_name == 'push' || github.event.inputs.domain_type == 'github-pages' }}
+  run: |
+    echo "Building for GitHub Pages deployment..."
+    echo "Environment variables:"
+    echo "NODE_ENV=production"
+    echo "USE_CUSTOM_DOMAIN=false"
+    npm run deploy-gh-pages
+  env:
+    NODE_ENV: "production"
+    NODE_OPTIONS: "--experimental-json-modules"
+    USE_CUSTOM_DOMAIN: "false"
+    # Allowing GitHub Actions to override basePath
+    GITHUB_ACTIONS: "true" 
+
+- name: Build for Custom Domain
+  if: ${{ github.event.inputs.domain_type == 'custom-domain' }}
+  run: |
+    echo "Building for custom domain deployment..."
+    echo "Environment variables:"
+    echo "NODE_ENV=production" 
+    echo "USE_CUSTOM_DOMAIN=true"
+    # Passing GITHUB_ACTIONS=false to prevent GitHub Pages from overriding the basePath
+    export GITHUB_ACTIONS=false
+    npm run deploy-custom-domain
+  env:
+    NODE_ENV: "production"
+    NODE_OPTIONS: "--experimental-json-modules"
+    USE_CUSTOM_DOMAIN: "true"
+```
+
+### Why These Changes Matter
+
+1. **Proper Server/Client Component Separation**: Next.js 15.3+ enforces a strict separation between Server and Client Components. The wrapper approach ensures compatibility while maintaining all the debugging functionality.
+
+2. **Configuration Control**: By being aware of the GitHub Actions environment, we can control when and how GitHub Pages changes our configuration, ensuring the correct path handling for both deployment scenarios.
+
+3. **Enhanced Logging**: Added debug output to the workflow to make future troubleshooting easier by clearly showing the environment variables being used.
+
+### How to Deploy with These Fixes
+
+The deployment process remains the same, but builds will now succeed without errors:
+
+1. **For GitHub Pages deployment**:
+   - Use the GitHub Actions workflow with "github-pages" option
+   - The paths will include the `/recipes` prefix as expected
+
+2. **For custom domain deployment**:
+   - Use the GitHub Actions workflow with "custom-domain" option
+   - The paths will be root-relative without the `/recipes` prefix

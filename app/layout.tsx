@@ -5,7 +5,6 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { env } from "@/lib/env";
 import PathDebugWrapper from "@/components/path-debug-wrapper";
 

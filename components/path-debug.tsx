@@ -41,7 +41,7 @@ export default function PathDebug() {
         <li>Hostname: {info.hostname}</li>
         <li>Path: {info.pathname}</li>
         <li>Custom Domain: {String(info.isCustomDomain)}</li>
-        <li>Base Path: "{info.basePath}"</li>
+        <li>Base Path: &quot;{info.basePath}&quot;</li>
         <li>Build: {info.currentBuild}</li>
       </ul>
     </div>
