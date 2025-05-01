@@ -1,1 +1,10 @@
-/* /index.html 200
+# SPA fallback - Handle client-side routing
+/*    /index.html   200
+
+# Specific redirects for common paths
+/recipes/*    /index.html   200
+/tags/*       /index.html   200
+/search/*     /index.html   200
+
+# Custom 404 page
+/*    /404.html   404

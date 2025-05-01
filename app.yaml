@@ -10,15 +10,16 @@ static_sites:
     deploy_on_push: true
   
   # Build configuration
-  build_command: npm run build
+  build_command: npm run deploy-build
   output_dir: out
   
-  # Route configuration
+  # Route configuration - improved for SPA routing
   routes:
     - path: /
-      # Enable SPA routing by redirecting all paths to index.html
+      # Direct file lookups first
     - path: /*
       preserve_path_prefix: true
+      spa: true
       
   # Enable CORS for API access if needed
   cors:
@@ -34,6 +35,9 @@ static_sites:
     - key: CACHE_CONTROL
       value: "public, max-age=3600, s-maxage=86400"
       scope: RUN_TIME
+    - key: NODE_ENV
+      value: "production"
+      scope: RUN_TIME
       
-  # Uncomment to provide a custom 404 page
-  # catchall_document: 404.html
+  # Provide a custom 404 page
+  catchall_document: 404.html

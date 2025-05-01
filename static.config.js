@@ -13,16 +13,17 @@ module.exports = {
   // Build command for Digital Ocean App Platform - using our custom script
   buildCommand: 'npm run deploy-build',
   
-  // Routes configuration - simpler and more direct
+  // Routes configuration - improved for SPA navigation
   routes: [
-    // Direct file lookups
+    // Direct file lookups first
     { handle: 'filesystem' },
     
     // SPA fallback - critical for client-side routing
+    // Using index.html instead of 200.html for better compatibility
     { src: '.*', dest: '/index.html' }
   ],
   
-  // HTTP response headers
+  // HTTP response headers - improved caching strategy
   headers: [
     {
       // Apply to all routes
@@ -35,16 +36,30 @@ module.exports = {
         {
           key: 'X-Content-Type-Options',
           value: 'nosniff'
+        },
+        {
+          key: 'X-Frame-Options',
+          value: 'DENY'
         }
       ]
     },
     {
-      // Cache static assets longer
+      // Cache static assets longer - improved for images
       source: '/images/(.*)',
       headers: [
         {
           key: 'Cache-Control',
-          value: 'public, max-age=86400, s-maxage=2592000'
+          value: 'public, max-age=86400, s-maxage=2592000, immutable'
+        }
+      ]
+    },
+    {
+      // Cache JS/CSS assets
+      source: '/_next/static/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable'
         }
       ]
     }
