@@ -626,3 +626,153 @@ In this mode, the site is hosted at your custom domain (e.g., `https://yourdomai
    - For custom domain: `npm run deploy-custom-domain`
 
 This dual-mode approach ensures maximum flexibility and compatibility with different hosting scenarios while maintaining a single codebase.
+
+## 17. Custom Domain 404 Error Fixes
+
+When deploying to a custom domain, you might encounter 404 errors for images and styles. These typically occur because some paths are still hardcoded with the `/recipes` prefix even when in custom domain mode. The following fixes address these issues:
+
+### 1. Updated `asset-path.tsx` to Use Environment Configuration
+
+The asset path component now properly checks the environment to determine whether to add the `/recipes` prefix:
+
+```typescript
+'use client';
+
+import { useMemo } from 'react';
+import { env } from '../lib/env';
+
+// Component that handles proper asset path resolution for GitHub Pages
+export function AssetImage({ src, alt = '', className = '', width, height }: AssetPathProps) {
+  const fixedSrc = useMemo(() => {
+    // Don't modify external URLs or data URLs
+    if (src.startsWith('http') || src.startsWith('data:')) {
+      return src;
+    }
+    
+    // If it's already prefixed with the repo name, don't change it
+    if (src.startsWith('/recipes/')) {
+      return src;
+    }
+    
+    // For custom domain, don't add recipes prefix
+    if (env.isCustomDomain) {
+      return src.startsWith('/') ? src : `/${src}`;
+    }
+    
+    // Add the repository name prefix for absolute paths
+    if (src.startsWith('/')) {
+      return `${env.basePath}${src}`;
+    }
+    
+    // Add the repository name prefix for relative paths
+    return `${env.basePath}/${src}`;
+  }, [src]);
+
+  return <img src={fixedSrc} alt={alt} className={className} width={width} height={height} />;
+}
+
+// Helper function to fix asset paths for use in client components only
+export function getAssetPath(src: string): string {
+  // Similar environment-aware logic for path handling
+  // ...
+}
+```
+
+### 2. Updated Navigation Components
+
+Components with hardcoded `/recipes` paths were updated to use `env.basePath`:
+
+- `site-header.tsx` - Updated navigation links
+- `site-footer.tsx` - Updated quick links
+- `recipe-card.tsx` - Updated recipe detail links
+
+```tsx
+// Example from site-header.tsx
+<Link href={`${env.basePath}/recipes`} className="text-lg font-semibold hover:text-primary-500 transition-colors">
+  All Recipes
+</Link>
+```
+
+### 3. Improved 404.html Redirect Handling
+
+The 404.html file was updated to detect whether the site is running on GitHub Pages or a custom domain and handle redirects appropriately:
+
+```html
+<script>
+  // SPA redirect script for GitHub Pages and custom domains
+  (function() {
+    // Get the hostname and path
+    const hostname = window.location.hostname;
+    const path = window.location.pathname;
+    const pathSegments = path.split('/');
+    
+    // Determine if we're on GitHub Pages or a custom domain
+    // GitHub Pages hostnames follow the pattern: username.github.io
+    const isGitHubPages = hostname.includes('github.io');
+    
+    if (isGitHubPages) {
+      // GitHub Pages mode - Need to handle the /recipes/ prefix
+      const repoName = pathSegments[1]; // Should be 'recipes'
+      
+      if (repoName === 'recipes') {
+        // Store the path in sessionStorage
+        sessionStorage.setItem('redirectPath', path);
+        
+        // Redirect to the base URL with repository name
+        window.location.replace('/' + repoName + '/');
+      }
+    } else {
+      // Custom domain mode - No need for repository prefix
+      // Store the path in sessionStorage
+      sessionStorage.setItem('redirectPath', path);
+      
+      // Redirect to the root
+      window.location.replace('/');
+    }
+  })();
+</script>
+```
+
+### 4. Fixed Client-Side Navigation in layout.tsx
+
+The layout.tsx script was updated to correctly handle redirects based on environment:
+
+```tsx
+<Script id="github-pages-spa-navigation" strategy="beforeInteractive">
+  {`
+    (function() {
+      // Check if we have a path stored in sessionStorage from a 404 redirect
+      const redirectPath = sessionStorage.getItem('redirectPath');
+      if (redirectPath) {
+        sessionStorage.removeItem('redirectPath');
+        
+        // Determine if we're on GitHub Pages or a custom domain
+        const hostname = window.location.hostname;
+        const isGitHubPages = hostname.includes('github.io');
+        
+        // Handle paths differently based on environment
+        if (isGitHubPages) {
+          // GitHub Pages: need to handle the repository name in the path
+          const repoName = '/recipes';
+          const relativePath = redirectPath.replace(repoName, '') || '/';
+          
+          // Store for client-side navigation after hydration
+          window.__NEXT_REDIRECT_PATH = relativePath;
+        } else {
+          // Custom domain: use the path as-is
+          window.__NEXT_REDIRECT_PATH = redirectPath;
+        }
+      }
+    })();
+  `}
+</Script>
+```
+
+### 5. Key Benefits of These Changes
+
+- **Consistent Path Handling**: All paths now respect the `env.basePath` setting
+- **Environment Detection**: Components can now detect GitHub Pages vs. custom domains
+- **Automatic Path Adjustment**: No more hard-coded `/recipes` prefixes causing 404s
+- **Improved SPA Navigation**: The 404 redirect system works in both hosting scenarios
+
+These fixes ensure that assets, images, and styles load correctly on both GitHub Pages subdirectory mode and custom domain deployments without requiring separate codebases or complex configurations.

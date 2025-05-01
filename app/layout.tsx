@@ -5,7 +5,6 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
-import { env } from "@/lib/env";
 
 const inter = Inter({
   subsets: ["latin"],
