@@ -10,6 +10,9 @@ interface RecipeCardProps {
 }
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
+  // Get the properly formatted image URL with GitHub Pages path handling
+  const imageUrl = getRecipeImageUrl(recipe);
+  
   return (
     <Link href={`/recipes/${recipe.id}`} className="block h-full">
       <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
@@ -17,7 +20,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           <div className="relative">
             <AspectRatio ratio={4/3}>
               <Image 
-                src={getRecipeImageUrl(recipe)}
+                src={imageUrl}
                 alt={recipe.name}
                 fill
                 className="object-cover"

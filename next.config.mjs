@@ -1,8 +1,10 @@
-// next.config.mjs - ES module version
-/** @type {import('next').NextConfig} */
+// @ts-check
 
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
+  basePath: process.env.NODE_ENV === "production" ? '/recipe-website' : '',
+  assetPrefix: process.env.NODE_ENV === "production" ? '/recipe-website/' : '',
   images: {
     unoptimized: true, // Required for static export
   },

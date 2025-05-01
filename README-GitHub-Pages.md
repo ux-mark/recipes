@@ -132,11 +132,24 @@ function ensureCorrectPath(path) {
     return path.replace(new RegExp(`^/${repoName}/`, 'g'), '/');
   } else {
     // Add the repository name for GitHub Pages
-    if (!path.startsWith(`/${repoName}/`) && path.startsWith('/') && !path.startsWith('//')) {
+    if (path.startsWith('/')) {
+      // Don't double up on slashes or add prefix to protocol-relative URLs
+      if (path.startsWith('//')) {
+        return path;
+      }
+      
+      // Don't add the prefix if it already exists
+      if (path.startsWith(`/${repoName}/`)) {
+        return path;
+      }
+      
+      // Add the prefix
       return `/${repoName}${path}`;
     }
+    
+    // If path doesn't start with slash, still add proper prefix
+    return `/${repoName}/${path}`;
   }
-  return path;
 }
 
 // Additional functions for processing different file types
