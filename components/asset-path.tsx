@@ -22,17 +22,17 @@ export function AssetImage({ src, alt = '', className = '', width, height }: Ass
     }
     
     // If it's already prefixed with the repo name, don't change it
-    if (src.startsWith('/recipe-website/')) {
+    if (src.startsWith('/recipes/')) {
       return src;
     }
     
     // Add the repository name prefix for absolute paths
     if (src.startsWith('/')) {
-      return `/recipe-website${src}`;
+      return `/recipes${src}`;
     }
     
     // Add the repository name prefix for relative paths
-    return `/recipe-website/${src}`;
+    return `/recipes/${src}`;
   }, [src]);
 
   return (
@@ -56,17 +56,17 @@ export function getAssetPath(src: string): string {
   }
   
   // If it's already prefixed with the repo name, don't change it
-  if (src.startsWith('/recipe-website/')) {
+  if (src.startsWith('/recipes/')) {
     return src;
   }
   
   // Add the repository name prefix for absolute paths
   if (src.startsWith('/')) {
-    return `/recipe-website${src}`;
+    return `/recipes${src}`;
   }
   
   // Add the repository name prefix for relative paths
-  return `/recipe-website/${src}`;
+  return `/recipes/${src}`;
 }
 
 export default AssetImage;

@@ -4,7 +4,7 @@ RewriteEngine On
 # If the requested file doesn't exist, try adding the repository name prefix
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /recipe-website/$1 [L,QSA]
+RewriteRule ^(.*)$ /recipes/$1 [L,QSA]
 
 # Handle 404 errors by redirecting to the main page
-ErrorDocument 404 /recipe-website/index.html
+ErrorDocument 404 /recipes/index.html

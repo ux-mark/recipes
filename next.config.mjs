@@ -3,8 +3,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: process.env.NODE_ENV === "production" ? '/recipe-website' : '',
-  assetPrefix: process.env.NODE_ENV === "production" ? '/recipe-website/' : '',
+  basePath: process.env.NODE_ENV === "production" ? '/recipes' : '',
+  assetPrefix: process.env.NODE_ENV === "production" ? '/recipes/' : '',
   images: {
     unoptimized: true, // Required for static export
   },

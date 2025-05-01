@@ -11,10 +11,10 @@ const isClientSide = typeof window !== 'undefined';
 export const env = {
   /**
    * Base path for the application
-   * In production (GitHub Pages), this will be /recipe-website
+   * In production (GitHub Pages), this will be /recipes
    * In development, this will be empty
    */
-  basePath: isProduction ? '/recipe-website' : '',
+  basePath: isProduction ? '/recipes' : '',
   
   /**
    * Whether the application is running in production mode

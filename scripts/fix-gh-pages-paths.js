@@ -12,7 +12,7 @@ const args = process.argv.slice(2);
 const isDebugMode = args.includes('--debug');
 
 // GitHub repo name - change this to match your repository name
-const repoName = 'recipe-website';
+const repoName = 'recipes';
 const basePath = `/${repoName}`;
 
 console.log(`Running GitHub Pages path fixer${isDebugMode ? ' (DEBUG MODE)' : ''}`);
