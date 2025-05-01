@@ -3,8 +3,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: process.env.NODE_ENV === "production" ? '/recipes' : '',
-  assetPrefix: process.env.NODE_ENV === "production" ? '/recipes/' : '',
+  // Use empty basePath and assetPrefix when USE_CUSTOM_DOMAIN=true
+  basePath: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true") ? '/recipes' : '',
+  assetPrefix: (process.env.NODE_ENV === "production" && process.env.USE_CUSTOM_DOMAIN !== "true") ? '/recipes/' : '',
   images: {
     unoptimized: true, // Required for static export
   },
