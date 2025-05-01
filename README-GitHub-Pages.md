@@ -9,6 +9,8 @@ The `next.config.mjs` file is configured for static site generation with the fol
 ```javascript
 const nextConfig = {
   output: 'export',
+  basePath: process.env.NODE_ENV === "production" ? '/recipes' : '',
+  assetPrefix: process.env.NODE_ENV === "production" ? '/recipes/' : '',
   images: {
     unoptimized: true, // Required for static export
   },
@@ -411,3 +413,85 @@ Then push the `out` directory to your GitHub Pages branch or let the GitHub Acti
 - [GitHub Pages Documentation](https://docs.github.com/en/pages)
 - [SPA GitHub Pages Redirect Pattern](https://github.com/rafgraph/spa-github-pages)
 - [Next.js GitHub Pages Examples](https://github.com/vercel/next.js/tree/canary/examples/github-pages)
+
+## 15. Repository Name Configuration
+
+The GitHub repository name is a critical part of the path configuration for GitHub Pages. All asset paths need to be prefixed with the repository name (e.g., `/repository-name/path/to/asset`) to work correctly.
+
+### Key Files with Repository Name References
+
+The following files have been updated to use the correct repository name (`recipes`):
+
+1. **scripts/fix-gh-pages-paths.js**
+   ```javascript
+   // GitHub repo name - change this to match your repository name
+   const repoName = 'recipes';
+   const basePath = `/${repoName}`;
+   ```
+
+2. **components/asset-path.tsx**
+   ```typescript
+   // If it's already prefixed with the repo name, don't change it
+   if (src.startsWith('/recipes/')) {
+     return src;
+   }
+   
+   // Add the repository name prefix for absolute paths
+   if (src.startsWith('/')) {
+     return `/recipes${src}`;
+   }
+   
+   // Add the repository name prefix for relative paths
+   return `/recipes/${src}`;
+   ```
+
+3. **lib/env.ts**
+   ```typescript
+   /**
+    * Base path for the application
+    * In production (GitHub Pages), this will be /recipes
+    * In development, this will be empty
+    */
+   basePath: isProduction ? '/recipes' : '',
+   ```
+
+4. **next.config.mjs** (shown above)
+
+5. **public/404.html**
+   ```javascript
+   // Only redirect if this is the GitHub Pages site
+   if (repoName === 'recipes') {
+     // Store the path in sessionStorage
+     sessionStorage.setItem('redirectPath', path);
+     
+     // Redirect to the base URL
+     window.location.replace('/' + repoName + '/');
+   }
+   ```
+
+6. **public/.htaccess**
+   ```apache
+   # If the requested file doesn't exist, try adding the repository name prefix
+   RewriteRule ^(.*)$ /recipes/$1 [L,QSA]
+   
+   # Handle 404 errors by redirecting to the main page
+   ErrorDocument 404 /recipes/index.html
+   ```
+
+### Fixing Repository Name Mismatches
+
+If you encounter 404 errors after deployment, check:
+
+1. **Verify Repository Name**: Ensure the repository name in the GitHub URL matches the one used in your configuration files
+2. **Inspect Network Requests**: Use browser developer tools to identify which assets have incorrect paths
+3. **Check Hardcoded Paths**: Search your codebase for any hardcoded paths that may not have been updated
+
+To change the repository name throughout the codebase:
+
+1. Update the `repoName` variable in `scripts/fix-gh-pages-paths.js`
+2. Modify the `basePath` and `assetPrefix` values in `next.config.mjs`
+3. Update the environment variables in `lib/env.ts`
+4. Check any custom components like `asset-path.tsx` that may have hardcoded paths
+5. Update references in special files like `404.html` and `.htaccess`
+
+After making these changes, rebuild and deploy your site to see the changes take effect.
