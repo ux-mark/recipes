@@ -12,7 +12,6 @@
     "start": "next start",
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js",
-    "prebuild": "npm run copy-images",
     "export": "next export",
     "deploy": "npm run build && touch out/.nojekyll",
     "serve-static": "npx serve out"
