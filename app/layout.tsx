@@ -5,6 +5,8 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { env } from "@/lib/env";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,9 +49,10 @@ export default async function RootLayout({
                 // Determine if we're on GitHub Pages or a custom domain
                 const hostname = window.location.hostname;
                 const isGitHubPages = hostname.includes('github.io');
+                const isCustomDomain = ${env.isCustomDomain};
                 
                 // Handle paths differently based on environment
-                if (isGitHubPages) {
+                if (isGitHubPages && !isCustomDomain) {
                   // GitHub Pages: need to handle the repository name in the path
                   const repoName = '/recipes';
                   const relativePath = redirectPath.replace(repoName, '') || '/';
