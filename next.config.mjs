@@ -3,13 +3,13 @@
 
 const nextConfig = {
   output: 'export',
-  // Set basePath if your GitHub Pages site will be served from a subdirectory
-  // basePath: '/recipe-website', // Uncomment and replace with your repo name if needed
+  // Set basePath for GitHub Pages repository
+  basePath: process.env.NODE_ENV === 'production' ? '/recipe-website' : '',
   images: {
     unoptimized: true, // Required for static export
   },
   // Required for GitHub Pages
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/recipe-website' : '', // Replace with your repo name
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/recipe-website' : '',
   trailingSlash: true, // Recommended for static hosting
   
   // Ignore TypeScript errors during build

@@ -4,6 +4,7 @@ import { ArrowRight, UtensilsCrossed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RecipeCard from '@/components/recipe-card';
 import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
+import GitHubPagesRedirect from '@/components/github-pages-redirect';
 
 export default async function Home() {
   const featuredRecipes = await getFeaturedRecipes(6);
@@ -17,6 +18,9 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
+      {/* GitHub Pages SPA Navigation Handler */}
+      <GitHubPagesRedirect />
+      
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary-50 to-secondary-50">
         <div className="container py-12 md:py-24">

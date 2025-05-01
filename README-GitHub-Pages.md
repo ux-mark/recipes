@@ -113,6 +113,13 @@ jobs:
    - Removed `'use server'` directive from `lib/recipes.ts` since Server Actions aren't supported in static exports
    - Refactored data loading functions to be compatible with static site generation
 
+8. **Fixed GitHub Pages SPA Navigation**
+   - Uncommented and properly configured `basePath` in next.config.mjs to match the repository name
+   - Created a custom 404.html page in the public folder with a redirect script for SPA navigation
+   - Added a client-side navigation handler via `components/github-pages-redirect.tsx`
+   - Added a script in the root layout to capture and process redirects
+   - These changes ensure that direct navigation to subpages works correctly on GitHub Pages
+
 ## 4. GitHub Pages Configuration
 
 1. Enable GitHub Pages in your repository settings
@@ -138,3 +145,21 @@ npx serve out
 ```
 
 This will build the static site and serve it locally so you can verify it works correctly before pushing to GitHub.
+
+## 7. SPA Navigation on GitHub Pages
+
+GitHub Pages does not natively support single-page applications (SPAs) like those built with Next.js. The following approach was implemented to enable proper navigation:
+
+1. A `404.html` file in the public directory captures all navigation to non-root paths
+2. The script in this file stores the requested path in sessionStorage
+3. The user is redirected to the site's root
+4. The root layout contains a script that checks for a stored path on page load
+5. If a stored path is found, it's passed to a client component for navigation
+6. The client component uses Next.js router to navigate to the correct page
+
+This approach allows visitors to:
+- Directly access subpages via URL (e.g., `/recipe-website/recipes/apple-pie`)
+- Use browser navigation (back/forward) normally
+- Share links to specific pages
+
+Without these changes, visitors would see a 404 error when directly navigating to subpages.
