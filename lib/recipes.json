@@ -2,7 +2,7 @@
   {
     "id": "apple-tart",
     "name": "Apple tart",
-    "description": "",
+    "description": "The best homemade tart that brings back childhood memories every time!",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -24,7 +24,7 @@
   {
     "id": "arepa-burgers",
     "name": "Arepa burgers",
-    "description": "",
+    "description": "Delicious and simple, great alternative burger!",
     "ingredients": [
       "[Arepa burgers](arepa-burgers)",
       "Burger patties",
@@ -64,7 +64,7 @@
   {
     "id": "arepas",
     "name": "Arepas",
-    "description": "",
+    "description": "So versatile and delicious! Great for breakfast, lunch or dinner.",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -88,7 +88,7 @@
   {
     "id": "bagels",
     "name": "Bagels",
-    "description": "",
+    "description": "A delicious and chewy bagel that is perfect for breakfast or a snack. Enjoy with your favourite toppings!",
     "aside": "💡 A strong mixer like a KitchenAid Pro (not available outside of the US) as a weaker one may break with the kneading. If you are uncertain do this by hand.",
     "ingredients": [
       "### Main",
@@ -151,7 +151,6 @@
     },
     "images": [
       "bagels/bagels-baked.png",
-      "bagels/bagels-baked.png",
       "bagels/bagels-boiling.png",
       "bagels/bagels-pre-bake.png"
     ]
@@ -159,7 +158,7 @@
   {
     "id": "banana-chocolate-cake",
     "name": "Banana & chocolate cake",
-    "description": "",
+    "description": "A staple, because it is the best banana and chocolate cake ever! It is so moist and delicious.",
     "ingredients": [
       " 115 g dark chocolate (min 70% cocoa)",
       "165 g (3/4 cup) coconut oil",
@@ -169,12 +168,13 @@
       "190 g (1 1/2 cups)  flour",
       "4.5 tsp baking powder / 1.5 tsp baking soda",
       "1.5 tbsp cocoa powder (dutch process only)",
-      "3 very ripe (i.e. black) bananas"
+      "3 very ripe (i.e. black) bananas",
+      "1 tsp vanilla extract"  
     ],
     "instructions": [
       "Put the chocolate in a bain-marie on the stove to melt the chocolate",
-      "Preheat the oven to 180°C / 350 F",
-      "Mix the coconut oil, sugar and slowly beat in the eggs",
+      "Preheat the oven to 180°C / 350°F",
+      "Mix the coconut oil, flavourings, sugar and slowly beat in the eggs",
       "Add flour, baking flour, and cocoa slowly",
       "Pour into prepared cake tin or bread tin ",
       "Bake in the oven for ~ 30 - 45 minutes until a skewer comes out clean.",
@@ -202,7 +202,7 @@
   {
     "id": "bauernbrot",
     "name": "Bauernbrot",
-    "description": "",
+    "description": "True to the german form, this is a hearty bread that is great for sandwiches or just with butter and sausage.",
     "ingredients": [],
     "instructions": [],
     "tags": [
@@ -226,7 +226,7 @@
   {
     "id": "bechamel-sauce",
     "name": "Bechamel sauce",
-    "description": "",
+    "description": "A simple staple, every cook should master.",
     "ingredients": [
       "50g / 4 tblsp butter",
       "125g / 1/2 cup flour",
@@ -316,7 +316,7 @@
   {
     "id": "brine",
     "name": "Brine",
-    "description": "",
+    "description": "The key to making succulent meat.",
     "ingredients": [
       "1/4 cup salt",
       "4 litres water",
@@ -343,7 +343,7 @@
   {
     "id": "buffalo-hot-sauce",
     "name": "Buffalo Hot Sauce",
-    "description": "",
+    "description": "The best way to enjoy chicken wings! This is a simple recipe that is easy to make and delicious.",
     "ingredients": [
       "Vinegar",
       "Aged cayenne red peppers",
@@ -369,13 +369,13 @@
       "url": ""
     },
     "images": [
-      "buffalo-hot-sauce/448113EF-0BAE-400D-BFBD-16F51C531356.jpeg"
+      "buffalo-hot-sauce/hot-sauce.jpeg"
     ]
   },
   {
     "id": "carrot-and-courgette-cake",
     "name": "Carrot and Courgette cake",
-    "description": "",
+    "description": "One of the best, healthy and easiest cakes to make. It is so moist and delicious.",
     "ingredients": [
       "275 g Wholemeal flour",
       "1 tsp baking soda",
@@ -406,7 +406,7 @@
   {
     "id": "chestnut-burger-patty",
     "name": "Chestnut Burger Patty",
-    "description": "",
+    "description": "A great alternative to meat, for that vego moment.",
     "ingredients": [
       "500g chestnuts, cooked and peeled",
       "250g brown mushrooms, chopped",
@@ -530,11 +530,13 @@
     "description": "",
     "ingredients": [
       "Strawberries",
-      "-"
+      "Chocolate chips (or high quality chocolate)"
     ],
-    "instructions": [],
+    "instructions": [
+      "Melt chocolate in water bath.",
+      "Dip strawberries in melted chocolate and let cool on parchment paper."
+    ],
     "tags": [
-      "Needs content",
       "Sweets"
     ],
     "prepTime": "",
@@ -1074,7 +1076,7 @@
       "url": ""
     },
     "images": [
-      "irish-spiced-beef/IMG_0686.jpeg"
+      "irish-spiced-beef/spiced-beef.jpeg"
     ]
   },
   {
@@ -1125,8 +1127,8 @@
       "Make the bolognese the day before (for full flavour) and prepare the pasta the same day, you can make them to size and leave them dry - you can also make them the next day if you wish. Make the bechamel sauce.",
       "Choose your dish, pyrex or a ceramic casserole usually work well. Layer in the bolognese then pasta, then bechemel, then again. I like to have 3 layers of pasta at a minimum.",
       "Layer on 1/2 of the the cheese.",
-      "Bake on a 180C / 350F oven for 40 minutes, add the cheese and bake for another 20 minutes.",
-      "Serve fresh and enjoy with a"
+      "Bake on a 180°C / 350°F oven for 40 minutes, add the cheese and bake for another 20 minutes.",
+      "Serve fresh and enjoy with a salad with basil leaves, olive oil and balsamic vinegar."
     ],
     "tags": [
       "Dinner"
@@ -1380,7 +1382,6 @@
     },
     "images": [
       "mince-pies/mince-pies.png",
-      "mince-pies/mince-pies.png",
       "mince-pies/2472EBAA-8567-45F3-8FD1-83E6F07B0F9A.jpeg"
     ]
   },
@@ -1455,7 +1456,7 @@
       "name": "",
       "url": ""
     },
-    "images": []
+    "images": ["mixed-peel/mixed-peel.jpeg"]
   },
   {
     "id": "nut-bickies",
@@ -1548,7 +1549,7 @@
       "url": ""
     },
     "images": [
-      "olivias-muesli/a500608a-f1f3-4d2d-99dc-778dbd34c121.jpeg"
+      "olivias-muesli/vancourver-granola.jpeg"
     ]
   },
   {
@@ -1618,7 +1619,10 @@
       "name": "",
       "url": ""
     },
-    "images": []
+    "images": [
+      "pasta/pasta-1.jpeg",
+      "pasta/pasta-2.jpeg"
+    ]
   },
   {
     "id": "pear-and-chocolate-tart",
@@ -1795,7 +1799,7 @@
     ]
   },
   {
-    "id": "ragú-from-olivia",
+    "id": "ragu-from-olivia",
     "name": "Ragú (from Olivia)",
     "description": "",
     "ingredients": [
@@ -1817,8 +1821,8 @@
       "url": ""
     },
     "images": [
-      "ragú-from-olivia/ragu-1.jpeg",
-      "ragú-from-olivia/ragu-2.jpeg"
+      "ragu-from-olivia/ragu-1.jpeg",
+      "ragu-from-olivia/ragu-2.jpeg"
     ]
   },
   {
@@ -2281,8 +2285,8 @@
     ],
     "instructions": [
       "Slice the tomatoes in half so they dry as long strips as possible.",
-      "Lightly salt and leave to dry outside in the sun. This typically takes 3-4 days in full sun at 25C / 77F, if it’s 40C / 100F this will be less. You want them dry but not dried out and certainly not crispy.",
-      "If sun is not forthcoming you can put them in a fan forced oven low around 95C / 200F.",
+      "Lightly salt and leave to dry outside in the sun. This typically takes 3-4 days in full sun at 25°C / 77°F, if it’s 40°C / 100°F this will be less. You want them dry but not dried out and certainly not crispy.",
+      "If sun is not forthcoming you can put them in a fan forced oven low around 95°C / 200°F.",
       "When they are dry sterilise enough jars for your tomatoes - I find a full tray will go into about a have that’s 250g / 1 cup.",
       "Chop enough garlic for your taste and mix in enough basil to have a generous sprinkle on each tomato. Mix them all together with the tomatoes in a bowl.",
       "Fill each jar with about 1/4 oil and then fill with the tomatoes. You need to press them down and make sure they are covered with oil. Use some toothpicks to hold them in the jar if necessary.",
@@ -2336,7 +2340,7 @@
       "url": ""
     },
     "images": [
-      "taco-seasoning/image.jpg"
+      "taco-seasoning/taco-seasoning.jpg"
     ]
   },
   {
@@ -2374,11 +2378,12 @@
       "url": ""
     },
     "images": [
-      "the-39ties/PXL_20210602_022200395.NIGHT.jpg"
+      "the-39ties/the39ties-1.jpg",
+      "the-39ties/the39ties-2.jpg"
     ]
   },
   {
-    "id": "tiramisù",
+    "id": "tiramisu",
     "name": "Tiramisù",
     "description": "",
     "ingredients": [

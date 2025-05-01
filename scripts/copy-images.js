@@ -1,14 +1,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 // Get current file's directory (ES modules don't have __dirname)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Source and destination directories
-// If running in Digital Ocean or other deployment environment, we'll skip the external source directory
-const sourceDir = path.join(__dirname, '../../Recipes-and-photos');
+// Use the environment variable or fall back to the default path
+const sourceDir = process.env.RECIPE_IMAGES_SOURCE_DIR 
+  ? path.join(__dirname, process.env.RECIPE_IMAGES_SOURCE_DIR) 
+  : path.join(__dirname, '../../Recipes-and-photos');
 const destDir = path.join(__dirname, '../public/images');
 
 // Create destination directory if it doesn't exist
