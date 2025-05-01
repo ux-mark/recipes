@@ -5,13 +5,12 @@ import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
-interface TagPageProps {
-  params: {
-    tag: string;
-  };
+// Define simple parameter type without extending PageProps
+type TagParams = {
+  tag: string;
 }
 
-export async function generateMetadata({ params }: TagPageProps) {
+export async function generateMetadata({ params }: { params: TagParams }) {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   
@@ -35,7 +34,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function TagPage({ params }: TagPageProps) {
+export default async function TagPage({ params }: { params: TagParams }) {
   const tag = decodeURIComponent(params.tag);
   const recipes = await getRecipesByTag(tag);
   

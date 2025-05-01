@@ -6,14 +6,13 @@ import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
 
-interface RecipePageProps {
-  params: {
-    id: string;
-  };
-  searchParams?: Record<string, string | string[] | undefined>;
+// Define simple parameter type without extending PageProps
+type RecipeParams = {
+  id: string;
 }
 
-export async function generateMetadata({ params }: RecipePageProps) {
+// Use Next.js's specific typing patterns for these functions
+export async function generateMetadata({ params }: { params: RecipeParams }) {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
@@ -36,7 +35,8 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function RecipePage({ params }: RecipePageProps) {
+// Use the appropriate page typing for Next.js 15.3.1
+export default async function RecipePage({ params }: { params: RecipeParams }) {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
