@@ -1,16 +1,15 @@
-// We need to mark this file as server-only
-'use server';
+// For Next.js static export, we can't use server-only directives
+// This file has been modified to work in both client and server contexts
 
 import fs from 'fs';
 import path from 'path';
 import { Recipe, RecipeTag } from './types';
 
 // Path to the recipes JSON file
-// TODO: Move this to a config file or environment variable
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
 
-// Function to get all recipes
-export async function getAllRecipes(): Promise<Recipe[]> {
+// Helper to read recipe data - works at build time
+function readRecipeData(): Recipe[] {
   try {
     const fileContents = fs.readFileSync(recipesFilePath, 'utf8');
     const recipes: Recipe[] = JSON.parse(fileContents);
@@ -19,6 +18,11 @@ export async function getAllRecipes(): Promise<Recipe[]> {
     console.error('Error loading recipe data:', error);
     return [];
   }
+}
+
+// Function to get all recipes
+export async function getAllRecipes(): Promise<Recipe[]> {
+  return readRecipeData();
 }
 
 // Function to get a single recipe by ID

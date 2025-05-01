@@ -109,6 +109,10 @@ jobs:
    - Added `export const dynamic = "force-static"` to API routes to make them compatible with static export
    - This is required for any API route when using `output: 'export'` in Next.js config
 
+7. **Removed Server Actions**
+   - Removed `'use server'` directive from `lib/recipes.ts` since Server Actions aren't supported in static exports
+   - Refactored data loading functions to be compatible with static site generation
+
 ## 4. GitHub Pages Configuration
 
 1. Enable GitHub Pages in your repository settings
