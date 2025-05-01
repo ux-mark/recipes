@@ -18,16 +18,20 @@ interface AssetPathProps {
 export function AssetImage({ src, alt = '', className = '', width, height }: AssetPathProps) {
   const fixedSrc = useMemo(() => {
     // Don't modify external URLs or data URLs
-    if (src.startsWith('http') || src.startsWith('data:')) {
+    if (!src || src.startsWith('http') || src.startsWith('data:')) {
       return src;
     }
     
-    // If it's already prefixed with the repo name, don't change it
+    // If it's already prefixed with the repo name, handle based on domain type
     if (src.startsWith('/recipes/')) {
+      // For custom domains, remove the /recipes/ prefix
+      if (env.isCustomDomain) {
+        return src.replace('/recipes/', '/');
+      }
       return src;
     }
     
-    // For custom domain, don't add recipes prefix
+    // For custom domain, ensure correct path format without /recipes prefix
     if (env.isCustomDomain) {
       return src.startsWith('/') ? src : `/${src}`;
     }
@@ -61,12 +65,16 @@ export function getAssetPath(src: string): string {
     return src;
   }
   
-  // If it's already prefixed with the repo name, don't change it
+  // If it's already prefixed with the repo name, handle based on domain type
   if (src.startsWith('/recipes/')) {
+    // For custom domains, remove the /recipes/ prefix
+    if (env.isCustomDomain) {
+      return src.replace('/recipes/', '/');
+    }
     return src;
   }
   
-  // For custom domain, don't add recipes prefix
+  // For custom domain, ensure correct path format without /recipes prefix
   if (env.isCustomDomain) {
     return src.startsWith('/') ? src : `/${src}`;
   }

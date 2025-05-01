@@ -7,7 +7,18 @@
 
 const isProduction = typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
 const isClientSide = typeof window !== 'undefined';
-const isCustomDomain = typeof process !== 'undefined' && process.env.USE_CUSTOM_DOMAIN === 'true';
+
+// Custom domain detection with both SSR and browser compatibility
+let isCustomDomain = false;
+if (typeof process !== 'undefined' && process.env.USE_CUSTOM_DOMAIN === 'true') {
+  // Server-side detection
+  isCustomDomain = true;
+} else if (isClientSide) {
+  // Client-side detection for custom domains
+  // Check if we're on a GitHub Pages hostname (username.github.io)
+  const hostname = window.location.hostname;
+  isCustomDomain = !hostname.includes('github.io');
+}
 
 export const env = {
   /**

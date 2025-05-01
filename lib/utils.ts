@@ -11,13 +11,19 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function getAssetPath(path: string): string {
   // Don't modify URLs that are already absolute or data URLs
-  if (path.startsWith('http') || path.startsWith('data:')) {
+  if (!path || path.startsWith('http') || path.startsWith('data:')) {
     return path;
   }
   
-  // If path already includes the base path, return as is
+  // If path already includes the base path when it's not empty, return as is
   if (env.basePath && path.startsWith(env.basePath)) {
     return path;
+  }
+  
+  // Special handling for known recipe paths
+  if (path.startsWith('/recipes/') && env.isCustomDomain) {
+    // For custom domains, strip the /recipes/ prefix
+    return path.replace('/recipes/', '/');
   }
 
   // Handle paths with or without leading slash

@@ -1207,3 +1207,106 @@ The deployment process remains the same, but builds will now succeed without err
 2. **For custom domain deployment**:
    - Use the GitHub Actions workflow with "custom-domain" option
    - The paths will be root-relative without the `/recipes` prefix
+
+## 22. Fixing ESLint and Syntax Errors (May 2025 Update)
+
+Recent improvements were made to address build failures related to ESLint errors and syntax issues:
+
+### React JSX Unescaped Entities Error
+
+**Problem:**
+Build failures occurred due to unescaped quotes in JSX code:
+```
+./components/path-debug.tsx
+44:24  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+44:40  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+```
+
+**Solution:**
+Double quotes in JSX must be properly escaped. The following fix was applied to path-debug.tsx:
+
+```tsx
+// Before:
+<li>Base Path: "{info.basePath}"</li>
+
+// After:
+<li>Base Path: &quot;{info.basePath}&quot;</li>
+```
+
+This change ensures that JSX interprets double quotes as regular text rather than as part of the JSX syntax.
+
+### Unnecessary ESLint Directive Warning
+
+**Problem:**
+A warning was generated about an unused ESLint directive:
+```
+./app/layout.tsx
+8:1  Warning: Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-unused-vars').
+```
+
+**Solution:**
+The ESLint directive was removed since the import it was trying to suppress is actually used in the code:
+
+```tsx
+// Before:
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { env } from "@/lib/env";
+
+// After:
+import { env } from "@/lib/env";
+```
+
+Since the `env` variable is used within a JavaScript template literal in the layout file, this directive was unnecessary.
+
+### Syntax Error in Utility File
+
+**Problem:**
+A critical syntax error was detected in lib/utils.ts:
+```
+./lib/utils.ts
+Error:   x Expected ';', '}' or <eof>
+   ,-[/Users/markwhooley/Documents/git-repos/recipe-website/lib/utils.ts:1:1]
+ 1 | Firimport { clsx, type ClassValue } from "clsx"
+```
+
+**Solution:**
+The typo at the beginning of the utils.ts file was fixed:
+
+```typescript
+// Before:
+Firimport { clsx, type ClassValue } from "clsx"
+
+// After:
+import { clsx, type ClassValue } from "clsx"
+```
+
+This simple fix resolved a critical issue that was preventing proper imports throughout the application.
+
+### Impact of These Changes
+
+These fixes address all errors that were causing build failures during deployment:
+
+1. **Fixed ESLint Errors**: Properly escaped quotes in JSX
+2. **Cleaned Up Warnings**: Removed unnecessary ESLint directive
+3. **Fixed Syntax Errors**: Corrected typo in critical utility file
+
+With these changes, the build process now completes successfully, allowing the site to deploy correctly to GitHub Pages.
+
+### Remaining Warnings
+
+One non-critical warning remains:
+```
+./components/asset-path.tsx
+45:5  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image`...
+```
+
+This is a performance recommendation about using Next.js optimized Image component instead of standard HTML `<img>` tags. Since static exports have limited Image component support, this warning can be ignored or addressed separately as a future enhancement.
+
+### Advice for Future Builds
+
+1. **Run Local Builds First**: Test with `npm run build` locally before pushing to GitHub
+2. **Check ESLint Rules**: Use `npm run lint` to catch syntax issues early
+3. **Properly Escape JSX**: Remember to escape special characters in JSX (`"` → `&quot;`, `'` → `&apos;`, etc.)
+4. **Validate Critical Files**: Double-check syntax in critical utility files that are imported widely
+
+These practices will help avoid similar issues in future deployments.

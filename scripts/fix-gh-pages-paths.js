@@ -168,6 +168,36 @@ function processHtmlFiles(directory) {
       }
     }
   }
+  
+  // Add a special check for stylesheet links with absolute paths that might still have /recipes/ prefix
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        continue;
+      } else if (item.name.endsWith('.html')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // Fix stylesheet links that still have /recipes/ prefix
+          const newContent = content.replace(
+            /(<link[^>]+href=["'])\/recipes\/([^"']+)(["'][^>]*>)/g,
+            (match, prefix, href, suffix) => {
+              return `${prefix}/${href}${suffix}`;
+            }
+          );
+          
+          if (content !== newContent) {
+            fs.writeFileSync(fullPath, newContent);
+            console.log(`Fixed custom domain stylesheet links in: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error processing custom domain paths in ${fullPath}: ${error.message}`);
+        }
+      }
+    }
+  }
 }
 
 // Fix image paths in JS files
@@ -209,6 +239,40 @@ function processJsFiles(directory) {
         }
       } catch (error) {
         console.error(`Error processing ${fullPath}: ${error.message}`);
+      }
+    }
+  }
+  
+  // Add special handling for custom domain JS files with hardcoded /recipes/ paths
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        processJsFiles(fullPath);
+      } else if (item.name.endsWith('.js')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // Fix hardcoded /recipes/ paths in JS files for custom domains
+          const newContent = content.replace(
+            /(["'])\/recipes\/([^"']+)(["'])/g,
+            (match, prefix, path, suffix) => {
+              const fixedPath = `/${path}`;
+              pathsFixed++;
+              if (isDebugMode) console.log(`Fixed JS /recipes/ path for custom domain: /recipes/${path} -> ${fixedPath}`);
+              return `${prefix}${fixedPath}${suffix}`;
+            }
+          );
+          
+          if (content !== newContent) {
+            fs.writeFileSync(fullPath, newContent);
+            filesProcessed++;
+            console.log(`Updated JS for custom domain: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error processing ${fullPath}: ${error.message}`);
+        }
       }
     }
   }
@@ -256,6 +320,40 @@ function processCssFiles(directory) {
         }
       } catch (error) {
         console.error(`Error processing ${fullPath}: ${error.message}`);
+      }
+    }
+  }
+  
+  // Add special handling for CSS files with hardcoded /recipes/ paths
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        processCssFiles(fullPath);
+      } else if (item.name.endsWith('.css')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // Fix hardcoded /recipes/ paths in CSS files for custom domains
+          const newContent = content.replace(
+            /url\(\s*(['"]?)\/recipes\/([^'")]+)(['"]?)\s*\)/g,
+            (match, prefix, url, suffix) => {
+              const fixedUrl = `/${url}`;
+              pathsFixed++;
+              if (isDebugMode) console.log(`Fixed CSS url for custom domain: /recipes/${url} -> ${fixedUrl}`);
+              return `url(${prefix}${fixedUrl}${suffix})`;
+            }
+          );
+          
+          if (content !== newContent) {
+            fs.writeFileSync(fullPath, newContent);
+            filesProcessed++;
+            console.log(`Updated CSS for custom domain: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error processing ${fullPath}: ${error.message}`);
+        }
       }
     }
   }
@@ -526,6 +624,85 @@ function fixNextDataIslands() {
       console.error(`Error processing file ${filePath}: ${error.message}`);
     }
   }
+  
+  // Add enhanced handling for Next.js data islands in custom domain mode
+  function enhancedFixPaths(obj) {
+    if (!obj || typeof obj !== 'object') return obj;
+    
+    // Handle arrays
+    if (Array.isArray(obj)) {
+      return obj.map(item => enhancedFixPaths(item));
+    }
+    
+    // Handle objects
+    const result = { ...obj };
+    
+    for (const key in result) {
+      const value = result[key];
+      
+      if (typeof value === 'string') {
+        // For custom domains, remove ALL /recipes/ prefixes
+        if (isCustomDomain && value.includes('/recipes/')) {
+          result[key] = value.replace(/\/recipes\//g, '/');
+          pathsFixed++;
+          if (isDebugMode) {
+            console.log(`Fixed deep path in JSON for custom domain: ${value} -> ${result[key]}`);
+          }
+        }
+      } else if (value && typeof value === 'object') {
+        // Recursively process nested objects
+        result[key] = enhancedFixPaths(value);
+      }
+    }
+    
+    return result;
+  }
+  
+  // In custom domain mode, do a special pass on all HTML files to find and fix data islands
+  if (isCustomDomain) {
+    const htmlFiles = [];
+    
+    // Find all HTML files
+    function findHtmlFiles(dir) {
+      const items = fs.readdirSync(dir, { withFileTypes: true });
+      
+      for (const item of items) {
+        const fullPath = path.join(dir, item.name);
+        
+        if (item.isDirectory()) {
+          findHtmlFiles(fullPath);
+        } else if (item.name.endsWith('.html')) {
+          htmlFiles.push(fullPath);
+        }
+      }
+    }
+    
+    findHtmlFiles(outputDir);
+    
+    // Process each HTML file
+    for (const filePath of htmlFiles) {
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        
+        // Check for inline scripts with hardcoded paths
+        const newContent = content.replace(
+          /(["'])\/recipes\/([^"']+)(["'])/g,
+          (match, prefix, p, suffix) => {
+            const fixed = `${prefix}/${p}${suffix}`;
+            pathsFixed++;
+            return fixed;
+          }
+        );
+        
+        if (content !== newContent) {
+          fs.writeFileSync(filePath, newContent);
+          console.log(`Fixed hardcoded /recipes/ paths in: ${filePath}`);
+        }
+      } catch (error) {
+        console.error(`Error fixing hardcoded paths in ${filePath}: ${error.message}`);
+      }
+    }
+  }
 }
 
 // Main execution
@@ -545,6 +722,27 @@ try {
   processJsFiles(outputDir);
   processCssFiles(outputDir);
   fixNextDataIslands();
+  
+  // Add a verification step for custom domains
+  if (isCustomDomain) {
+    console.log('\nVerifying custom domain paths...');
+    
+    // Check a few HTML files for remaining /recipes/ references
+    const sampleHtmlFiles = fs.readdirSync(outputDir)
+      .filter(file => file.endsWith('.html'))
+      .slice(0, 3);
+      
+    for (const file of sampleHtmlFiles) {
+      const content = fs.readFileSync(path.join(outputDir, file), 'utf8');
+      const remainingReferences = (content.match(/\/recipes\//g) || []).length;
+      
+      if (remainingReferences > 0) {
+        console.warn(`\x1b[33mWARNING: ${file} still contains ${remainingReferences} references to /recipes/\x1b[0m`);
+      } else {
+        console.log(`✓ ${file} looks good - no /recipes/ references`);
+      }
+    }
+  }
   
   console.log(`
 ===== Path Fixing Complete =====
