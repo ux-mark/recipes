@@ -11,14 +11,23 @@ interface TagPageProps {
   };
 }
 
-// Helper function to normalize tag handling throughout the app
+/**
+ * Helper function to normalize tag handling throughout the app
+ * This should match the same logic as in recipes.ts
+ */
 function normalizeTag(tag: string): string {
-  return tag.trim();
+  // First trim any leading/trailing whitespace
+  const trimmed = tag.trim();
+  
+  // Additional normalization to handle emoji characters and inconsistent spacing
+  return trimmed.replace(/\s+/g, ' ');
 }
 
 export async function generateMetadata({ params }: TagPageProps) {
-  // Normalize the tag after decoding
-  const tag = normalizeTag(decodeURIComponent(params.tag));
+  // Normalize the tag after decoding to match the logic in recipes.ts
+  const decodedTag = decodeURIComponent(params.tag);
+  const tag = normalizeTag(decodedTag);
+  
   const recipes = await getRecipesByTag(tag);
   
   if (recipes.length === 0) {
@@ -37,14 +46,18 @@ export async function generateStaticParams() {
   const tags = await getAllTags();
   
   return tags.map((tag) => ({
+    // Make sure we're using the same normalization logic when generating static paths
     tag: encodeURIComponent(normalizeTag(tag.name)),
   }));
 }
 
 export default async function TagPage({ params }: TagPageProps) {
-  // Normalize the tag after decoding
-  const tag = normalizeTag(decodeURIComponent(params.tag));
-  const recipes = await getRecipesByTag(tag);
+  // First decode the URL parameter, then normalize it
+  const decodedTag = decodeURIComponent(params.tag);
+  const normalizedTag = normalizeTag(decodedTag);
+  
+  // Use the normalized tag to fetch recipes
+  const recipes = await getRecipesByTag(normalizedTag);
   
   if (recipes.length === 0) {
     notFound();
@@ -62,8 +75,8 @@ export default async function TagPage({ params }: TagPageProps) {
       </div>
       
       <header className="mb-8">
-        <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">{tag} Recipes</h1>
-        <p className="text-neutral-600">Browse our collection of {recipes.length} {tag.toLowerCase()} recipes.</p>
+        <h1 className="font-serif text-3xl md:text-4xl font-bold mb-2">{normalizedTag} Recipes</h1>
+        <p className="text-neutral-600">Browse our collection of {recipes.length} {normalizedTag.toLowerCase()} recipes.</p>
         <Separator className="mt-4" />
       </header>
 

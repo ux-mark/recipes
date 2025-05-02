@@ -7,6 +7,18 @@ import { getRecipeImageUrl } from '@/lib/client-utils/image';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
+/**
+ * Helper function to normalize tag handling throughout the app
+ * This should match the same logic as in recipes.ts
+ */
+function normalizeTag(tag: string): string {
+  // First trim any leading/trailing whitespace
+  const trimmed = tag.trim();
+  
+  // Additional normalization to handle emoji characters and inconsistent spacing
+  return trimmed.replace(/\s+/g, ' ');
+}
+
 interface RecipeCardProps {
   recipe: Recipe;
 }
@@ -46,7 +58,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             {recipe.tags.slice(0, 3).map(tag => (
               <Link 
                 key={tag}
-                href={`/tags/${encodeURIComponent(tag.trim())}`}
+                href={`/tags/${encodeURIComponent(normalizeTag(tag))}`}
                 className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full hover:bg-neutral-200 transition-colors"
                 onClick={handleTagClick}
               >

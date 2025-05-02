@@ -9,7 +9,11 @@ import type { Metadata } from 'next';
 
 // Helper function to normalize tag handling throughout the app
 function normalizeTag(tag: string): string {
-  return tag.trim();
+  // First trim any leading/trailing whitespace
+  const trimmed = tag.trim();
+  
+  // Additional normalization to handle emoji characters and inconsistent spacing
+  return trimmed.replace(/\s+/g, ' ');
 }
 
 interface RecipePageProps {

@@ -9,9 +9,19 @@ import { Recipe, RecipeTag } from './types';
 // TODO: Move this to a config file or environment variable
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
 
-// Helper function to normalize tags consistently throughout the app
+/**
+ * Helper function to normalize tags consistently throughout the app
+ * This handles edge cases like inconsistent spaces before/after emojis
+ * and ensures we get consistent tag comparisons regardless of environment
+ */
 function normalizeTag(tag: string): string {
-  return tag.trim();
+  // First trim any leading/trailing whitespace
+  const trimmed = tag.trim();
+  
+  // Additional normalization to handle emoji characters and inconsistent spacing
+  // This regex handles cases where emoji might have inconsistent spacing
+  // For example: "🎄Xmas" vs "🎄 Xmas" will be normalized the same
+  return trimmed.replace(/\s+/g, ' ');
 }
 
 // Function to get all recipes
@@ -48,23 +58,29 @@ export async function getRecipesByTag(tag: string): Promise<Recipe[]> {
 // Function to get all unique tags with counts
 export async function getAllTags(): Promise<RecipeTag[]> {
   const recipes = await getAllRecipes();
-  const tagCounts: Record<string, number> = {};
+  const tagCounts: Record<string, { count: number, originalTag: string }> = {};
   
   // Count occurrences of each tag
   recipes.forEach(recipe => {
     recipe.tags.forEach(tag => {
-      if (tagCounts[tag]) {
-        tagCounts[tag]++;
+      const normalizedTag = normalizeTag(tag);
+      
+      if (tagCounts[normalizedTag]) {
+        tagCounts[normalizedTag].count++;
       } else {
-        tagCounts[tag] = 1;
+        // Store both normalized form (as key) and original form
+        tagCounts[normalizedTag] = {
+          count: 1,
+          originalTag: tag // Keep the original tag for display
+        };
       }
     });
   });
   
   // Convert to array of RecipeTag objects
-  return Object.entries(tagCounts).map(([name, count]) => ({
-    name,
-    count
+  return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+    name: data.originalTag, // Use the original tag for display
+    count: data.count
   })).sort((a, b) => b.count - a.count);
 }
 
