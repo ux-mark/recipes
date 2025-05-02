@@ -78,7 +78,7 @@ export async function getAllTags(): Promise<RecipeTag[]> {
   });
   
   // Convert to array of RecipeTag objects
-  return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+  return Object.entries(tagCounts).map(([_, data]) => ({
     name: data.originalTag, // Use the original tag for display
     count: data.count
   })).sort((a, b) => b.count - a.count);
