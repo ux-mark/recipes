@@ -210,9 +210,9 @@ return Object.entries(tagCounts).map(([normalizedName, data]) => ({
 })).sort((a, b) => b.count - a.count);
 ```
 
-### Resolution
+### Resolution: First Attempt
 
-We fixed this by replacing the unused `normalizedName` parameter with an underscore (`_`), which is the conventional way to indicate an intentionally unused parameter in JavaScript/TypeScript:
+We initially fixed this by replacing the unused `normalizedName` parameter with an underscore (`_`), which is the conventional way to indicate an intentionally unused parameter in JavaScript/TypeScript:
 
 ```typescript
 return Object.entries(tagCounts).map(([_, data]) => ({
@@ -221,7 +221,23 @@ return Object.entries(tagCounts).map(([_, data]) => ({
 })).sort((a, b) => b.count - a.count);
 ```
 
-This change maintained all the functionality while satisfying Vercel's strict linting requirements.
+### Resolution: Final Fix
+
+However, the bare underscore approach also caused linting issues in Vercel's build environment. Different ESLint configurations have different rules for handling unused variables.
+
+The final solution was to use a prefixed underscore variable name, which explicitly indicates intention while satisfying ESLint rules:
+
+```typescript
+return Object.entries(tagCounts).map(([_normalizedName, data]) => ({
+  name: data.originalTag, // Use the original tag for display
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+This approach:
+1. Maintains code clarity through descriptive variable naming
+2. Visually indicates that the variable is intentionally unused (via the underscore prefix)
+3. Satisfies Vercel's ESLint configuration requirements
 
 ## Testing and Verification
 
@@ -272,6 +288,8 @@ For a more robust tag handling system, consider these additional enhancements:
 5. **Unicode Normalization**: For multilingual applications, consider adding Unicode normalization to handle different representations of the same characters.
 
 6. **Linting Consistency**: Ensure development and production environments use the same ESLint configuration to catch issues before deployment.
+
+7. **ESLint Configuration Documentation**: Document project-specific ESLint conventions, particularly around unused variables and destructuring patterns, to avoid future build failures.
 
 ## Conclusion
 
