@@ -7,6 +7,7 @@ import { getAllTags } from "@/lib/recipes";
 import Script from "next/script";
 import { env } from "@/lib/env";
 import PathDebugWrapper from "@/components/path-debug-wrapper";
+import GitHubPagesRedirect from "@/components/github-pages-redirect";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,7 +38,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
-        {/* Script for handling GitHub Pages SPA navigation */}
+        {/* Enhanced script for handling GitHub Pages SPA navigation */}
         <Script id="github-pages-spa-navigation" strategy="beforeInteractive">
           {`
             (function() {
@@ -48,20 +49,24 @@ export default async function RootLayout({
                 
                 // Determine if we're on GitHub Pages or a custom domain
                 const hostname = window.location.hostname;
-                const isGitHubPages = hostname.includes('github.io');
-                const isCustomDomain = ${env.isCustomDomain};
+                const isGitHubPages = hostname.includes('github.io') || hostname.includes('.githubusercontent.com');
+                const basePath = isGitHubPages ? '/recipes' : '';
                 
-                // Handle paths differently based on environment
-                if (isGitHubPages && !isCustomDomain) {
-                  // GitHub Pages: need to handle the repository name in the path
-                  const repoName = '/recipes';
-                  const relativePath = redirectPath.replace(repoName, '') || '/';
-                  
-                  // Store for client-side navigation after hydration
-                  window.__NEXT_REDIRECT_PATH = relativePath;
-                } else {
-                  // Custom domain: use the path as-is
-                  window.__NEXT_REDIRECT_PATH = redirectPath;
+                // Special handling for paths that still have /recipes/ prefix on custom domain
+                let processedPath = redirectPath;
+                if (!isGitHubPages && processedPath.startsWith('/recipes/')) {
+                  processedPath = processedPath.replace(/^\/recipes/, '');
+                }
+                
+                // Store for client-side navigation after hydration
+                window.__NEXT_REDIRECT_PATH = processedPath;
+                
+                // Add diagnostics info in development mode
+                if (process.env.NODE_ENV !== 'production') {
+                  console.log('[NavRedirect] Original path:', redirectPath);
+                  console.log('[NavRedirect] Processed path:', processedPath);
+                  console.log('[NavRedirect] Is GitHub Pages:', isGitHubPages);
+                  console.log('[NavRedirect] Base path:', basePath);
                 }
               }
             })();
@@ -69,6 +74,9 @@ export default async function RootLayout({
         </Script>
       </head>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased flex flex-col min-h-screen`}>
+        {/* Add the GitHub Pages redirect handler component */}
+        <GitHubPagesRedirect />
+        
         <SiteHeader tags={tags} />
         <main className="flex-1 px-6 md:px-8 lg:px-12">
           {children}

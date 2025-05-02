@@ -1310,3 +1310,214 @@ This is a performance recommendation about using Next.js optimized Image compone
 4. **Validate Critical Files**: Double-check syntax in critical utility files that are imported widely
 
 These practices will help avoid similar issues in future deployments.
+
+## 23. Fixing Missing Styles and Images on Custom Domains (May 2025 Update)
+
+A persistent issue was finally resolved where custom domain deployments were missing styles and images despite successful builds. The following changes were implemented to address this issue:
+
+### Root Causes Identified
+
+1. **Client-Side Environment Detection**: The environment detection logic was relying solely on server-side environment variables, which aren't available in the browser context, causing incorrect path handling for client-rendered components.
+
+2. **Hardcoded Repository Paths**: Many paths still included the `/recipes/` prefix even when deployed to a custom domain, causing 404 errors when the browser tried to load these resources.
+
+3. **Incomplete Path Processing**: The post-build script wasn't thoroughly addressing all instances of `/recipes/` prefixes in CSS, JavaScript files, and Next.js data islands.
+
+4. **Inconsistent Path Handling**: Different components were using different approaches to resolve paths, leading to inconsistencies.
+
+### Solutions Implemented
+
+#### 1. Enhanced Environment Detection
+
+The `env.ts` file was updated to properly detect custom domains in both server-side and client-side contexts:
+
+```typescript
+// Enhanced environment detection with browser context support
+let isCustomDomain = false;
+if (typeof process !== 'undefined' && process.env.USE_CUSTOM_DOMAIN === 'true') {
+  // Server-side detection
+  isCustomDomain = true;
+} else if (isClientSide) {
+  // Client-side detection for custom domains
+  // Check if we're on a GitHub Pages hostname (username.github.io)
+  const hostname = window.location.hostname;
+  isCustomDomain = !hostname.includes('github.io');
+}
+```
+
+This dual-approach ensures that the environment is correctly detected regardless of whether the code is running on the server during build time or in the browser at runtime.
+
+#### 2. Improved Asset Path Handling
+
+The `getAssetPath` function in `utils.ts` was enhanced to better handle custom domain scenarios:
+
+```typescript
+export function getAssetPath(path: string): string {
+  // Don't modify URLs that are already absolute or data URLs
+  if (!path || path.startsWith('http') || path.startsWith('data:')) {
+    return path;
+  }
+  
+  // If path already includes the base path when it's not empty, return as is
+  if (env.basePath && path.startsWith(env.basePath)) {
+    return path;
+  }
+  
+  // Special handling for known recipe paths
+  if (path.startsWith('/recipes/') && env.isCustomDomain) {
+    // For custom domains, strip the /recipes/ prefix
+    return path.replace('/recipes/', '/');
+  }
+
+  // Handle paths with or without leading slash
+  if (path.startsWith('/')) {
+    return `${env.basePath}${path}`;
+  } else {
+    return `${env.basePath}/${path}`;
+  }
+}
+```
+
+This change allows the function to properly handle paths that might still have the `/recipes/` prefix when running on a custom domain.
+
+#### 3. Updated Client Components
+
+The `asset-path.tsx` component was updated to explicitly check for and remove `/recipes/` prefixes when in custom domain mode:
+
+```typescript
+export function AssetImage({ src, alt = '', className = '', width, height }: AssetPathProps) {
+  const fixedSrc = useMemo(() => {
+    // ...existing validation...
+    
+    // If it's already prefixed with the repo name, handle based on domain type
+    if (src.startsWith('/recipes/')) {
+      // For custom domains, remove the /recipes/ prefix
+      if (env.isCustomDomain) {
+        return src.replace('/recipes/', '/');
+      }
+      return src;
+    }
+    
+    // ...rest of path handling...
+  }, [src]);
+
+  return <img src={fixedSrc} alt={alt} className={className} width={width} height={height} />;
+}
+```
+
+#### 4. Enhanced Path Fixing Script
+
+The `fix-gh-pages-paths.js` script was significantly improved to handle custom domains more thoroughly:
+
+- **Special CSS Path Handling**: Added dedicated processing to find and fix `/recipes/` paths in CSS url() references:
+  ```javascript
+  // Fix hardcoded /recipes/ paths in CSS files for custom domains
+  const newContent = content.replace(
+    /url\(\s*(['"]?)\/recipes\/([^'")]+)(['"]?)\s*\)/g,
+    (match, prefix, url, suffix) => {
+      const fixedUrl = `/${url}`;
+      return `url(${prefix}${fixedUrl}${suffix})`;
+    }
+  );
+  ```
+
+- **JavaScript Path Fixing**: Added custom processing for JavaScript files to fix hardcoded paths:
+  ```javascript
+  // Fix hardcoded /recipes/ paths in JS files for custom domains
+  const newContent = content.replace(
+    /(["'])\/recipes\/([^"']+)(["'])/g,
+    (match, prefix, path, suffix) => {
+      const fixedPath = `/${path}`;
+      return `${prefix}${fixedPath}${suffix}`;
+    }
+  );
+  ```
+
+- **HTML Special Processing**:
+  ```javascript
+  // Fix stylesheet links that still have /recipes/ prefix
+  const newContent = content.replace(
+    /(<link[^>]+href=["'])\/recipes\/([^"']+)(["'][^>]*>)/g,
+    (match, prefix, href, suffix) => {
+      return `${prefix}/${href}${suffix}`;
+    }
+  );
+  ```
+
+- **Next.js Data Island Processing**: Added more thorough processing of Next.js data islands to catch all instances of `/recipes/` prefixes:
+  ```javascript
+  // For custom domains, do a special pass on all HTML files
+  if (isCustomDomain) {
+    // ...find all HTML files...
+    
+    for (const filePath of htmlFiles) {
+      // Check for inline scripts with hardcoded paths
+      const newContent = content.replace(
+        /(["'])\/recipes\/([^"']+)(["'])/g,
+        (match, prefix, p, suffix) => {
+          const fixed = `${prefix}/${p}${suffix}`;
+          return fixed;
+        }
+      );
+    }
+  }
+  ```
+
+- **Verification Step**: Added a verification step to check for any remaining `/recipes/` references after processing:
+  ```javascript
+  if (isCustomDomain) {
+    console.log('\nVerifying custom domain paths...');
+    
+    // Check HTML files for remaining /recipes/ references
+    const sampleHtmlFiles = fs.readdirSync(outputDir)
+      .filter(file => file.endsWith('.html'))
+      .slice(0, 3);
+      
+    for (const file of sampleHtmlFiles) {
+      const content = fs.readFileSync(path.join(outputDir, file), 'utf8');
+      const remainingReferences = (content.match(/\/recipes\//g) || []).length;
+      
+      if (remainingReferences > 0) {
+        console.warn(`WARNING: ${file} still contains ${remainingReferences} references to /recipes/`);
+      } else {
+        console.log(`✓ ${file} looks good - no /recipes/ references`);
+      }
+    }
+  }
+  ```
+
+### Deployment Process
+
+To ensure the fixes are applied correctly, the deployment process remains the same:
+
+1. **For GitHub Actions Deployment**:
+   - Use the GitHub Actions workflow with the "custom-domain" option
+   - This correctly sets USE_CUSTOM_DOMAIN=true and applies all the necessary fixes
+
+2. **For Manual Deployment**:
+   ```bash
+   npm run deploy-custom-domain
+   ```
+
+### Verifying the Fix
+
+After deployment, verify the fix by:
+
+1. Checking the browser's developer tools Network tab for any 404 errors
+2. Confirming that all CSS stylesheets load correctly
+3. Verifying that all images display properly
+4. Inspecting the HTML source to ensure no paths contain `/recipes/` prefixes
+
+### Lessons Learned
+
+This issue revealed several important considerations for Next.js static exports with GitHub Pages and custom domains:
+
+1. **Client-Side Environment Detection**: Environment variables from the build process aren't available in the browser, so client-side components need alternative detection mechanisms.
+
+2. **Static Path Processing**: For static exports, thorough path processing is essential since there's no server to handle path rewrites at runtime.
+
+3. **Debug Components**: The PathDebug component added earlier was instrumental in diagnosing this issue by showing the actual values used at runtime.
+
+4. **Path Consistency**: A consistent approach to path handling across all components is crucial to prevent inconsistencies.
+
+These improvements ensure that your site works correctly on both GitHub Pages subdirectory deployments and custom domain deployments, with all assets loading properly in both scenarios.

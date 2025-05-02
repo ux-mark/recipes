@@ -4,40 +4,42 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    // SPA redirect script for GitHub Pages and custom domains
+    // Single Page Apps for GitHub Pages and custom domains
+    // This script takes the current URL and converts the path
+    // for proper handling by the Next.js app
     (function() {
-      // Get the hostname and path
+      // Store the full path including query string and hash
+      const path = window.location.pathname + 
+                (window.location.search || '') + 
+                (window.location.hash || '');
+      
+      // Get hostname to detect environment
       const hostname = window.location.hostname;
-      const path = window.location.pathname;
-      const pathSegments = path.split('/');
+      const isGitHubPages = hostname.includes('github.io') || hostname.includes('.githubusercontent.com');
       
-      // Determine if we're on GitHub Pages or a custom domain
-      // GitHub Pages hostnames follow the pattern: username.github.io
-      const isGitHubPages = hostname.includes('github.io');
-      
-      if (isGitHubPages) {
-        // GitHub Pages mode - Need to handle the /recipes/ prefix
-        const repoName = pathSegments[1]; // Should be 'recipes'
-        
-        if (repoName === 'recipes') {
-          // Store the path in sessionStorage
-          sessionStorage.setItem('redirectPath', path);
-          
-          // Redirect to the base URL with repository name
-          window.location.replace('/' + repoName + '/');
-        }
-      } else {
-        // Custom domain mode - No need for repository prefix
-        // Store the path in sessionStorage
+      // Store the path for the homepage to handle
+      if (path && path !== '/') {
         sessionStorage.setItem('redirectPath', path);
-        
-        // Redirect to the root
-        window.location.replace('/');
       }
+      
+      // Determine the correct redirect URL based on environment
+      let redirectUrl = '/';
+      if (isGitHubPages) {
+        // For GitHub Pages, we need to include the repository name
+        redirectUrl = '/recipes/';
+      }
+      
+      // Add some debug info to console (only visible if user has dev tools open)
+      console.log('[404 Redirect] Path:', path);
+      console.log('[404 Redirect] Is GitHub Pages:', isGitHubPages);
+      console.log('[404 Redirect] Redirecting to:', redirectUrl);
+      
+      // Redirect to the appropriate homepage
+      window.location.replace(redirectUrl);
     })();
   </script>
 </head>
 <body>
-  <p>Redirecting...</p>
+  <p>Page not found. Redirecting to home page...</p>
 </body>
 </html>

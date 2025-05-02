@@ -1,12 +1,28 @@
-import { Recipe } from '@/lib/types';
-import { getAssetPath } from '@/lib/utils';
+'use client';
 
-// Client-side version of getRecipeImageUrl that doesn't use server-side modules
-export function getRecipeImageUrl(recipe: Recipe, index: number = 0): string {
-  if (!recipe.images || recipe.images.length === 0) {
-    return getAssetPath('placeholder-recipe.svg'); // Use SVG placeholder for recipes without images
+import { getAssetPath } from '@/components/asset-path';
+
+/**
+ * Returns the URL for a recipe image with proper path handling
+ * for both GitHub Pages and custom domains
+ */
+export function getRecipeImageUrl(recipePath: string, imageName: string): string {
+  // Detect if we're on a custom domain directly in the browser
+  let isCustomDomain = false;
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    isCustomDomain = !hostname.includes('github.io') && !hostname.includes('localhost');
+  }
+
+  // Form the image path
+  const imagePath = `/images/${recipePath}/${imageName}`;
+  
+  // If we're on a custom domain and the path starts with /recipes/,
+  // remove the /recipes/ prefix
+  if (isCustomDomain && imagePath.startsWith('/recipes/')) {
+    return imagePath.replace('/recipes/', '/');
   }
   
-  const imagePath = recipe.images[index % recipe.images.length];
-  return getAssetPath(`images/${imagePath}`);
+  // Use the asset path helper to ensure proper path handling
+  return getAssetPath(imagePath);
 }

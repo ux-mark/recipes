@@ -18,10 +18,133 @@ const basePath = isCustomDomain ? '' : `/${repoName}`;
 
 console.log(`Running GitHub Pages path fixer${isDebugMode ? ' (DEBUG MODE)' : ''}${isCustomDomain ? ' (CUSTOM DOMAIN MODE)' : ''}`);
 console.log(`Base path: "${basePath}"`);
+console.log(`Environment: USE_CUSTOM_DOMAIN=${process.env.USE_CUSTOM_DOMAIN || 'undefined'}`);
 
 // Stats tracking
 let filesProcessed = 0;
 let pathsFixed = 0;
+
+// NEW: Add debug logging function
+function debug(message) {
+  if (isDebugMode) {
+    console.log(`[DEBUG] ${message}`);
+  }
+}
+
+// NEW: Function to scan entire directory structure for problematic paths
+function scanForProblematicPaths() {
+  debug('Scanning for problematic paths in output directory...');
+  
+  // Records of issues found
+  const issues = {
+    recipesPathsInHtml: [],
+    recipesPathsInJs: [],
+    recipesPathsInCss: [],
+    recipesPathsInJson: [],
+    missingFiles: [],
+    total: 0
+  };
+  
+  function scanDirectory(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      
+      if (entry.isDirectory()) {
+        scanDirectory(fullPath);
+        continue;
+      }
+      
+      // Skip binary files
+      if (entry.name.match(/\.(jpg|jpeg|png|gif|ico|woff|woff2|ttf|eot)$/i)) {
+        continue;
+      }
+      
+      try {
+        // Read file content
+        const content = fs.readFileSync(fullPath, 'utf8');
+        const relPath = path.relative(outputDir, fullPath);
+        
+        // Check for /recipes/ paths
+        const recipesMatches = (content.match(/\/recipes\//g) || []).length;
+        if (recipesMatches > 0) {
+          if (entry.name.endsWith('.html')) {
+            issues.recipesPathsInHtml.push({ file: relPath, count: recipesMatches });
+          } else if (entry.name.endsWith('.js')) {
+            issues.recipesPathsInJs.push({ file: relPath, count: recipesMatches });
+          } else if (entry.name.endsWith('.css')) {
+            issues.recipesPathsInCss.push({ file: relPath, count: recipesMatches });
+          } else if (entry.name.endsWith('.json')) {
+            issues.recipesPathsInJson.push({ file: relPath, count: recipesMatches });
+          }
+          issues.total += recipesMatches;
+        }
+        
+        // Look for potential 404 references (paths that would generate 404s)
+        const pathMatches = content.match(/["'](\/[^"']*\.(css|js|svg|png|jpg|jpeg|gif))["']/g);
+        if (pathMatches) {
+          for (const pathMatch of pathMatches) {
+            // Extract the path from the match
+            const extractedPath = pathMatch.replace(/^["']|["']$/g, '');
+            
+            // Check if the referenced file exists in the output directory
+            const targetPath = path.join(outputDir, extractedPath);
+            if (!fs.existsSync(targetPath)) {
+              issues.missingFiles.push({ 
+                file: relPath, 
+                referencedPath: extractedPath 
+              });
+            }
+          }
+        }
+      } catch (err) {
+        debug(`Error scanning ${fullPath}: ${err.message}`);
+      }
+    }
+  }
+  
+  scanDirectory(outputDir);
+  
+  // Print summary of issues
+  console.log('\n===== Path Issue Scan Results =====');
+  console.log(`Total /recipes/ path references found: ${issues.total}`);
+  console.log(`HTML files with /recipes/ paths: ${issues.recipesPathsInHtml.length}`);
+  console.log(`JS files with /recipes/ paths: ${issues.recipesPathsInJs.length}`);
+  console.log(`CSS files with /recipes/ paths: ${issues.recipesPathsInCss.length}`);
+  console.log(`JSON files with /recipes/ paths: ${issues.recipesPathsInJson.length}`);
+  console.log(`Files referencing missing assets: ${issues.missingFiles.length}`);
+  
+  if (isDebugMode && issues.total > 0) {
+    // Display detailed issues
+    if (issues.recipesPathsInHtml.length > 0) {
+      console.log('\nHTML files with /recipes/ paths:');
+      issues.recipesPathsInHtml.forEach(i => console.log(`- ${i.file}: ${i.count} occurrences`));
+    }
+    
+    if (issues.recipesPathsInJs.length > 0) {
+      console.log('\nJS files with /recipes/ paths:');
+      issues.recipesPathsInJs.forEach(i => console.log(`- ${i.file}: ${i.count} occurrences`));
+    }
+    
+    if (issues.recipesPathsInCss.length > 0) {
+      console.log('\nCSS files with /recipes/ paths:');
+      issues.recipesPathsInCss.forEach(i => console.log(`- ${i.file}: ${i.count} occurrences`));
+    }
+    
+    if (issues.missingFiles.length > 0) {
+      console.log('\nPotential 404 references:');
+      issues.missingFiles.slice(0, 20).forEach(i => 
+        console.log(`- ${i.file} references non-existent: ${i.referencedPath}`)
+      );
+      if (issues.missingFiles.length > 20) {
+        console.log(`...and ${issues.missingFiles.length - 20} more`);
+      }
+    }
+  }
+  
+  return issues;
+}
 
 // Process HTML files to fix asset paths
 function processHtmlFiles(directory) {
@@ -198,6 +321,72 @@ function processHtmlFiles(directory) {
       }
     }
   }
+  
+  // ENHANCED: More aggressive handling for custom domains
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        continue;
+      } else if (item.name.endsWith('.html')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // More aggressive regex to catch all /recipes/ references
+          let newContent = content;
+          
+          // Fix any attribute with /recipes/ in it
+          newContent = newContent.replace(
+            /\s(src|href|content|data-[a-z-]+)=["']([^"']*)\/recipes\/([^"']*)(["'])/g,
+            (match, attr, prefix, path, suffix) => {
+              // Don't modify external URLs
+              if (prefix.includes('http')) {
+                return match;
+              }
+              pathsFixed++;
+              return ` ${attr}="${prefix}/${path}${suffix}`;
+            }
+          );
+          
+          // Fix inline styles with url(/recipes/...)
+          newContent = newContent.replace(
+            /(url\(["']?)\/recipes\/([^"')]+)(["']?\))/g,
+            (match, prefix, path, suffix) => {
+              pathsFixed++;
+              return `${prefix}/${path}${suffix}`;
+            }
+          );
+          
+          // VERY aggressive - replace any /recipes/ reference in the entire HTML
+          // This is a last resort but catches things we might miss
+          if (isDebugMode) {
+            // In debug mode, just identify these without replacing
+            const remainingMatches = (newContent.match(/\/recipes\//g) || []).length;
+            if (remainingMatches > 0) {
+              console.log(`${fullPath} still has ${remainingMatches} /recipes/ references after normal fixes`);
+            }
+          } else {
+            // In normal mode, aggressively fix any remaining references
+            const beforeCount = (newContent.match(/\/recipes\//g) || []).length;
+            if (beforeCount > 0) {
+              newContent = newContent.replace(/\/recipes\//g, '/');
+              pathsFixed += beforeCount;
+              console.log(`Aggressively fixed ${beforeCount} remaining /recipes/ references in ${fullPath}`);
+            }
+          }
+          
+          if (content !== newContent) {
+            fs.writeFileSync(fullPath, newContent);
+            filesProcessed++;
+            console.log(`Updated HTML with aggressive fixes: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error processing custom domain paths in ${fullPath}: ${error.message}`);
+        }
+      }
+    }
+  }
 }
 
 // Fix image paths in JS files
@@ -269,6 +458,63 @@ function processJsFiles(directory) {
             fs.writeFileSync(fullPath, newContent);
             filesProcessed++;
             console.log(`Updated JS for custom domain: ${fullPath}`);
+          }
+        } catch (error) {
+          console.error(`Error processing ${fullPath}: ${error.message}`);
+        }
+      }
+    }
+  }
+  
+  // ENHANCED: More aggressive handling for custom domains
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        processJsFiles(fullPath);
+      } else if (item.name.endsWith('.js')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // More aggressive regex to catch all /recipes/ references
+          let newContent = content;
+          
+          // Fix string literals with /recipes/
+          newContent = newContent.replace(
+            /(["'])([^"']*)\/recipes\/([^"']*)(["'])/g,
+            (match, prefix, before, path, suffix) => {
+              // Don't modify external URLs or URLs that already have a domain
+              if (before.includes('http') || before.includes('://')) {
+                return match;
+              }
+              pathsFixed++;
+              return `${prefix}${before}/${path}${suffix}`;
+            }
+          );
+          
+          // VERY aggressive - replace any /recipes/ reference in the JS
+          // This is a last resort but catches things we might miss
+          if (isDebugMode) {
+            // In debug mode, just identify these without replacing
+            const remainingMatches = (newContent.match(/\/recipes\//g) || []).length;
+            if (remainingMatches > 0) {
+              console.log(`${fullPath} still has ${remainingMatches} /recipes/ references after normal fixes`);
+            }
+          } else {
+            // In normal mode, aggressively fix any remaining references
+            const beforeCount = (newContent.match(/\/recipes\//g) || []).length;
+            if (beforeCount > 0) {
+              newContent = newContent.replace(/\/recipes\//g, '/');
+              pathsFixed += beforeCount;
+              console.log(`Aggressively fixed ${beforeCount} remaining /recipes/ references in ${fullPath}`);
+            }
+          }
+          
+          if (content !== newContent) {
+            fs.writeFileSync(fullPath, newContent);
+            filesProcessed++;
+            console.log(`Updated JS with aggressive fixes: ${fullPath}`);
           }
         } catch (error) {
           console.error(`Error processing ${fullPath}: ${error.message}`);
@@ -354,6 +600,105 @@ function processCssFiles(directory) {
         } catch (error) {
           console.error(`Error processing ${fullPath}: ${error.message}`);
         }
+      }
+    }
+  }
+  
+  // ENHANCED: More aggressive handling for CSS files
+  if (isCustomDomain) {
+    for (const item of items) {
+      const fullPath = path.join(directory, item.name);
+      
+      if (item.isDirectory()) {
+        processCssFiles(fullPath);
+      } else if (item.name.endsWith('.css')) {
+        try {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // Aggressively replace any /recipes/ in CSS for custom domains
+          let newContent = content;
+          const beforeCount = (newContent.match(/\/recipes\//g) || []).length;
+          
+          if (beforeCount > 0) {
+            newContent = newContent.replace(/\/recipes\//g, '/');
+            pathsFixed += beforeCount;
+            console.log(`Aggressively fixed ${beforeCount} /recipes/ references in CSS: ${fullPath}`);
+            
+            fs.writeFileSync(fullPath, newContent);
+            filesProcessed++;
+          }
+        } catch (error) {
+          console.error(`Error processing ${fullPath}: ${error.message}`);
+        }
+      }
+    }
+  }
+}
+
+// ENHANCED: Special handling for JSON files
+function processJsonFiles(directory) {
+  const items = fs.readdirSync(directory, { withFileTypes: true });
+  
+  for (const item of items) {
+    const fullPath = path.join(directory, item.name);
+    
+    if (item.isDirectory()) {
+      processJsonFiles(fullPath);
+    } else if (item.name.endsWith('.json')) {
+      try {
+        // For custom domain mode, fix /recipes/ references in JSON files
+        if (isCustomDomain) {
+          const content = fs.readFileSync(fullPath, 'utf8');
+          
+          // First check if the file has any /recipes/ references
+          if (content.includes('/recipes/')) {
+            // Try to parse as JSON
+            try {
+              const jsonData = JSON.parse(content);
+              
+              // Recursive function to fix paths in JSON
+              function fixJsonPaths(obj) {
+                if (!obj || typeof obj !== 'object') return obj;
+                
+                if (Array.isArray(obj)) {
+                  return obj.map(item => fixJsonPaths(item));
+                }
+                
+                const result = { ...obj };
+                
+                for (const [key, value] of Object.entries(result)) {
+                  if (typeof value === 'string' && value.includes('/recipes/')) {
+                    result[key] = value.replace(/\/recipes\//g, '/');
+                    pathsFixed++;
+                  } else if (value && typeof value === 'object') {
+                    result[key] = fixJsonPaths(value);
+                  }
+                }
+                
+                return result;
+              }
+              
+              const fixedJson = fixJsonPaths(jsonData);
+              const fixedContent = JSON.stringify(fixedJson, null, 2);
+              
+              if (content !== fixedContent) {
+                fs.writeFileSync(fullPath, fixedContent);
+                filesProcessed++;
+                console.log(`Updated JSON paths: ${fullPath}`);
+              }
+            } catch (err) {
+              // If not valid JSON or other error, use string replacement
+              const newContent = content.replace(/\/recipes\//g, '/');
+              if (content !== newContent) {
+                fs.writeFileSync(fullPath, newContent);
+                filesProcessed++;
+                console.log(`Updated JSON paths using string replacement: ${fullPath}`);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing JSON file ${fullPath}: ${error.message}`);
       }
     }
   }
@@ -705,9 +1050,124 @@ function fixNextDataIslands() {
   }
 }
 
+// NEW: Fix Next.js chunk loading configuration
+function fixNextJsChunkLoading() {
+  if (!isCustomDomain) return; // Only needed for custom domain
+  
+  // Look for the main HTML file
+  const indexPath = path.join(outputDir, 'index.html');
+  if (!fs.existsSync(indexPath)) return;
+  
+  try {
+    let content = fs.readFileSync(indexPath, 'utf8');
+    
+    // Find and modify the next chunk loading logic
+    let modified = false;
+    
+    // This targets Next.js runtime configuration where assetPrefix might be set
+    content = content.replace(
+      /(\s*(?:var|let|const)\s+[_$a-zA-Z0-9]+\s*=\s*{[^}]*["']assetPrefix["']\s*:\s*["'])\/recipes\/(["'][^}]*})/g,
+      (match, prefix, suffix) => {
+        modified = true;
+        pathsFixed++;
+        return `${prefix}/${suffix}`;
+      }
+    );
+    
+    // Target any basePath setting in runtime config
+    content = content.replace(
+      /(\s*(?:var|let|const)\s+[_$a-zA-Z0-9]+\s*=\s*{[^}]*["']basePath["']\s*:\s*["'])\/recipes(["'][^}]*})/g,
+      (match, prefix, suffix) => {
+        modified = true;
+        pathsFixed++;
+        return `${prefix}${suffix}`;
+      }
+    );
+    
+    if (modified) {
+      fs.writeFileSync(indexPath, content);
+      filesProcessed++;
+      console.log('Fixed Next.js chunk loading configuration in index.html');
+    }
+  } catch (error) {
+    console.error(`Error fixing Next.js chunk loading: ${error.message}`);
+  }
+}
+
+// NEW: Verify generated files accessibility
+function verifyGeneratedFiles() {
+  if (!isCustomDomain) return;
+  
+  console.log('\nVerifying generated files accessibility...');
+  
+  // Check critical files
+  const criticalPaths = [
+    '/_next/static/css/',
+    '/_next/static/chunks/',
+    '/images/'
+  ];
+  
+  // Get directory stats
+  const stats = {
+    cssFiles: 0,
+    jsChunks: 0,
+    imageFiles: 0
+  };
+  
+  // Count files in directories
+  for (const criticalPath of criticalPaths) {
+    const fullPath = path.join(outputDir, criticalPath);
+    if (!fs.existsSync(fullPath)) {
+      console.warn(`\x1b[33mWARNING: Critical path doesn't exist: ${criticalPath}\x1b[0m`);
+      continue;
+    }
+    
+    try {
+      const files = fs.readdirSync(fullPath, { recursive: true });
+      if (criticalPath.includes('css')) stats.cssFiles = files.length;
+      if (criticalPath.includes('chunks')) stats.jsChunks = files.length;
+      if (criticalPath.includes('images')) stats.imageFiles = files.length;
+      
+      console.log(`${criticalPath}: ${files.length} files`);
+    } catch (error) {
+      console.warn(`\x1b[33mWARNING: Error accessing ${criticalPath}: ${error.message}\x1b[0m`);
+    }
+  }
+  
+  // Check HTML files for _next references
+  const htmlFiles = fs.readdirSync(outputDir).filter(f => f.endsWith('.html'));
+  for (const htmlFile of htmlFiles.slice(0, 3)) { // Check first 3 HTML files
+    try {
+      const content = fs.readFileSync(path.join(outputDir, htmlFile), 'utf8');
+      
+      // Check for stylesheet links
+      const cssLinks = (content.match(/<link[^>]+rel=["']stylesheet["'][^>]*>/g) || []).length;
+      
+      // Check for script tags
+      const scriptTags = (content.match(/<script[^>]+src=["'][^"']*\/_next\/[^"']*["'][^>]*>/g) || []).length;
+      
+      console.log(`${htmlFile}: ${cssLinks} CSS links, ${scriptTags} script references`);
+      
+      // Verify the links actually point to files that exist
+      const linkMatches = content.matchAll(/(?:href|src)=["']([^"']*\/_next\/[^"']*)["']/g);
+      for (const match of linkMatches) {
+        const assetPath = match[1];
+        const fullAssetPath = path.join(outputDir, assetPath);
+        
+        if (!fs.existsSync(fullAssetPath)) {
+          console.warn(`\x1b[33mWARNING: ${htmlFile} references non-existent file: ${assetPath}\x1b[0m`);
+        }
+      }
+    } catch (error) {
+      console.warn(`\x1b[33mWARNING: Error analyzing ${htmlFile}: ${error.message}\x1b[0m`);
+    }
+  }
+}
+
 // Main execution
 try {
   console.log('Starting path fixing for GitHub Pages deployment...');
+  console.log(`Custom domain mode: ${isCustomDomain ? 'ENABLED' : 'DISABLED'}`);
   
   // Create essential files
   createNojekyllFile();
@@ -717,29 +1177,73 @@ try {
   // Copy public files
   copyPublicFiles();
   
-  // Process HTML, JS, and CSS files
+  // NEW: Debug scan before changes
+  if (isDebugMode) {
+    console.log('\nScanning for issues before applying fixes...');
+    scanForProblematicPaths();
+  }
+  
+  // Process all file types
   processHtmlFiles(outputDir);
   processJsFiles(outputDir);
   processCssFiles(outputDir);
+  processJsonFiles(outputDir); // NEW: Added JSON file processing
   fixNextDataIslands();
+  fixNextJsChunkLoading(); // NEW: Fix chunk loading configuration
   
-  // Add a verification step for custom domains
+  // Add verification steps
   if (isCustomDomain) {
-    console.log('\nVerifying custom domain paths...');
+    // Do a second pass of very aggressive fixing for custom domain mode
+    console.log('\nPerforming second pass for very aggressive path fixing...');
     
-    // Check a few HTML files for remaining /recipes/ references
+    // Check all files again and fix any remaining issues
+    const items = fs.readdirSync(outputDir, { withFileTypes: true });
+    for (const item of items) {
+      const fullPath = path.join(outputDir, item.name);
+      
+      if (item.isDirectory()) {
+        // Skip certain directories that shouldn't need path fixing
+        if (item.name === 'images' || item.name === 'node_modules') {
+          continue;
+        }
+        
+        processHtmlFiles(fullPath);
+        processJsFiles(fullPath);
+        processCssFiles(fullPath);
+      }
+    }
+    
+    verifyGeneratedFiles(); // NEW: Add verification step
+    
+    // Scan for remaining issues
+    console.log('\nScanning for any remaining issues after fixes...');
+    const remainingIssues = scanForProblematicPaths();
+    
+    if (remainingIssues.total > 0) {
+      console.warn(`\x1b[33mWARNING: There are still ${remainingIssues.total} /recipes/ references after all fixes\x1b[0m`);
+    } else {
+      console.log('\x1b[32mSuccess: No remaining /recipes/ references found!\x1b[0m');
+    }
+  } else {
+    console.log('\nVerifying GitHub Pages paths...');
+    // Ensure paths are properly prefixed for GitHub Pages
+    
+    // Check a few HTML files
     const sampleHtmlFiles = fs.readdirSync(outputDir)
       .filter(file => file.endsWith('.html'))
       .slice(0, 3);
       
     for (const file of sampleHtmlFiles) {
       const content = fs.readFileSync(path.join(outputDir, file), 'utf8');
-      const remainingReferences = (content.match(/\/recipes\//g) || []).length;
       
-      if (remainingReferences > 0) {
-        console.warn(`\x1b[33mWARNING: ${file} still contains ${remainingReferences} references to /recipes/\x1b[0m`);
+      // Check for _next/ paths without repository prefix
+      const unprefixedNextPaths = (content.match(/["']\/_next\//g) || []).length;
+      const prefixedNextPaths = (content.match(/["']\/recipes\/_next\//g) || []).length;
+      
+      if (unprefixedNextPaths > 0 && prefixedNextPaths === 0) {
+        console.warn(`\x1b[33mWARNING: ${file} contains ${unprefixedNextPaths} unprefixed /_next/ paths\x1b[0m`);
       } else {
-        console.log(`✓ ${file} looks good - no /recipes/ references`);
+        console.log(`✓ ${file} looks good - ${prefixedNextPaths} properly prefixed /_next/ paths`);
       }
     }
   }
