@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
+import type { Metadata } from 'next';
 
 interface RecipePageProps {
   params: {
@@ -13,7 +14,7 @@ interface RecipePageProps {
   searchParams?: Record<string, string | string[] | undefined>;
 }
 
-export async function generateMetadata({ params }: RecipePageProps) {
+export async function generateMetadata({ params }: RecipePageProps): Promise<Metadata> {
   const recipe = await getRecipeById(params.id);
   
   if (!recipe) {
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: RecipePageProps) {
   };
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ id: string }[]> {
   const recipes = await getAllRecipes();
   
   return recipes.map((recipe) => ({

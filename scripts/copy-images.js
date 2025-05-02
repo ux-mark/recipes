@@ -6,6 +6,9 @@ import dotenv from 'dotenv';
 // Load environment variables from .env file
 dotenv.config();
 
+// Set a deployment flag
+const isVercelDeployment = process.env.VERCEL === '1';
+
 // Get current file's directory (ES modules don't have __dirname)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,6 +19,19 @@ const sourceDir = process.env.RECIPE_IMAGES_SOURCE_DIR
   ? path.join(__dirname, process.env.RECIPE_IMAGES_SOURCE_DIR) 
   : path.join(__dirname, '../../Recipes-and-photos');
 const destDir = path.join(__dirname, '../public/images');
+
+// Skip extensive error logging in deployment
+if (isVercelDeployment && !fs.existsSync(sourceDir)) {
+  console.log('Skipping image copy in Vercel deployment environment');
+  
+  // Ensure the images directory exists even if we don't copy anything
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+    console.log(`Created directory: ${destDir}`);
+  }
+  
+  process.exit(0);
+}
 
 // Create destination directory if it doesn't exist
 if (!fs.existsSync(destDir)) {

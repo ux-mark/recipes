@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "copy-images": "node scripts/copy-images.js"
+    "copy-images": "node scripts/copy-images.js",
+    "prebuild": "node -e \"process.env.NODE_ENV !== 'production' ? require('child_process').execSync('npm run copy-images') : console.log('Skipping image copy in production')\""
   },
   "dependencies": {
     "@radix-ui/react-aspect-ratio": "^1.1.4",
