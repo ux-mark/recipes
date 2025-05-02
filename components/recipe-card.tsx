@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Recipe } from '@/lib/types';
@@ -10,6 +12,10 @@ interface RecipeCardProps {
 }
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
+  const handleTagClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <Link href={`/recipes/${recipe.id}`} className="block h-full">
       <Card className="overflow-hidden h-full transition-all hover:shadow-lg">
@@ -36,13 +42,13 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           <p className="text-sm text-neutral-600 line-clamp-2">{recipe.description || "A delicious recipe waiting to be explored."}</p>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center">
-          <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
+          <div className="flex flex-wrap gap-1">
             {recipe.tags.slice(0, 3).map(tag => (
               <Link 
                 key={tag}
                 href={`/tags/${encodeURIComponent(tag)}`}
                 className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full hover:bg-neutral-200 transition-colors"
-                onClick={(e) => e.stopPropagation()}
+                onClick={handleTagClick}
               >
                 {tag}
               </Link>
