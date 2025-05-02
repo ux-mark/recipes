@@ -7,6 +7,11 @@ import { Separator } from '@/components/ui/separator';
 import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
 import type { Metadata } from 'next';
 
+// Helper function to normalize tag handling throughout the app
+function normalizeTag(tag: string): string {
+  return tag.trim();
+}
+
 interface RecipePageProps {
   params: {
     id: string;
@@ -98,7 +103,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
           {recipe.tags.map(tag => (
             <Link 
               key={tag}
-              href={`/tags/${encodeURIComponent(tag.trim())}`}
+              href={`/tags/${encodeURIComponent(normalizeTag(tag))}`}
               className="bg-neutral-100 hover:bg-neutral-200 transition-colors text-sm px-3 py-1 rounded-full"
             >
               {tag}

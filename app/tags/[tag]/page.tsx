@@ -11,8 +11,14 @@ interface TagPageProps {
   };
 }
 
+// Helper function to normalize tag handling throughout the app
+function normalizeTag(tag: string): string {
+  return tag.trim();
+}
+
 export async function generateMetadata({ params }: TagPageProps) {
-  const tag = decodeURIComponent(params.tag);
+  // Normalize the tag after decoding
+  const tag = normalizeTag(decodeURIComponent(params.tag));
   const recipes = await getRecipesByTag(tag);
   
   if (recipes.length === 0) {
@@ -31,12 +37,13 @@ export async function generateStaticParams() {
   const tags = await getAllTags();
   
   return tags.map((tag) => ({
-    tag: encodeURIComponent(tag.name),
+    tag: encodeURIComponent(normalizeTag(tag.name)),
   }));
 }
 
 export default async function TagPage({ params }: TagPageProps) {
-  const tag = decodeURIComponent(params.tag);
+  // Normalize the tag after decoding
+  const tag = normalizeTag(decodeURIComponent(params.tag));
   const recipes = await getRecipesByTag(tag);
   
   if (recipes.length === 0) {

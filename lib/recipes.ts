@@ -9,6 +9,11 @@ import { Recipe, RecipeTag } from './types';
 // TODO: Move this to a config file or environment variable
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
 
+// Helper function to normalize tags consistently throughout the app
+function normalizeTag(tag: string): string {
+  return tag.trim();
+}
+
 // Function to get all recipes
 export async function getAllRecipes(): Promise<Recipe[]> {
   try {
@@ -30,12 +35,12 @@ export async function getRecipeById(id: string): Promise<Recipe | undefined> {
 // Function to get recipes by tag
 export async function getRecipesByTag(tag: string): Promise<Recipe[]> {
   const recipes = await getAllRecipes();
-  const normalizedSearchTag = tag.trim();
+  const normalizedSearchTag = normalizeTag(tag);
   
   return recipes.filter(recipe => 
     recipe.tags.some(recipeTag => 
-      // Trim and compare tags to handle spaces
-      recipeTag.trim() === normalizedSearchTag
+      // Use the shared normalization function for consistent comparison
+      normalizeTag(recipeTag) === normalizedSearchTag
     )
   );
 }
