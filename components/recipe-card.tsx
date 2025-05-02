@@ -36,14 +36,16 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           <p className="text-sm text-neutral-600 line-clamp-2">{recipe.description || "A delicious recipe waiting to be explored."}</p>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center">
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1" onClick={(e) => e.stopPropagation()}>
             {recipe.tags.slice(0, 3).map(tag => (
-              <span 
-                key={tag} 
-                className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full"
+              <Link 
+                key={tag}
+                href={`/tags/${encodeURIComponent(tag)}`}
+                className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full hover:bg-neutral-200 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
                 {tag}
-              </span>
+              </Link>
             ))}
             {recipe.tags.length > 3 && (
               <span className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full">

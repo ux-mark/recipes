@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   },
   // Enable this to bypass TypeScript errors during production builds
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Required for successful Vercel deployment with the current type definitions
   },
 };
 
