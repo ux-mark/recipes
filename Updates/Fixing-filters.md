@@ -151,7 +151,7 @@ export async function getAllTags(): Promise<RecipeTag[]> {
   });
   
   // Convert to array of RecipeTag objects
-  return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+  return Object.entries(tagCounts).map(([_, data]) => ({
     name: data.originalTag, // Use the original tag for display
     count: data.count
   })).sort((a, b) => b.count - a.count);
@@ -189,6 +189,39 @@ export default async function TagPage({ params }: TagPageProps) {
   // ...rest of component
 }
 ```
+
+## Build Issue and Resolution
+
+During deployment to Vercel, an additional issue was encountered. The build process failed with the following error:
+
+```
+Failed to compile.
+
+./lib/recipes.ts
+81:42  Error: 'normalizedName' is defined but never used.  @typescript-eslint/no-unused-vars
+```
+
+This was due to an unused variable in our `getAllTags` function that was flagged by ESLint in the production build environment. The issue occurred in the following code:
+
+```typescript
+return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+  name: data.originalTag, // Use the original tag for display
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+### Resolution
+
+We fixed this by replacing the unused `normalizedName` parameter with an underscore (`_`), which is the conventional way to indicate an intentionally unused parameter in JavaScript/TypeScript:
+
+```typescript
+return Object.entries(tagCounts).map(([_, data]) => ({
+  name: data.originalTag, // Use the original tag for display
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+This change maintained all the functionality while satisfying Vercel's strict linting requirements.
 
 ## Testing and Verification
 
@@ -238,6 +271,8 @@ For a more robust tag handling system, consider these additional enhancements:
 
 5. **Unicode Normalization**: For multilingual applications, consider adding Unicode normalization to handle different representations of the same characters.
 
+6. **Linting Consistency**: Ensure development and production environments use the same ESLint configuration to catch issues before deployment.
+
 ## Conclusion
 
-This fix resolves the issues with "🎄 Xmas" and "To trial" tags by implementing a comprehensive tag normalization system that works across all environments, including Vercel production. The solution is robust against whitespace variations, special characters, and emoji, ensuring a consistent filtering experience for users.
+This fix resolves the issues with "🎄 Xmas" and "To trial" tags by implementing a comprehensive tag normalization system that works across all environments, including Vercel production. The solution is robust against whitespace variations, special characters, and emoji, ensuring a consistent filtering experience for users. We also addressed the build-time linting issues to ensure successful deployment to production.

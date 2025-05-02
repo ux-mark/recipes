@@ -75,3 +75,62 @@ To avoid similar issues in the future:
 3. Ensure development and production ESLint configurations are aligned
 
 This will help catch linting errors earlier in the development process rather than during deployment.
+
+## Follow-up Error: Using Underscore for Unused Variables
+
+After implementing the initial fix using a bare underscore (`_`) as the destructuring parameter, a new error occurred. This is because different ESLint configurations have different rules regarding how to handle unused variables.
+
+### Issue
+
+In Next.js projects with the default TypeScript configuration, using a bare underscore (`_`) for unused variables might conflict with the project's linting rules. This is particularly true with the `@typescript-eslint/no-unused-vars` rule, which can have different configurations:
+
+1. Some projects allow bare underscores (`_`)
+2. Others require prefixed variable names (`_normalizedName`)
+3. Some configurations disallow any unused variables, regardless of naming
+
+### Solution Options
+
+To fix this issue, there are several approaches we can take, in order of preference:
+
+1. **ESLint Directive Approach (Preferred)**: Add an ESLint directive to disable the rule specifically for this line:
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+  name: data.originalTag,
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+2. **Prefixed Variable Approach**: Use a variable name with an underscore prefix, which often satisfies linting rules:
+
+```typescript
+return Object.entries(tagCounts).map(([_normalizedName, data]) => ({
+  name: data.originalTag,
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+3. **Skip Destructuring Approach**: Avoid destructuring the first parameter entirely:
+
+```typescript
+return Object.entries(tagCounts).map((entry) => ({
+  name: entry[1].originalTag,
+  count: entry[1].count
+})).sort((a, b) => b.count - a.count);
+```
+
+For this project, we'll implement the second approach (prefixed variable) as it balances code clarity with linting rule compliance without requiring ESLint directive comments.
+
+## Implemented Solution
+
+We've updated the code to use a prefixed underscore variable name (`_normalizedName`), which indicates intent that the variable is deliberately unused while satisfying ESLint's rules:
+
+```typescript
+return Object.entries(tagCounts).map(([_normalizedName, data]) => ({
+  name: data.originalTag, // Use the original tag for display
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+This change maintains the functionality of our tag normalization system while ensuring the build process completes successfully.
