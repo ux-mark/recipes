@@ -21,7 +21,6 @@ function normalizeTag(tag: string): string {
     if (tag.includes('%')) {
       try {
         processedTag = decodeURIComponent(tag);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         console.warn('Failed to decode URI component:', tag);
       }
@@ -38,7 +37,6 @@ function normalizeTag(tag: string): string {
     processedTag = processedTag.replace(/\s+/g, ' ');
     
     return processedTag;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Error in normalizeTag:', e);
     // Fall back to the original

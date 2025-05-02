@@ -26,7 +26,6 @@ function normalizeTag(tag: string): string {
     if (tag.includes('%')) {
       try {
         processedTag = decodeURIComponent(tag);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         console.warn('Failed to decode URI component:', tag);
       }
@@ -43,7 +42,6 @@ function normalizeTag(tag: string): string {
     processedTag = processedTag.replace(/\s+/g, ' ');
     
     return processedTag;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Error in normalizeTag:', e);
     // Fall back to the original
@@ -105,7 +103,6 @@ export async function getAllTags(): Promise<RecipeTag[]> {
   });
   
   // Convert to array of RecipeTag objects
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return Object.entries(tagCounts).map(([normalizedName, data]) => ({
     name: data.originalTag, // Use the original tag for display
     count: data.count

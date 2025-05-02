@@ -49,19 +49,6 @@ function normalizeTag(tag: string): string {
   }
 }
 
-/**
- * Safe encodeURIComponent that handles potential errors
- */
-function safeEncodeURIComponent(tag: string): string {
-  try {
-    return encodeURIComponent(tag);
-  } catch (e) {
-    console.error('Error encoding tag:', e);
-    // Apply basic encoding on error
-    return tag.replace(/\s/g, '%20');
-  }
-}
-
 interface RecipeCardProps {
   recipe: Recipe;
 }
