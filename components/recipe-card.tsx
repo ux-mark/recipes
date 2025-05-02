@@ -8,15 +8,56 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 /**
- * Helper function to normalize tag handling throughout the app
- * This should match the same logic as in recipes.ts
+ * Comprehensive tag normalization function that handles Unicode variations
+ * and special characters consistently
  */
 function normalizeTag(tag: string): string {
-  // First trim any leading/trailing whitespace
-  const trimmed = tag.trim();
-  
-  // Additional normalization to handle emoji characters and inconsistent spacing
-  return trimmed.replace(/\s+/g, ' ');
+  try {
+    // Ensure we're working with a string
+    if (typeof tag !== 'string') {
+      console.warn('Non-string tag received:', tag);
+      return String(tag);
+    }
+    
+    // First decode if it appears to be URI encoded
+    let processedTag = tag;
+    if (tag.includes('%')) {
+      try {
+        processedTag = decodeURIComponent(tag);
+      } catch (e) {
+        console.warn('Failed to decode URI component:', tag);
+      }
+    }
+    
+    // Normalize Unicode to composed form (NFC)
+    // This addresses differences in how characters may be encoded
+    processedTag = processedTag.normalize('NFC');
+    
+    // Remove any leading/trailing whitespace
+    processedTag = processedTag.trim();
+    
+    // Normalize internal spaces (replace multiple spaces with a single space)
+    processedTag = processedTag.replace(/\s+/g, ' ');
+    
+    return processedTag;
+  } catch (e) {
+    console.error('Error in normalizeTag:', e);
+    // Fall back to the original
+    return tag;
+  }
+}
+
+/**
+ * Safe encodeURIComponent that handles potential errors
+ */
+function safeEncodeURIComponent(tag: string): string {
+  try {
+    return encodeURIComponent(tag);
+  } catch (e) {
+    console.error('Error encoding tag:', e);
+    // Apply basic encoding on error
+    return tag.replace(/\s/g, '%20');
+  }
 }
 
 interface RecipeCardProps {
