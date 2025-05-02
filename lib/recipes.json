@@ -1803,9 +1803,27 @@
     "name": "Ragú (from Olivia)",
     "description": "",
     "ingredients": [
-      "-"
+      "1 large onion (diced)",
+      "2-4 stalks of celery (half moons)",
+      "olive oil",
+      "1/2 cup milk",
+      "1 cup red wine",
+      "Seasoning (salt, chili, pepper, bay leaves, and 3 cloves)",
+      "500 g beef mince (ground)",
+      "500 g pork mince (ground)",
+      "2 large tinned tomatoes"
     ],
-    "instructions": [],
+    "instructions": [
+      "Cook onion with all salt, pepper, and chili",
+      "Add celery and carrot until everything is soft and caramelized",
+      "Add meat, cook while breaking it down into small pieces",
+      "Add wine and evaporate off alcohol",
+      "Add milk and reduce heat",
+      "Check seasoning levels",
+      "Add tomatoes",
+      "Mix in remaining seasoning, bay leaves and cloves",
+      "Leave to cook for 2-8 hours (depending on how low your heat can go)"
+    ],
     "tags": [
       "Dinner",
       "Needs content",
