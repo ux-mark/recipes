@@ -46,7 +46,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             {recipe.tags.slice(0, 3).map(tag => (
               <Link 
                 key={tag}
-                href={`/tags/${encodeURIComponent(tag)}`}
+                href={`/tags/${encodeURIComponent(tag.trim())}`}
                 className="bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded-full hover:bg-neutral-200 transition-colors"
                 onClick={handleTagClick}
               >

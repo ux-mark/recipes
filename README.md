@@ -213,6 +213,37 @@ This allows you to call the image copying function only when needed, rather than
 - Optimize image loading for better performance
 
 ## Deployment
+
+### Vercel Deployment
+The project is configured for deployment on Vercel:
+
+#### Configuration Files
+- `next.config.ts`: Contains optimized settings for Vercel deployment including `output: 'standalone'` and TypeScript configuration
+- `.vercel/`: (gitignored) Contains Vercel-specific deployment files
+
+#### Deployment Steps
+1. Push code to GitHub repository
+2. In Vercel dashboard, create a new project
+3. Connect to GitHub and select the repository
+4. Vercel will automatically detect the Next.js configuration
+5. Set the environment variable `VERCEL=1` in the project settings
+6. Deploy the application
+
+#### Special Considerations for Vercel
+- The `copy-images.js` script has been modified to detect Vercel environments and skip image copying
+- TypeScript build errors are ignored in production with `ignoreBuildErrors: true` in next.config.ts
+- The prebuild script in package.json has been updated to be cross-platform compatible
+- Images need to be committed to the repository in public/images/ for deployment
+
+#### Local Testing of Production Build
+```bash
+# Test the production build locally with Vercel environment
+VERCEL=1 NODE_ENV=production npm run build
+
+# Start the standalone server (recommended for testing Vercel builds)
+node .next/standalone/server.js
+```
+
 ### DigitalOcean App Platform Deployment
 The project is configured for deployment on DigitalOcean's App Platform (free tier):
 

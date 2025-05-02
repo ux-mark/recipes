@@ -30,7 +30,14 @@ export async function getRecipeById(id: string): Promise<Recipe | undefined> {
 // Function to get recipes by tag
 export async function getRecipesByTag(tag: string): Promise<Recipe[]> {
   const recipes = await getAllRecipes();
-  return recipes.filter(recipe => recipe.tags.includes(tag));
+  const normalizedSearchTag = tag.trim();
+  
+  return recipes.filter(recipe => 
+    recipe.tags.some(recipeTag => 
+      // Trim and compare tags to handle spaces
+      recipeTag.trim() === normalizedSearchTag
+    )
+  );
 }
 
 // Function to get all unique tags with counts

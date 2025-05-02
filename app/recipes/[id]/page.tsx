@@ -98,7 +98,7 @@ export default async function RecipePage({ params }: RecipePageProps) {
           {recipe.tags.map(tag => (
             <Link 
               key={tag}
-              href={`/tags/${encodeURIComponent(tag)}`}
+              href={`/tags/${encodeURIComponent(tag.trim())}`}
               className="bg-neutral-100 hover:bg-neutral-200 transition-colors text-sm px-3 py-1 rounded-full"
             >
               {tag}
