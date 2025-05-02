@@ -18,6 +18,7 @@ function normalizeTag(tag: string): string {
     if (tag.includes('%')) {
       try {
         processedTag = decodeURIComponent(tag);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         console.warn('Failed to decode URI component:', tag);
       }
@@ -34,6 +35,7 @@ function normalizeTag(tag: string): string {
     processedTag = processedTag.replace(/\s+/g, ' ');
     
     return processedTag;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Error in normalizeTag:', e);
     // Fall back to the original
@@ -44,9 +46,11 @@ function normalizeTag(tag: string): string {
 /**
  * Safe encodeURIComponent that handles potential errors
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function safeEncodeURIComponent(tag: string): string {
   try {
     return encodeURIComponent(tag);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     console.error('Error encoding tag:', e);
     // Apply basic encoding on error
