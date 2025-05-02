@@ -210,34 +210,45 @@ return Object.entries(tagCounts).map(([normalizedName, data]) => ({
 })).sort((a, b) => b.count - a.count);
 ```
 
-### Resolution: First Attempt
+### Resolution: Multiple Attempts
 
-We initially fixed this by replacing the unused `normalizedName` parameter with an underscore (`_`), which is the conventional way to indicate an intentionally unused parameter in JavaScript/TypeScript:
+We tried several approaches to resolve this issue:
+
+1. First, we replaced the unused `normalizedName` parameter with an underscore (`_`):
 
 ```typescript
 return Object.entries(tagCounts).map(([_, data]) => ({
-  name: data.originalTag, // Use the original tag for display
+  name: data.originalTag, 
   count: data.count
 })).sort((a, b) => b.count - a.count);
 ```
 
-### Resolution: Final Fix
-
-However, the bare underscore approach also caused linting issues in Vercel's build environment. Different ESLint configurations have different rules for handling unused variables.
-
-The final solution was to use a prefixed underscore variable name, which explicitly indicates intention while satisfying ESLint rules:
+2. When that didn't work, we tried a prefixed underscore variable name:
 
 ```typescript
 return Object.entries(tagCounts).map(([_normalizedName, data]) => ({
+  name: data.originalTag,
+  count: data.count
+})).sort((a, b) => b.count - a.count);
+```
+
+### Final Solution: ESLint Directive
+
+After multiple attempts with various naming conventions that all triggered linting errors in Vercel's production environment, we implemented a more reliable solution using an ESLint directive to explicitly disable the rule for the specific line:
+
+```typescript
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+return Object.entries(tagCounts).map(([normalizedName, data]) => ({
   name: data.originalTag, // Use the original tag for display
   count: data.count
 })).sort((a, b) => b.count - a.count);
 ```
 
-This approach:
-1. Maintains code clarity through descriptive variable naming
-2. Visually indicates that the variable is intentionally unused (via the underscore prefix)
-3. Satisfies Vercel's ESLint configuration requirements
+This approach has several advantages:
+1. **Reliability**: Works consistently across all environments (local development and Vercel production)
+2. **Explicitness**: Makes it clear that we're intentionally ignoring the lint rule
+3. **Precision**: Only disables the rule for the specific line that needs it
+4. **Maintainability**: Future developers will understand why the variable is unused
 
 ## Testing and Verification
 
@@ -293,4 +304,6 @@ For a more robust tag handling system, consider these additional enhancements:
 
 ## Conclusion
 
-This fix resolves the issues with "🎄 Xmas" and "To trial" tags by implementing a comprehensive tag normalization system that works across all environments, including Vercel production. The solution is robust against whitespace variations, special characters, and emoji, ensuring a consistent filtering experience for users. We also addressed the build-time linting issues to ensure successful deployment to production.
+This fix resolves the issues with "🎄 Xmas" and "To trial" tags by implementing a comprehensive tag normalization system that works across all environments, including Vercel production. The solution is robust against whitespace variations, special characters, and emoji, ensuring a consistent filtering experience for users.
+
+Additionally, we addressed various build-time linting issues using targeted ESLint directives, ensuring successful deployment to production without compromising code quality or readability.
