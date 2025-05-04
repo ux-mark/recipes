@@ -27,7 +27,8 @@ function normalizeTag(tag: string): string {
       try {
         processedTag = decodeURIComponent(tag);
       } catch (e) {
-        console.warn('Failed to decode URI component:', tag);
+        // Use the error in a log statement so it's not unused
+        console.warn('Failed to decode URI component:', tag, String(e));
       }
     }
     
@@ -43,7 +44,8 @@ function normalizeTag(tag: string): string {
     
     return processedTag;
   } catch (e) {
-    console.error('Error in normalizeTag:', e);
+    // Use the error in a log statement so it's not unused
+    console.error('Error in normalizeTag:', String(e));
     // Fall back to the original
     return tag;
   }
@@ -103,7 +105,9 @@ export async function getAllTags(): Promise<RecipeTag[]> {
   });
   
   // Convert to array of RecipeTag objects
-  return Object.entries(tagCounts).map(([normalizedName, data]) => ({
+  // Using eslint-disable for the underscore to indicate intentionally unused variable
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return Object.entries(tagCounts).map(([_, data]) => ({
     name: data.originalTag, // Use the original tag for display
     count: data.count
   })).sort((a, b) => b.count - a.count);

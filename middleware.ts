@@ -64,24 +64,27 @@ export function middleware(request: NextRequest) {
   
   // Check if it's a tag route
   if (url.pathname.startsWith('/tags/')) {
-    console.log('Original URL path:', url.pathname);
+    console.log('🔍 Middleware intercepted:', url.pathname);
     
     // Extract the tag portion (everything after /tags/)
     const tagPath = url.pathname.slice(6); // remove '/tags/'
     const decodedTag = decodeURIComponent(tagPath);
     
-    console.log('Decoded tag:', decodedTag);
+    console.log('📥 Decoded tag:', decodedTag);
     
     // Normalize the tag
     const normalizedTag = normalizeTag(decodedTag);
+    console.log('🔄 Normalized tag:', normalizedTag);
     
     // Only rewrite if normalization changed the tag
     if (normalizedTag !== decodedTag) {
-      console.log('Normalized tag:', normalizedTag);
+      console.log('✅ Rewriting URL:', `/tags/${encodeURIComponent(normalizedTag)}`);
       
       // Use safe encoding to handle special characters and emoji
-      url.pathname = `/tags/${safeEncodeURIComponent(normalizedTag)}`;
+      url.pathname = `/tags/${encodeURIComponent(normalizedTag)}`;
       return NextResponse.rewrite(url);
+    } else {
+      console.log('⏩ No rewrite needed, continuing with:', normalizedTag);
     }
   }
   

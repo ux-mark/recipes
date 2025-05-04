@@ -29,7 +29,8 @@ function normalizeTag(tag: string): string {
       try {
         processedTag = decodeURIComponent(tag);
       } catch (e) {
-        console.warn('Failed to decode URI component:', tag);
+        // Use the error in a log statement so it's not unused
+        console.warn('Failed to decode URI component:', tag, String(e));
       }
     }
     
@@ -45,7 +46,8 @@ function normalizeTag(tag: string): string {
     
     return processedTag;
   } catch (e) {
-    console.error('Error in normalizeTag:', e);
+    // Use the error in a log statement so it's not unused
+    console.error('Error in normalizeTag:', String(e));
     // Fall back to the original
     return tag;
   }
