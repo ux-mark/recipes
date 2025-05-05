@@ -15,13 +15,18 @@ interface SiteHeaderProps {
 export default function SiteHeader({ tags }: SiteHeaderProps) {
   const [isEditEnabled, setIsEditEnabled] = useState(false);
   
-  // Check if edit interface is enabled on client-side
+  // Check if edit interface is enabled on client-side using the status API
   useEffect(() => {
     const checkEditEnabled = async () => {
       try {
-        const response = await fetch('/api/recipes', { method: 'HEAD' });
-        // If we get a 403, it means the edit interface is not enabled
-        setIsEditEnabled(response.status !== 403);
+        const response = await fetch('/api/status');
+        if (response.ok) {
+          const data = await response.json();
+          setIsEditEnabled(data.editInterfaceEnabled);
+        } else {
+          console.error('Failed to fetch edit interface status');
+          setIsEditEnabled(false);
+        }
       } catch (error) {
         console.error('Error checking edit interface status:', error);
         setIsEditEnabled(false);
