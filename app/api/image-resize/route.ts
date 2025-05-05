@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs';
-import { headers } from 'next/headers';
 
 // Consistent security check function across all routes
 function isEditEnabled() {

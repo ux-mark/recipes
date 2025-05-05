@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
@@ -39,6 +40,7 @@ export default async function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   );

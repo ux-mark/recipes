@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { Recipe } from '@/lib/types';
-import { headers } from 'next/headers';
 
 // Path to recipes JSON file
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');

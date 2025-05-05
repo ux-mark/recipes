@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { unlink } from 'fs/promises';
 import path from 'path';
 import fs from 'fs';
-import { headers } from 'next/headers';
 
 // Consistent security check function across all routes
 function isEditEnabled() {

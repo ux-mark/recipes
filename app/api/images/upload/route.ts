@@ -3,7 +3,6 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 import { normalizeFileName } from '@/lib/utils/string-utils';
-import { headers } from 'next/headers';
 
 // Consistent security check function across all routes
 function isEditEnabled() {
