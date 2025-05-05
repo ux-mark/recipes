@@ -2,15 +2,51 @@ import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 import path from 'path';
 import fs from 'fs';
+import { headers } from 'next/headers';
+
+// Consistent security check function across all routes
+function isEditEnabled() {
+  // Check both environment variable and request headers
+  const envEnabled = process.env.EDIT_INTERFACE === '1';
+  
+  // In production, add extra layers of security
+  if (process.env.NODE_ENV === 'production') {
+    const headersList = headers();
+    // Try different possible spellings of referer/referrer to be safe
+    const referrer = headersList.get('referrer') || headersList.get('referer') || '';
+    
+    // Make sure the request is coming from our admin pages
+    const isFromAdminPage = referrer.includes('/admin/');
+    
+    return envEnabled && isFromAdminPage;
+  }
+  
+  return envEnabled;
+}
 
 export async function POST(request: Request) {
-  // Check if edit interface is enabled
-  if (process.env.EDIT_INTERFACE !== '1') {
-    return NextResponse.json({ error: 'Edit interface is disabled' }, { status: 400 });
+  // Using the consistent security check function
+  if (!isEditEnabled()) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 403 }
+    );
   }
 
   try {
-    const data = await request.json();
+    // Parse the request body with proper error handling
+    let data;
+    try {
+      const text = await request.text();
+      data = JSON.parse(text);
+    } catch (error) {
+      console.error("Failed to parse request body:", error);
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
+    
     const { 
       imagePath, 
       width, 

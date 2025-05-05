@@ -3,11 +3,33 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 import { normalizeFileName } from '@/lib/utils/string-utils';
+import { headers } from 'next/headers';
+
+// Consistent security check function across all routes
+function isEditEnabled() {
+  // Check both environment variable and request headers
+  const envEnabled = process.env.EDIT_INTERFACE === '1';
+  
+  // In production, add extra layers of security
+  if (process.env.NODE_ENV === 'production') {
+    const headersList = headers();
+    // Try different possible spellings of referer/referrer to be safe
+    const referrer = headersList.get('referrer') || headersList.get('referer') || '';
+    
+    // Make sure the request is coming from our admin pages
+    const isFromAdminPage = referrer.includes('/admin/');
+    
+    return envEnabled && isFromAdminPage;
+  }
+  
+  return envEnabled;
+}
 
 export async function POST(request: Request) {
-  if (process.env.EDIT_INTERFACE !== '1') {
+  // Using the consistent security check function
+  if (!isEditEnabled()) {
     return NextResponse.json(
-      { error: 'Edit interface is not enabled' },
+      { error: 'Unauthorized' },
       { status: 403 }
     );
   }

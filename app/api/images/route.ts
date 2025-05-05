@@ -2,17 +2,52 @@ import { NextResponse } from 'next/server';
 import { unlink } from 'fs/promises';
 import path from 'path';
 import fs from 'fs';
+import { headers } from 'next/headers';
+
+// Consistent security check function across all routes
+function isEditEnabled() {
+  // Check both environment variable and request headers
+  const envEnabled = process.env.EDIT_INTERFACE === '1';
+  
+  // In production, add extra layers of security
+  if (process.env.NODE_ENV === 'production') {
+    const headersList = headers();
+    // Try different possible spellings of referer/referrer to be safe
+    const referrer = headersList.get('referrer') || headersList.get('referer') || '';
+    
+    // Make sure the request is coming from our admin pages
+    const isFromAdminPage = referrer.includes('/admin/');
+    
+    return envEnabled && isFromAdminPage;
+  }
+  
+  return envEnabled;
+}
 
 export async function DELETE(request: Request) {
-  if (process.env.EDIT_INTERFACE !== '1') {
+  // Using the consistent security check function
+  if (!isEditEnabled()) {
     return NextResponse.json(
-      { error: 'Edit interface is not enabled' },
+      { error: 'Unauthorized' },
       { status: 403 }
     );
   }
   
   try {
-    const { imagePaths, deleteOptimized = false } = await request.json();
+    // Parse the request body with proper error handling
+    let requestData;
+    try {
+      const text = await request.text();
+      requestData = JSON.parse(text);
+    } catch (error) {
+      console.error("Failed to parse request body:", error);
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
+    
+    const { imagePaths, deleteOptimized = false } = requestData;
     
     if (!imagePaths || !Array.isArray(imagePaths) || imagePaths.length === 0) {
       return NextResponse.json(

@@ -15,10 +15,11 @@ function isEditEnabled() {
   // In production, add extra layers of security
   if (process.env.NODE_ENV === 'production') {
     const headersList = headers();
-    const referer = headersList.get('referer') || '';
+    // Try different possible spellings of referer/referrer to be safe
+    const referrer = headersList.get('referrer') || headersList.get('referer') || '';
     
     // Make sure the request is coming from our admin pages
-    const isFromAdminPage = referer.includes('/admin/');
+    const isFromAdminPage = referrer.includes('/admin/');
     
     return envEnabled && isFromAdminPage;
   }

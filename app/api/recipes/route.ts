@@ -4,38 +4,78 @@ import fs from 'fs/promises';
 import path from 'path';
 import { Recipe } from '@/lib/types';
 import { normalizeFileName } from '@/lib/utils/string-utils';
+import { headers } from 'next/headers';
 
 // Path to recipes JSON file
 const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
 
-// Check if edit interface is enabled
+// Enhanced security check for edit interface
 function isEditEnabled() {
-  return process.env.EDIT_INTERFACE === '1';
+  // Check both environment variable and request headers
+  const envEnabled = process.env.EDIT_INTERFACE === '1';
+  
+  // In production, add extra layers of security
+  if (process.env.NODE_ENV === 'production') {
+    const headersList = headers();
+    // Try different possible spellings of referer/referrer to be safe
+    const referrer = headersList.get('referrer') || headersList.get('referer') || '';
+    
+    // Make sure the request is coming from our admin pages
+    const isFromAdminPage = referrer.includes('/admin/');
+    
+    return envEnabled && isFromAdminPage;
+  }
+  
+  return envEnabled;
 }
 
 // Helper function to read recipes
 async function readRecipes(): Promise<Recipe[]> {
-  const data = await fs.readFile(recipesFilePath, 'utf8');
-  return JSON.parse(data);
+  try {
+    const data = await fs.readFile(recipesFilePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error reading recipes file:", error);
+    throw new Error("Failed to read recipes");
+  }
 }
 
-// Helper function to write recipes
+// Helper function to write recipes with additional safeguards for production
 async function writeRecipes(recipes: Recipe[]): Promise<void> {
-  // Create backup
-  const backupDir = path.join(process.cwd(), './backups');
-  await fs.mkdir(backupDir, { recursive: true });
-  
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupPath = path.join(backupDir, `recipes-${timestamp}.json`);
-  
-  await fs.copyFile(recipesFilePath, backupPath);
-  
-  // Write updated recipes
-  await fs.writeFile(
-    recipesFilePath, 
-    JSON.stringify(recipes, null, 2), 
-    'utf8'
-  );
+  try {
+    // Create backup
+    const backupDir = path.join(process.cwd(), './backups');
+    await fs.mkdir(backupDir, { recursive: true });
+    
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const backupPath = path.join(backupDir, `recipes-${timestamp}.json`);
+    
+    await fs.copyFile(recipesFilePath, backupPath);
+    
+    // Additional validation before writing in production
+    if (process.env.NODE_ENV === 'production') {
+      // Ensure we're not losing data - basic validation
+      if (!Array.isArray(recipes) || recipes.length === 0) {
+        throw new Error("Cannot write empty recipes array to file");
+      }
+      
+      // Check that we have valid recipe data
+      const invalidRecipes = recipes.filter(r => !r.id || !r.name);
+      if (invalidRecipes.length > 0) {
+        throw new Error(`Found ${invalidRecipes.length} invalid recipes`);
+      }
+    }
+    
+    // Write updated recipes
+    await fs.writeFile(
+      recipesFilePath, 
+      JSON.stringify(recipes, null, 2), 
+      'utf8'
+    );
+  } catch (error) {
+    console.error("Error writing recipes file:", error);
+    throw new Error("Failed to write recipes");
+  }
 }
 
 export async function GET() {
@@ -51,17 +91,40 @@ export async function GET() {
   }
 }
 
-// Create a new recipe
+// Create a new recipe with enhanced error handling
 export async function POST(request: Request) {
+  // Check if edit interface is enabled with enhanced security
   if (!isEditEnabled()) {
+    console.log("Edit interface is not enabled or unauthorized request");
     return NextResponse.json(
-      { error: 'Edit interface is not enabled' },
+      { error: 'Unauthorized' },
       { status: 403 }
     );
   }
   
   try {
-    const newRecipe = await request.json();
+    // Parse the request body with proper error handling
+    let newRecipe: Recipe;
+    try {
+      const text = await request.text();
+      console.log("Request body received:", text);
+      newRecipe = JSON.parse(text);
+    } catch (parseError) {
+      console.error("Failed to parse request body:", parseError);
+      return NextResponse.json(
+        { error: "Invalid JSON in request body" },
+        { status: 400 }
+      );
+    }
+    
+    // Validate the recipe data
+    if (!newRecipe || !newRecipe.name) {
+      console.error("Invalid recipe data:", newRecipe);
+      return NextResponse.json(
+        { error: "Invalid recipe data" },
+        { status: 400 }
+      );
+    }
     
     // Generate ID from name
     newRecipe.id = normalizeFileName(newRecipe.name);
@@ -87,9 +150,13 @@ export async function POST(request: Request) {
       );
     }
     
+    console.log("Adding new recipe:", newRecipe.id);
     recipes.push(newRecipe);
+    
+    console.log("Writing updated recipes to file");
     await writeRecipes(recipes);
     
+    console.log("Recipe created successfully");
     return NextResponse.json(
       { success: true, recipe: newRecipe },
       { status: 201 }
@@ -97,7 +164,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating recipe:', error);
     return NextResponse.json(
-      { error: 'Failed to create recipe' },
+      { error: `Failed to create recipe: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
     );
   }
