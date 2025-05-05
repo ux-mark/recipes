@@ -7,12 +7,16 @@
     "node": "18.x"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "copy-images": "node scripts/copy-images.js",
-    "prebuild": "node -e \"process.env.NODE_ENV !== 'production' ? require('child_process').execSync('npm run copy-images') : console.log('Skipping image copy in production')\""
+    "prebuild": "node -e \"process.env.NODE_ENV !== 'production' ? require('child_process').execSync('npm run copy-images') : console.log('Skipping image copy in production')\"",
+    "build:production": "node scripts/build-production.js",
+    "start:production": "NODE_ENV=production next start",
+    "deploy:vercel": "vercel --prod"
   },
   "dependencies": {
     "@radix-ui/react-aspect-ratio": "^1.1.4",
@@ -28,7 +32,10 @@
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
     "react": "^19.0.0",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.0.0",
+    "sharp": "^0.34.1",
     "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {

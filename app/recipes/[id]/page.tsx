@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { format, parseISO } from 'date-fns';
 import { getRecipeById, getAllRecipes } from '@/lib/recipes';
 import { Separator } from '@/components/ui/separator';
-import { Clock, Utensils, Star, ChevronLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Clock, Utensils, Star, ChevronLeft, Edit } from 'lucide-react';
 import type { Metadata } from 'next';
 
 // Comprehensive tag normalization function
@@ -83,6 +84,9 @@ export default async function RecipePage({ params }: RecipePageProps) {
     notFound();
   }
   
+  // Check if edit interface is enabled
+  const isEditEnabled = process.env.EDIT_INTERFACE === '1';
+  
   // Format the created date
   let formattedDate = '';
   try {
@@ -94,13 +98,21 @@ export default async function RecipePage({ params }: RecipePageProps) {
   
   return (
     <article className="container py-8">
-      <div className="mb-6">
+      <div className="mb-6 flex justify-between items-center">
         <Link 
           href="/recipes" 
           className="text-primary-600 hover:underline inline-flex items-center"
         >
           <ChevronLeft className="h-4 w-4 mr-1" /> Back to recipes
         </Link>
+        
+        {isEditEnabled && (
+          <Button asChild variant="outline" size="sm" className="inline-flex items-center gap-1">
+            <Link href={`/admin/recipes/edit/${recipe.id}`}>
+              <Edit className="h-4 w-4" /> Edit Recipe
+            </Link>
+          </Button>
+        )}
       </div>
       
       <header className="mb-8">

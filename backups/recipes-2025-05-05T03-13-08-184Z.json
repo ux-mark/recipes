@@ -3,12 +3,8 @@
     "id": "apple-tart",
     "name": "Apple tart",
     "description": "The best homemade tart that brings back childhood memories every time!",
-    "ingredients": [
-      "Pastry"
-    ],
-    "instructions": [
-      "Make the pastry"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
       "Needs content",
       "Needs pic",
@@ -173,7 +169,7 @@
       "4.5 tsp baking powder / 1.5 tsp baking soda",
       "1.5 tbsp cocoa powder (dutch process only)",
       "3 very ripe (i.e. black) bananas",
-      "1 tsp vanilla extract"
+      "1 tsp vanilla extract"  
     ],
     "instructions": [
       "Put the chocolate in a bain-marie on the stove to melt the chocolate",
@@ -559,7 +555,7 @@
   {
     "id": "cranberry-sauce",
     "name": "Cranberry sauce",
-    "description": "Always a perfect addition to Xmas dinner! ",
+    "description": "",
     "ingredients": [
       "Fresh or frozen cranberries"
     ],
@@ -1535,27 +1531,11 @@
   {
     "id": "olivias-muesli",
     "name": "Olivia’s Muesli",
-    "description": "This is a great granola like muesli, definitely worth a try!",
+    "description": "![a500608a-f1f3-4d2d-99dc-778dbd34c121.jpeg](olivias-muesli/a500608a-f1f3-4d2d-99dc-778dbd34c121.jpeg)",
     "ingredients": [
-      "6 cups rolled oats",
-      "1 cup coconut (shredded)",
-      "1 cup sunflower seeds",
-      "1/2 cup sesame seeds",
-      "1/4 cup linseed and almonds (ground)",
-      "1/4 cup wheat germ / bran / psyllium husks",
-      "1/2 cup rice bran or nut oil (peanut is great)",
-      "1/2 cup milk",
-      "2 cup nuts (chopped)",
-      "1 cup dried fruit (chopped)",
-      "2 tbl sp honey",
-      "(Optional) grain puffs"
+      "-"
     ],
-    "instructions": [
-      "Mix all ingredients together, except dried fruit and optional grain puffs",
-      "Roast them in a deep roasting tray in an oven at 180°C / 360°F - check and stir every 5 mins until golden brown",
-      "Mix in dried fruit.",
-      "If using mix in grain puffs to desired ratio"
-    ],
+    "instructions": [],
     "tags": [
       "Breakfast"
     ],
@@ -1569,9 +1549,6 @@
       "url": ""
     },
     "images": [
-      "olivias-muesli/olivias-muesli-1.jpeg",
-      "olivias-muesli/olivias-muesli-2.jpeg",
-      "olivias-muesli/olivias-muesli-3.jpeg",
       "olivias-muesli/vancourver-granola.jpeg"
     ]
   },
@@ -2382,6 +2359,7 @@
     },
     "images": [
       "taco-seasoning/taco-seasoning.jpg"
+
     ]
   },
   {

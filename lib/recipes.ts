@@ -1,13 +1,13 @@
 // We need to mark this file as server-only
 'use server';
 
-import fs from 'fs';
-import path from 'path';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { Recipe, RecipeTag } from './types';
 
 // Path to the recipes JSON file
 // TODO: Move this to a config file or environment variable
-const recipesFilePath = path.join(process.cwd(), './lib/recipes.json');
+const recipesFilePath = join(process.cwd(), './lib/recipes.json');
 
 /**
  * Comprehensive tag normalization function that handles Unicode variations
@@ -54,7 +54,7 @@ function normalizeTag(tag: string): string {
 // Function to get all recipes
 export async function getAllRecipes(): Promise<Recipe[]> {
   try {
-    const fileContents = fs.readFileSync(recipesFilePath, 'utf8');
+    const fileContents = readFileSync(recipesFilePath, 'utf8');
     const recipes: Recipe[] = JSON.parse(fileContents);
     return recipes;
   } catch (error) {

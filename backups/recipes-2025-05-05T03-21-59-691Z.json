@@ -3,12 +3,8 @@
     "id": "apple-tart",
     "name": "Apple tart",
     "description": "The best homemade tart that brings back childhood memories every time!",
-    "ingredients": [
-      "Pastry"
-    ],
-    "instructions": [
-      "Make the pastry"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
       "Needs content",
       "Needs pic",
@@ -559,7 +555,7 @@
   {
     "id": "cranberry-sauce",
     "name": "Cranberry sauce",
-    "description": "Always a perfect addition to Xmas dinner! ",
+    "description": "",
     "ingredients": [
       "Fresh or frozen cranberries"
     ],
@@ -1569,9 +1565,6 @@
       "url": ""
     },
     "images": [
-      "olivias-muesli/olivias-muesli-1.jpeg",
-      "olivias-muesli/olivias-muesli-2.jpeg",
-      "olivias-muesli/olivias-muesli-3.jpeg",
       "olivias-muesli/vancourver-granola.jpeg"
     ]
   },

@@ -2,14 +2,12 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 /**
- * Comprehensive tag normalization function that handles Unicode variations
- * and special characters consistently
+ * Normalize a tag string
  */
 function normalizeTag(tag: string): string {
   try {
     // Ensure we're working with a string
     if (typeof tag !== 'string') {
-      console.warn('Non-string tag received:', tag);
       return String(tag);
     }
     
@@ -18,80 +16,70 @@ function normalizeTag(tag: string): string {
     if (tag.includes('%')) {
       try {
         processedTag = decodeURIComponent(tag);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
-        console.warn('Failed to decode URI component:', tag);
+        // Silent catch
       }
     }
     
     // Normalize Unicode to composed form (NFC)
-    // This addresses differences in how characters may be encoded
     processedTag = processedTag.normalize('NFC');
     
     // Remove any leading/trailing whitespace
     processedTag = processedTag.trim();
     
-    // Normalize internal spaces (replace multiple spaces with a single space)
+    // Normalize internal spaces
     processedTag = processedTag.replace(/\s+/g, ' ');
     
     return processedTag;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
-    console.error('Error in normalizeTag:', e);
     // Fall back to the original
     return tag;
   }
 }
 
-/**
- * Safe encodeURIComponent that handles potential errors
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function safeEncodeURIComponent(tag: string): string {
-  try {
-    return encodeURIComponent(tag);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (e) {
-    console.error('Error encoding tag:', e);
-    // Apply basic encoding on error
-    return tag.replace(/\s/g, '%20');
-  }
-}
-
+// Main middleware function with simplified logic to minimize errors
 export function middleware(request: NextRequest) {
-  // Clone the URL to modify it
-  const url = request.nextUrl.clone();
-  
-  // Check if it's a tag route
-  if (url.pathname.startsWith('/tags/')) {
-    console.log('🔍 Middleware intercepted:', url.pathname);
+  const { pathname } = request.nextUrl;
+
+  // Handle admin routes - checking for EDIT_INTERFACE feature flag
+  if (pathname.startsWith('/admin/')) {
+    const isEditInterfaceEnabled = process.env.EDIT_INTERFACE === '1';
     
-    // Extract the tag portion (everything after /tags/)
-    const tagPath = url.pathname.slice(6); // remove '/tags/'
-    const decodedTag = decodeURIComponent(tagPath);
+    if (!isEditInterfaceEnabled) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
     
-    console.log('📥 Decoded tag:', decodedTag);
-    
-    // Normalize the tag
-    const normalizedTag = normalizeTag(decodedTag);
-    console.log('🔄 Normalized tag:', normalizedTag);
-    
-    // Only rewrite if normalization changed the tag
-    if (normalizedTag !== decodedTag) {
-      console.log('✅ Rewriting URL:', `/tags/${encodeURIComponent(normalizedTag)}`);
+    return NextResponse.next();
+  }
+
+  // Handle tag routes with normalization
+  if (pathname.startsWith('/tags/')) {
+    try {
+      const tagPath = pathname.slice(6); // remove '/tags/'
+      if (!tagPath) return NextResponse.next();
       
-      // Use safe encoding to handle special characters and emoji
-      url.pathname = `/tags/${encodeURIComponent(normalizedTag)}`;
-      return NextResponse.rewrite(url);
-    } else {
-      console.log('⏩ No rewrite needed, continuing with:', normalizedTag);
+      const decodedTag = decodeURIComponent(tagPath);
+      const normalizedTag = normalizeTag(decodedTag);
+      
+      // Only rewrite if normalization changed the tag
+      if (normalizedTag !== decodedTag) {
+        const url = new URL(request.url);
+        url.pathname = `/tags/${encodeURIComponent(normalizedTag)}`;
+        return NextResponse.rewrite(url);
+      }
+    } catch (error) {
+      // If any error occurs in tag handling, continue to the next middleware
+      console.error('Error in tag middleware:', error);
     }
   }
   
   return NextResponse.next();
 }
 
-// Apply middleware only to tag routes for performance
+// Use a simpler matcher format for better Next.js 15.3.1 compatibility
 export const config = {
-  matcher: '/tags/:path*',
+  matcher: [
+    '/admin/:path*', 
+    '/tags/:path*'
+  ]
 };

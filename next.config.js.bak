@@ -1,23 +1,25 @@
-import type { NextConfig } from "next";
-import path from "path";
+// @ts-check
+/** @type {import('next').NextConfig} */
 import { fileURLToPath } from 'url';
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   output: 'standalone',
   // Properly configure middleware for Next.js 15.3.1
   experimental: {
     serverActions: {
       allowedOrigins: ['localhost:3000'],
     },
-    // Only specify required experimental features
     optimizePackageImports: [],
   },
-  // Improve middleware compatibility
+  // Fix for middleware-manifest.json error
   reactStrictMode: true,
   poweredByHeader: false,
+  // Simplify server external packages config
+  serverExternalPackages: [],
   // Fix webpack caching issues with absolute path
   webpack: (config, { dev, isServer }) => {
     // Set forced filesystem cache for stability
@@ -32,7 +34,6 @@ const nextConfig: NextConfig = {
         compression: false, // Disable compression to avoid rename issues
         name: dev ? 'development' : 'production',
       };
-      // Improve file watching for development
       config.watchOptions = {
         ...config.watchOptions,
         poll: 1000,
@@ -42,12 +43,12 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: [], // Add external image domains if needed
-    unoptimized: false,
+    domains: [], // Add any external image domains here if needed
+    unoptimized: false, // Set to true if you want to disable Next.js image optimization
   },
-  // Enable this to bypass TypeScript errors during builds
+  // Enable this to bypass TypeScript errors during production builds
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Required for successful Vercel deployment with the current type definitions
   },
 };
 
