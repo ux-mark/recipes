@@ -1711,12 +1711,13 @@
       "Eat immediately!"
     ],
     "tags": [
-      "Dinner"
+      "Dinner",
+      "Needs content"
     ],
     "prepTime": "",
     "cookTime": "",
     "servings": "",
-    "rating": 5,
+    "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
     "source": {
       "name": "",

@@ -71,6 +71,22 @@ To delete a recipe:
 
 ## Working with Recipe Images
 
+### How Images Are Managed
+
+The recipe website manages images in the following way:
+
+1. **Storage**: All recipe images are stored in a dedicated `/images/` directory on the server
+2. **Optimization**: The system automatically creates optimized versions of images for different screen sizes
+3. **Image Order**: The first image in the list is used as the "Main Image" and appears in:
+   - Recipe cards throughout the website
+   - Hero image collages on the homepage
+   - As the primary image on recipe detail pages
+4. **Homepage Display**: Hero images on the homepage are automatically selected from:
+   - Featured recipes (from the featured recipes list)
+   - Dinner category recipes
+   - Only recipes with at least one image are considered
+   - Up to 4 recipes will be displayed in the collage
+
 ### Adding Images
 
 You can add images to a recipe during creation or editing:
@@ -80,7 +96,14 @@ You can add images to a recipe during creation or editing:
 3. Select one or more image files to upload
 4. The images will be uploaded and displayed in the form
 
-The first image in the list will be used as the main image for the recipe in listings and cards.
+**Note**: It's recommended to provide at least one image for each recipe to improve its appearance throughout the site.
+
+### Managing Image Order
+
+The order of images matters as the first image becomes the "Main Image":
+
+1. To reorder images, you need to remove and re-upload them in the desired order
+2. The main image (first in the list) will be labeled with "Main Image" text
 
 ### Removing Images
 
@@ -89,6 +112,41 @@ To remove an image from a recipe:
 1. Hover over the image in the recipe form
 2. Click the "×" button that appears in the top-right corner of the image
 3. The image will be removed from the recipe and deleted from storage
+4. If you remove the main image, the next image in line will become the main image
+
+### Best Practices for Recipe Images
+
+For the best presentation on the website:
+
+- **Image Size**: Use high-quality images at least 1200px wide
+- **Aspect Ratio**: Use a consistent aspect ratio (4:3 or 16:9) for all images
+- **Main Image**: Choose the most appealing, representative image as your first image
+- **Multiple Views**: Include multiple images to show different views of the finished recipe
+- **Lighting**: Use well-lit images that clearly show the food
+- **Consistency**: Maintain a consistent photography style across all recipe images
+
+## Managing Homepage Hero Images
+
+You can directly control which recipes appear in the homepage hero section:
+
+1. **Marking Recipes for Hero Display**: 
+   - When editing or creating a recipe, check the "Show in Hero" checkbox in the Basic Information section
+   - Recipes marked with this flag will be prioritized for display in the homepage hero section
+
+2. **Order of Display**:
+   - The system will display up to 4 recipes in the hero section
+   - Recipes explicitly marked with "Show in Hero" will be displayed first
+   - If fewer than 4 recipes are marked for the hero, the system will fill remaining slots with featured recipes and dinner recipes
+
+3. **Image Requirements**:
+   - Only recipes with at least one image can appear in the hero section
+   - The first image of each recipe will be used in the hero display
+   - For best results, use high-quality landscape-oriented images
+
+4. **Best Practices**:
+   - Select visually appealing recipes with high-quality images
+   - Choose recipes that represent the range of content on your site
+   - Update your hero selections periodically to keep your homepage fresh
 
 ## Autosave Feature
 

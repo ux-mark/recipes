@@ -1048,8 +1048,7 @@
       "hot-cross-buns/IMG_3476.jpeg",
       "hot-cross-buns/IMG_8951.jpeg"
     ],
-    "aside": "Always a winner - I love to make both traditional and chocolate every time. Both are winners.",
-    "showInHero": false
+    "aside": "Always a winner - I love to make both traditional and chocolate every time. Both are winners."
   },
   {
     "id": "irish-spiced-beef",
@@ -1164,8 +1163,7 @@
     },
     "images": [
       "lasagna/035E0CCE-3B8E-4020-8007-8F5F8290E830.jpeg"
-    ],
-    "showInHero": false
+    ]
   },
   {
     "id": "liquid-soap",
@@ -1517,8 +1515,7 @@
     },
     "images": [
       "nut-bickies/D551F9D4-DC8D-4BD5-B957-630365FC588D.jpeg"
-    ],
-    "showInHero": true
+    ]
   },
   {
     "id": "nut-milk",
@@ -1694,29 +1691,16 @@
     "id": "pizza-for-a-friend",
     "name": "Pizza for a friend",
     "description": "![](pizza-for-a-friend/8767FFF9-97D8-4692-951D-AF1A814FF592.jpeg)",
-    "ingredients": [
-      "Sourdough pizza dough",
-      "Olive oil",
-      "Garlic",
-      "Pine nutes",
-      "Pumpkin/Squash (rasted)",
-      "Goat's cheese",
-      "Roquette/Arugula"
-    ],
-    "instructions": [
-      "Follow recipe to make base.",
-      "Put olive oil and garlic on the base, add pumpkin and pine nuts.",
-      "Bake in a hot oven until base is cooked and pine nuts are brown.",
-      "Put roquette and goat's cheese on pizza to serve. ",
-      "Eat immediately!"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
-      "Dinner"
+      "Dinner",
+      "Needs content"
     ],
     "prepTime": "",
     "cookTime": "",
     "servings": "",
-    "rating": 5,
+    "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
     "source": {
       "name": "",
@@ -1724,8 +1708,7 @@
     },
     "images": [
       "pizza-for-a-friend/8767FFF9-97D8-4692-951D-AF1A814FF592.jpeg"
-    ],
-    "showInHero": true
+    ]
   },
   {
     "id": "plantain-cake",

@@ -3,10 +3,11 @@ import Link from 'next/link';
 import { ArrowRight, UtensilsCrossed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RecipeCard from '@/components/recipe-card';
-import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
+import { getFeaturedRecipes, getAllTags, getRecipesByTag, getAllRecipes } from '@/lib/recipes';
 import { getRecipeImageUrl } from '@/lib/client-utils/image';
 
 export default async function Home() {
+  const allRecipes = await getAllRecipes();
   const featuredRecipes = await getFeaturedRecipes(6);
   const allTags = await getAllTags();
   const popularTags = allTags
@@ -16,17 +17,29 @@ export default async function Home() {
   // Get a few dinner recipes
   const dinnerRecipes = (await getRecipesByTag('Dinner')).slice(0, 3);
 
-  // Select recipes with images for the collage
-  const allRecipesForCollage = [...featuredRecipes.slice(1), ...dinnerRecipes]
-    .filter(recipe => recipe.images && recipe.images.length > 0);
+  // UPDATED: First look for recipes explicitly marked for hero display
+  let heroRecipes = allRecipes
+    .filter(recipe => recipe.showInHero === true && recipe.images && recipe.images.length > 0)
+    .slice(0, 4);
 
-  // Deduplicate recipes by ID
-  const uniqueRecipes = Array.from(
-    new Map(allRecipesForCollage.map(recipe => [recipe.id, recipe]))
+  // If we don't have enough hero-flagged recipes, fall back to the original algorithm
+  if (heroRecipes.length < 4) {
+    // Get additional recipes using the original algorithm
+    const additionalRecipes = [...featuredRecipes.slice(1), ...dinnerRecipes]
+      .filter(recipe => 
+        // Only include recipes with images that aren't already in heroRecipes
+        recipe.images && recipe.images.length > 0 && 
+        !heroRecipes.some(heroRecipe => heroRecipe.id === recipe.id)
+      );
+    
+    // Combine heroRecipes with additional recipes, up to 4 total
+    heroRecipes = [...heroRecipes, ...additionalRecipes].slice(0, 4);
+  }
+
+  // Deduplicate recipes by ID (keeping the original order)
+  const collageRecipes = Array.from(
+    new Map(heroRecipes.map(recipe => [recipe.id, recipe]))
   ).map(([, recipe]) => recipe);
-
-  // Take up to 4 recipes for the collage
-  const collageRecipes = uniqueRecipes.slice(0, 4);
 
   return (
     <div className="flex flex-col">

@@ -17,6 +17,7 @@ export interface Recipe {
   images: string[];
   aside?: string;
   variations?: string;
+  showInHero?: boolean; // Flag to explicitly show this recipe in the homepage hero section
 }
 
 export interface RecipeTag {

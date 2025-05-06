@@ -258,6 +258,18 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
                 className="min-h-[100px]"
               />
             </div>
+
+            <div>
+              <label htmlFor="showInHero" className="block text-sm font-medium mb-1">
+                Show in Hero
+              </label>
+              <input
+                id="showInHero"
+                type="checkbox"
+                checked={recipe.showInHero || false}
+                onChange={(e) => setRecipe({...recipe, showInHero: e.target.checked})}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
