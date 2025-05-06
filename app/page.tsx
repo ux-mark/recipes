@@ -4,6 +4,7 @@ import { ArrowRight, UtensilsCrossed } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import RecipeCard from '@/components/recipe-card';
 import { getFeaturedRecipes, getAllTags, getRecipesByTag } from '@/lib/recipes';
+import { getRecipeImageUrl } from '@/lib/client-utils/image';
 
 export default async function Home() {
   const featuredRecipes = await getFeaturedRecipes(6);
@@ -15,13 +16,25 @@ export default async function Home() {
   // Get a few dinner recipes
   const dinnerRecipes = (await getRecipesByTag('Dinner')).slice(0, 3);
 
+  // Select recipes with images for the collage
+  const allRecipesForCollage = [...featuredRecipes.slice(1), ...dinnerRecipes]
+    .filter(recipe => recipe.images && recipe.images.length > 0);
+
+  // Deduplicate recipes by ID
+  const uniqueRecipes = Array.from(
+    new Map(allRecipesForCollage.map(recipe => [recipe.id, recipe]))
+  ).map(([, recipe]) => recipe);
+
+  // Take up to 4 recipes for the collage
+  const collageRecipes = uniqueRecipes.slice(0, 4);
+
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-primary-50 to-secondary-50">
         <div className="container py-12 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            <div>
+            <div className="pl-4 md:pl-6 lg:pl-8">
               <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 tracking-tight">
                 Discover Delicious <span className="text-primary-600">Recipes</span> for Every Occasion
               </h1>
@@ -37,28 +50,150 @@ export default async function Home() {
                 </Button>
               </div>
             </div>
-            {featuredRecipes[0]?.images && featuredRecipes[0].images.length > 0 ? (
-              <div className="relative aspect-square max-w-lg mx-auto lg:ml-auto">
-                <Image
-                  src={`/images/${featuredRecipes[0].images[0]}`}
-                  alt="Featured Recipe"
-                  fill
-                  className="object-cover rounded-2xl shadow-xl"
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-2xl flex flex-col justify-end p-6">
-                  <h3 className="text-white text-2xl font-bold mb-2">{featuredRecipes[0].name}</h3>
-                  <Link href={`/recipes/${featuredRecipes[0].id}`} className="text-white hover:underline inline-flex items-center">
-                    View Recipe <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
+
+            {/* Right side with image collage and caption */}
+            <div className="flex flex-col">
+              {/* Image Collage Container */}
+              <div className="relative h-96 w-full">
+                {collageRecipes.length > 0 ? (
+                  <>
+                    {/* One large image if we only have one */}
+                    {collageRecipes.length === 1 && (
+                      <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                        <Link href={`/recipes/${collageRecipes[0].id}`} className="relative block w-full h-full">
+                          <Image
+                            src={getRecipeImageUrl(collageRecipes[0])}
+                            alt={collageRecipes[0].name}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            className="object-cover"
+                            priority
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-6">
+                            <span className="text-white text-lg font-medium">{collageRecipes[0].name}</span>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                    
+                    {/* 2x1 grid for two images */}
+                    {collageRecipes.length === 2 && (
+                      <>
+                        <div className="absolute left-0 top-0 bottom-0 w-1/2 rounded-l-2xl overflow-hidden">
+                          <Link href={`/recipes/${collageRecipes[0].id}`} className="relative block w-full h-full">
+                            <Image
+                              src={getRecipeImageUrl(collageRecipes[0])}
+                              alt={collageRecipes[0].name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover"
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                              <span className="text-white text-sm font-medium">{collageRecipes[0].name}</span>
+                            </div>
+                          </Link>
+                        </div>
+                        <div className="absolute right-0 top-0 bottom-0 w-1/2 rounded-r-2xl overflow-hidden">
+                          <Link href={`/recipes/${collageRecipes[1].id}`} className="relative block w-full h-full">
+                            <Image
+                              src={getRecipeImageUrl(collageRecipes[1])}
+                              alt={collageRecipes[1].name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover"
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                              <span className="text-white text-sm font-medium">{collageRecipes[1].name}</span>
+                            </div>
+                          </Link>
+                        </div>
+                      </>
+                    )}
+                    
+                    {/* 2x2 grid for 3-4 images */}
+                    {collageRecipes.length >= 3 && (
+                      <>
+                        <div className="absolute left-0 top-0 w-1/2 h-1/2 rounded-tl-2xl overflow-hidden">
+                          <Link href={`/recipes/${collageRecipes[0].id}`} className="relative block w-full h-full">
+                            <Image
+                              src={getRecipeImageUrl(collageRecipes[0])}
+                              alt={collageRecipes[0].name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover"
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                              <span className="text-white text-sm font-medium">{collageRecipes[0].name}</span>
+                            </div>
+                          </Link>
+                        </div>
+                        <div className="absolute right-0 top-0 w-1/2 h-1/2 rounded-tr-2xl overflow-hidden">
+                          <Link href={`/recipes/${collageRecipes[1].id}`} className="relative block w-full h-full">
+                            <Image
+                              src={getRecipeImageUrl(collageRecipes[1])}
+                              alt={collageRecipes[1].name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover"
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                              <span className="text-white text-sm font-medium">{collageRecipes[1].name}</span>
+                            </div>
+                          </Link>
+                        </div>
+                        <div className="absolute left-0 bottom-0 w-1/2 h-1/2 rounded-bl-2xl overflow-hidden">
+                          <Link href={`/recipes/${collageRecipes[2].id}`} className="relative block w-full h-full">
+                            <Image
+                              src={getRecipeImageUrl(collageRecipes[2])}
+                              alt={collageRecipes[2].name}
+                              fill
+                              sizes="(max-width: 768px) 50vw, 25vw"
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                              <span className="text-white text-sm font-medium">{collageRecipes[2].name}</span>
+                            </div>
+                          </Link>
+                        </div>
+                        {collageRecipes.length >= 4 && (
+                          <div className="absolute right-0 bottom-0 w-1/2 h-1/2 rounded-br-2xl overflow-hidden">
+                            <Link href={`/recipes/${collageRecipes[3].id}`} className="relative block w-full h-full">
+                              <Image
+                                src={getRecipeImageUrl(collageRecipes[3])}
+                                alt={collageRecipes[3].name}
+                                fill
+                                sizes="(max-width: 768px) 50vw, 25vw"
+                                className="object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                                <span className="text-white text-sm font-medium">{collageRecipes[3].name}</span>
+                              </div>
+                            </Link>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full bg-neutral-100 rounded-2xl">
+                    <UtensilsCrossed className="h-16 w-16 text-neutral-300" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Caption text as a separate element outside the image container */}
+              {collageRecipes.length > 0 && (
+                <div className="mt-4 text-right">
+                  <p className="text-lg font-medium text-primary-600">
+                    Explore our delicious recipes
+                  </p>
                 </div>
-              </div>
-            ) : (
-              <div className="bg-neutral-100 rounded-2xl aspect-square max-w-lg mx-auto flex items-center justify-center">
-                <UtensilsCrossed className="h-16 w-16 text-neutral-300" />
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </section>

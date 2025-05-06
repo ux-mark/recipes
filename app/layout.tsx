@@ -5,6 +5,7 @@ import "./globals.css";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import { getAllTags } from "@/lib/recipes";
+import { ToastProvider } from "@/components/ui/toast-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,6 +32,9 @@ export default async function RootLayout({
   const tags = allTags
     .filter(tag => !tag.name.includes('Needs'))
     .slice(0, 20);
+  
+  // Check if we're in production environment
+  const isProduction = process.env.NODE_ENV === 'production';
     
   return (
     <html lang="en" className="h-full">
@@ -40,7 +44,9 @@ export default async function RootLayout({
           {children}
         </main>
         <SiteFooter />
-        <Analytics />
+        {/* Only include Analytics in production */}
+        {isProduction && <Analytics />}
+        <ToastProvider />
       </body>
     </html>
   );

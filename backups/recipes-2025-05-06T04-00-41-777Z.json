@@ -73,13 +73,8 @@
     "id": "arepas",
     "name": "Arepas",
     "description": "So versatile and delicious! Great for breakfast, lunch or dinner.",
-    "ingredients": [
-      "Pan",
-      "Cheese"
-    ],
-    "instructions": [
-      "Mix these and pan together"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
       "Dinner",
       "Needs content",
@@ -1046,8 +1041,7 @@
       "hot-cross-buns/IMG_3477.jpeg",
       "hot-cross-buns/IMG_3476.jpeg",
       "hot-cross-buns/IMG_8951.jpeg"
-    ],
-    "aside": "Always a winner - I love to make both traditional and chocolate every time. Both are winners."
+    ]
   },
   {
     "id": "irish-spiced-beef",

@@ -6,8 +6,20 @@ import { RecipeEditForm } from '@/components/recipe-edit/recipe-edit-form';
 import { Recipe } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { toast } from 'sonner';
 
-export default function EditRecipePage({ params }: { params: { id: string } | Promise<{ id: string }> }) {
+// Create a completely isolated wrapper component that avoids all sync access warnings
+export default function EditRecipePage(props: { params: { id: string } | Promise<{ id: string }> }) {
+  // Safely unwrap the params using React.use() for promises
+  const params = props.params instanceof Promise ? use(props.params) : props.params;
+  // Now safely access the id from the resolved params
+  const id = params.id;
+  
+  return <RecipeEditPageInner recipeId={id} />;
+}
+
+// Inner component receives only primitive props (a string) - no sync access possible
+function RecipeEditPageInner({recipeId}: {recipeId: string}) {
   const router = useRouter();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -15,15 +27,27 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [saveDebugInfo, setSaveDebugInfo] = useState<string | null>(null);
   
-  // Unwrap params using React.use()
-  const resolvedParams = params instanceof Promise ? use(params) : params;
-  const recipeId = resolvedParams.id;
-
   // Fetch the recipe data
   useEffect(() => {
-    const fetchRecipe = async () => {
+    if (!recipeId) return;
+    
+    async function fetchData() {
       try {
-        const response = await fetch(`/api/recipes`);
+        console.log(`Fetching recipe with ID: ${recipeId}`);
+        
+        // First try to get the specific recipe directly
+        const specificResponse = await fetch(`/api/recipes/${recipeId}`);
+        
+        if (specificResponse.ok) {
+          const specificRecipe = await specificResponse.json();
+          setRecipe(specificRecipe);
+          setLoading(false);
+          return;
+        }
+        
+        // Fall back to searching through all recipes
+        console.log("Falling back to searching all recipes");
+        const response = await fetch('/api/recipes');
         
         if (!response.ok) {
           throw new Error('Failed to fetch recipes');
@@ -43,9 +67,9 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
       } finally {
         setLoading(false);
       }
-    };
+    }
     
-    fetchRecipe();
+    fetchData();
   }, [recipeId]);
 
   // Handle recipe update with improved error handling and debugging
@@ -94,8 +118,9 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
       debugInfo += `Save successful, redirecting to recipe page\n`;
       setSaveDebugInfo(debugInfo);
       
-      // Redirect to the recipe view
-      router.push(`/recipes/${recipeId}`);
+      // Don't show toast here - we'll show it after redirection
+      // Instead, redirect with query params that will trigger the toast on the recipe view page
+      router.push(`/recipes/${recipeId}?saved=true&recipeName=${encodeURIComponent(updatedRecipe.name)}`);
       
       // Ensure all routes are refreshed
       router.refresh();
@@ -104,6 +129,11 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
       setError(err instanceof Error ? err.message : 'An error occurred while updating the recipe');
       debugInfo += `Error: ${err instanceof Error ? err.message : String(err)}\n`;
       setSaveDebugInfo(debugInfo);
+      
+      // Show error toast directly here since we're not redirecting
+      toast.error('Failed to save recipe', {
+        description: err instanceof Error ? err.message : 'An unexpected error occurred',
+      });
     }
   };
   
@@ -122,8 +152,11 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
       // Close the dialog
       setDeleteDialogOpen(false);
       
+      // Show success toast for deletion
+      toast.success('Recipe deleted successfully!');
+      
       // Redirect to the recipes list
-      router.push('/recipes');
+      router.push('/admin/recipes');
       
       // Ensure all routes are refreshed
       router.refresh();
@@ -131,6 +164,11 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
       console.error('Error deleting recipe:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while deleting the recipe');
       setDeleteDialogOpen(false);
+      
+      // Show error toast
+      toast.error('Failed to delete recipe', {
+        description: err instanceof Error ? err.message : 'An unexpected error occurred',
+      });
     }
   };
 
@@ -149,10 +187,10 @@ export default function EditRecipePage({ params }: { params: { id: string } | Pr
           {error || 'Recipe not found'}
         </div>
         <Button 
-          onClick={() => router.push('/recipes')}
+          onClick={() => router.push('/admin/recipes')}
           className="mt-4"
         >
-          Back to Recipes
+          Back to Recipe Management
         </Button>
       </div>
     );

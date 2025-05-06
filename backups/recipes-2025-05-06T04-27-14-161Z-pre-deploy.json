@@ -73,13 +73,8 @@
     "id": "arepas",
     "name": "Arepas",
     "description": "So versatile and delicious! Great for breakfast, lunch or dinner.",
-    "ingredients": [
-      "Pan",
-      "Cheese"
-    ],
-    "instructions": [
-      "Mix these and pan together"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
       "Dinner",
       "Needs content",

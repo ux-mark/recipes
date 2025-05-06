@@ -75,7 +75,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     >
       <CardHeader className="p-0">
         <div className="relative">
-          <AspectRatio ratio={4/3}>
+          <AspectRatio ratio={4/3} className="relative">
             <Image 
               src={getRecipeImageUrl(recipe)}
               alt={recipe.name}

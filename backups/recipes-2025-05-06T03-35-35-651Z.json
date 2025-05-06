@@ -73,13 +73,8 @@
     "id": "arepas",
     "name": "Arepas",
     "description": "So versatile and delicious! Great for breakfast, lunch or dinner.",
-    "ingredients": [
-      "Pan",
-      "Cheese"
-    ],
-    "instructions": [
-      "Mix these and pan together"
-    ],
+    "ingredients": [],
+    "instructions": [],
     "tags": [
       "Dinner",
       "Needs content",
@@ -461,9 +456,7 @@
     "name": "Chocolate bubka",
     "description": "",
     "aside": "💬 I have not made this, likely will want to reduce sugar.",
-    "ingredients": [
-      "Required"
-    ],
+    "ingredients": [],
     "instructions": [
       "*Make the dough:* Combine the flour, sugar, yeast and zest in",
       "the bottom of the bowl of a stand mixer. Add eggs and 1/2 cup water, mixing with the dough hook until it comes together; this may take a couple minutes. It’s okay if it’s on the dry side, but if it doesn’t come together at all, add extra water, 1 tablespoon at a time, until the dough forms a mass. With the mixer on low, add the salt, then the butter, a spoonful at a time, mixing until it’s incorporated into the dough.",
@@ -542,7 +535,7 @@
   {
     "id": "chocolate-strawberries",
     "name": "Chocolate strawberries",
-    "description": "Irresistibly delicious, definitely worth the step to melt the chocolate!! ",
+    "description": "",
     "ingredients": [
       "Strawberries",
       "Chocolate chips (or high quality chocolate)"
@@ -863,7 +856,7 @@
     "prepTime": "",
     "cookTime": "",
     "servings": "",
-    "rating": 4,
+    "rating": 0,
     "createdDate": "November 9, 2021 12:56 PM",
     "source": {
       "name": "",
@@ -1046,8 +1039,7 @@
       "hot-cross-buns/IMG_3477.jpeg",
       "hot-cross-buns/IMG_3476.jpeg",
       "hot-cross-buns/IMG_8951.jpeg"
-    ],
-    "aside": "Always a winner - I love to make both traditional and chocolate every time. Both are winners."
+    ]
   },
   {
     "id": "irish-spiced-beef",

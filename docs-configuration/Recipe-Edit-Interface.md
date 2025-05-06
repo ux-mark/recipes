@@ -113,6 +113,28 @@ If you encounter issues with the recipe edit interface:
 2. Check the browser console for any error messages
 3. Ensure you have proper permissions to write to the recipe data file
 
+### Common Console Errors
+
+#### Vercel Analytics Script Error
+
+If you see the following errors in your browser console:
+
+```
+Failed to load resource: the server responded with a status of 404 (Not Found) (script.js, line 0)
+[Vercel Web Analytics] Failed to load script from /_vercel/insights/script.js
+```
+
+This is normal during local development and can be safely ignored. The error occurs because:
+
+- Vercel Web Analytics is configured for your production deployment
+- The analytics script doesn't exist in your local development environment
+- This error doesn't affect any functionality of your application
+
+If you want to eliminate this error during local development, you have two options:
+
+1. **Disable analytics locally**: Add a condition in your layout file to only include analytics in production
+2. **Set up Vercel Analytics locally**: Follow the [Vercel Analytics documentation](https://vercel.com/docs/analytics/quickstart) if you need analytics during development
+
 ## Security Considerations
 
 The edit interface is intended for use by authorized content administrators only. Always use secure, random passwords and consider implementing additional authentication if deploying in a public environment.
