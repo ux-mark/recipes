@@ -41,6 +41,22 @@ function normalizeTag(tag: string): string {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Handle design system routes - checking for ENABLE_DESIGN_SYSTEM feature flag
+  if (pathname.startsWith('/design-system')) {
+    const enableDesignSystem = process.env.ENABLE_DESIGN_SYSTEM === 'true';
+    
+    if (!enableDesignSystem) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+    
+    // In production, could add additional auth requirements
+    if (process.env.NODE_ENV === 'production') {
+      // Additional authentication logic can be added here
+    }
+    
+    return NextResponse.next();
+  }
+
   // Handle admin routes - checking for EDIT_INTERFACE feature flag
   if (pathname.startsWith('/admin/')) {
     const isEditInterfaceEnabled = process.env.EDIT_INTERFACE === '1';
@@ -80,6 +96,7 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*', 
-    '/tags/:path*'
+    '/tags/:path*',
+    '/design-system/:path*'
   ]
 };

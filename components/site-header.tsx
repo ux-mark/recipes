@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { Menu, Search, Edit } from "lucide-react";
+import { Menu, Search, Edit, Palette } from "lucide-react";
 import TagsMenu from "./tags-menu";
 import { RecipeTag } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -13,27 +13,32 @@ interface SiteHeaderProps {
 }
 
 export default function SiteHeader({ tags }: SiteHeaderProps) {
+  // Default to false for both features - will be updated by API response
   const [isEditEnabled, setIsEditEnabled] = useState(false);
+  const [isDesignSystemEnabled, setIsDesignSystemEnabled] = useState(false);
+  // Track if API has been checked to handle races/errors
+  const [flagsChecked, setFlagsChecked] = useState(false);
   
-  // Check if edit interface is enabled on client-side using the status API
+  // Check feature flags on client-side using the status API
   useEffect(() => {
-    const checkEditEnabled = async () => {
+    const checkFeatureFlags = async () => {
       try {
         const response = await fetch('/api/status');
         if (response.ok) {
           const data = await response.json();
-          setIsEditEnabled(data.editInterfaceEnabled);
+          setIsEditEnabled(!!data.editInterfaceEnabled);
+          setIsDesignSystemEnabled(!!data.designSystemEnabled);
         } else {
-          console.error('Failed to fetch edit interface status');
-          setIsEditEnabled(false);
+          console.error('Failed to fetch feature flags status');
         }
       } catch (error) {
-        console.error('Error checking edit interface status:', error);
-        setIsEditEnabled(false);
+        console.error('Error checking feature flags status:', error);
+      } finally {
+        setFlagsChecked(true);
       }
     };
     
-    checkEditEnabled();
+    checkFeatureFlags();
   }, []);
 
   return (
@@ -55,9 +60,14 @@ export default function SiteHeader({ tags }: SiteHeaderProps) {
                 <Link href="/recipes" className="text-lg font-semibold hover:text-primary-500 transition-colors">
                   All Recipes
                 </Link>
-                {isEditEnabled && (
+                {isEditEnabled && flagsChecked && (
                   <Link href="/admin/recipes" className="text-lg font-semibold text-primary-600 hover:text-primary-500 transition-colors flex items-center gap-2">
                     <Edit className="h-4 w-4" /> Edit Recipes
+                  </Link>
+                )}
+                {isDesignSystemEnabled && flagsChecked && (
+                  <Link href="/design-system" className="text-lg font-semibold text-secondary-600 hover:text-secondary-500 transition-colors flex items-center gap-2">
+                    <Palette className="h-4 w-4" /> Design System
                   </Link>
                 )}
                 <TagsMenu orientation="vertical" tags={tags} />
@@ -76,9 +86,14 @@ export default function SiteHeader({ tags }: SiteHeaderProps) {
           <Link href="/recipes" className="text-sm font-medium hover:text-primary-500 transition-colors">
             All Recipes
           </Link>
-          {isEditEnabled && (
+          {isEditEnabled && flagsChecked && (
             <Link href="/admin/recipes" className="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors flex items-center gap-1">
               <Edit className="h-4 w-4" /> Edit
+            </Link>
+          )}
+          {isDesignSystemEnabled && flagsChecked && (
+            <Link href="/design-system" className="text-sm font-medium text-secondary-600 hover:text-secondary-500 transition-colors flex items-center gap-1">
+              <Palette className="h-4 w-4" /> Design System
             </Link>
           )}
           <TagsMenu tags={tags} />

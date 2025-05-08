@@ -1,5 +1,5 @@
 const { render, screen } = require('@testing-library/react');
-const RecipeCard = require('../../components/RecipeCard');
+const RecipeCard = require('../../components/recipe-card');
 
 test('renders Recipe Card with correct data', () => {
     const recipe = {

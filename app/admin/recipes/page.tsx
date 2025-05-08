@@ -50,7 +50,7 @@ export default function RecipeAdminPage() {
       </div>
 
       <Card className="mb-6">
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-2">
             <label htmlFor="search" className="text-sm font-medium block">
               Search Recipes

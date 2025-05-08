@@ -179,7 +179,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Basic Information */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Basic Information</h2>
             
@@ -276,7 +276,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Ingredients */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Ingredients*</h2>
             <IngredientsList
@@ -290,7 +290,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Instructions */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Instructions*</h2>
             <InstructionsList
@@ -304,7 +304,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Images */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Images</h2>
             <ImageUploader
@@ -318,7 +318,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Tags */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Tags</h2>
             <TagSelector
@@ -331,7 +331,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Source */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Source</h2>
             
@@ -369,7 +369,7 @@ export function RecipeEditForm({ initialRecipe, onSave }: RecipeEditFormProps) {
       
       {/* Rating */}
       <Card>
-        <CardContent className="pt-6">
+        <CardContent className="pt-6 p-4">
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">Rating</h2>
             
