@@ -309,7 +309,7 @@ The website has been optimized to work as a fully static site by:
 9. Deploy the application
 
 #### Node.js Version Compatibility
-The project is configured to use Node.js 18.x (specified in package.json's "engines" field) for the following reasons:
+The project is configured to use Node.js 24.x (specified in package.json's "engines" field) for the following reasons:
 
 - Compatibility with the deployed Next.js version (15.3.1)
 - Stable LTS support for production deployments
