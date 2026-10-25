@@ -202,7 +202,7 @@ import RecipeCard from '@/components/RecipeCard';
               </tr>
               <tr>
                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">onClick</td>
-                <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">() => void</td>
+                <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">{'() => void'}</td>
                 <td className="whitespace-nowrap py-4 px-3 text-sm text-gray-500">No</td>
                 <td className="py-4 px-3 text-sm text-gray-500">Optional click handler for the card.</td>
               </tr>
