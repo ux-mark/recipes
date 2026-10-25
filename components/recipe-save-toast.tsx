@@ -9,8 +9,8 @@ export function RecipeSaveToast() {
   
   useEffect(() => {
     // Check if we just saved this recipe
-    const saved = searchParams.get('saved');
-    const recipeName = searchParams.get('recipeName');
+    const saved = searchParams?.get('saved');
+    const recipeName = searchParams?.get('recipeName');
     
     if (saved === 'true' && recipeName) {
       // Show success toast notification

@@ -9,7 +9,7 @@ export default function DesignSystemLayout({
 }: { 
   children: React.ReactNode 
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   
   const navigation = [
     { name: 'Overview', href: '/design-system' },
