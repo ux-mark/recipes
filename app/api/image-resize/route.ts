@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import sharp from 'sharp';
+import sharp, { type FormatEnum } from 'sharp';
 import path from 'path';
 import fs from 'fs';
 
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
         fit: 'cover',
         position: 'centre'
       })
-      .toFormat(format as keyof sharp.FormatEnum, { quality })
+      .toFormat(format as keyof FormatEnum, { quality })
       .toFile(absoluteOutputPath);
 
     // Return the path to the resized image
